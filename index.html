@@ -99,7 +99,9 @@ main.inbattle [data-act=back]{display:none;position:fixed;z-index:4;top:max(6px,
 body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:100dvh}main.pg .layout .panel{background:rgba(28,20,40,.7)}main.pg header{text-shadow:0 1px 3px #000}
 .h-slot:hover,.h-slot[aria-current=true],.h-dock.art .mbtn:hover,.h-gate.art:hover{background:none}.h-slot:active{filter:none}.h-slot:hover .figure,.h-slot:active .figure{filter:brightness(1.12)}.h-slot:focus-visible{outline:0}.h-gate.art:hover{background:var(--gate) center/contain no-repeat}
 .stonegrid{grid-template-columns:repeat(auto-fit,minmax(clamp(120px,15vw,200px),1fr));gap:clamp(8px,1.4vh,16px)}.stonecard{padding:clamp(6px,1.4vh,16px) 4px;min-height:clamp(92px,calc(47vh - 90px),300px);justify-content:center;gap:clamp(1px,.6vh,6px)}.stonecard .gemart img{width:auto;height:clamp(44px,calc(27vh - 55px),190px);max-width:100%}.stonecard b{font-size:clamp(18px,3.4vh,34px)}.stonecard small{font-size:clamp(11px,1.6vh,15px)}.stonecard .price{font-size:clamp(14px,2.2vh,22px)}
-</style><main id="app"></main>
+#rot{display:none;position:fixed;inset:0;z-index:99999;background:#1a1226 radial-gradient(circle at 50% 40%,#4a2d5e,#1a1226 70%);color:#ffe49b;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;font-size:20px;font-weight:800;letter-spacing:2px;touch-action:none}#rot i{font-style:normal;font-size:72px;display:block;animation:rotp 2.2s ease-in-out infinite}@keyframes rotp{0%,25%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}@media (orientation:portrait){#rot{display:flex}}
+.stonecard.ad{border-color:#7be0a0;background:linear-gradient(#2c5a46,#173326)}.stonecard.ad .price{color:#bff6c8}
+</style><div id="rot" role="alert"><i>📱</i><div>請將手機橫放</div><small style="font-size:14px;font-weight:normal;color:#ffdda1">《封神戰線》只支援橫向遊玩</small></div><main id="app"></main>
 <script src="assets/manifest.js"></script>
 <script src="data/fengshen-data.js"></script>
 <script>
@@ -205,11 +207,13 @@ function skillPage(){
   '<div class="collection">'+FS.skills.map((x,i)=>'<button class="gpick" data-act="sksel" data-value="'+i+'" aria-current="'+(i===skSel)+'"><span class="gm">'+skillIcon(i)+'</span><b>'+x[1].split(' · ').pop()+'</b></button>').join('')+'</div>';
 }
 // 商店（雛型）：上方分頁，下方商品卡；尚未接金流，購買只顯示提示
+function adLeft(){const d=new Date(),k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();if(!data.ad||data.ad.d!==k)data.ad={d:k,n:0};return Math.max(0,3-data.ad.n)}
 function shopPage(){
+ if(FS.shop[shopTab].id==='free')shopTab=0;
  const t=FS.shop[shopTab];
- return '<div class="eqtabs">'+FS.shop.map((x,i)=>'<button data-act="shoptab" data-value="'+i+'" aria-current="'+(i===shopTab)+'">'+x.name+'</button>').join('')+'</div>'+
+ return '<div class="eqtabs">'+FS.shop.map((x,i)=>x.id==='free'?'':'<button data-act="shoptab" data-value="'+i+'" aria-current="'+(i===shopTab)+'">'+x.name+'</button>').join('')+'</div>'+
   '<p class="result" role="status">'+shopMsg+'</p>'+
-  (t.id==='stone'?'<div class="stonegrid">'+t.items.map((it,i)=>'<button class="stonecard" data-act="buy" data-value="'+i+'" aria-label="'+it.amount+' 靈石，'+it.price+'"><span class="gemart">'+gemArt(it.tier)+'</span><b>'+it.amount.toLocaleString('en-US')+'</b><small>靈石 · 1 : '+it.ratio+'</small><span class="price">'+it.price+'</span></button>').join('')+'</div>'
+  (t.id==='stone'?'<div class="stonegrid"><button class="stonecard ad" data-act="ad" aria-label="看廣告免費獲得 100 靈石，今日剩 '+adLeft()+' 次"'+(adLeft()?'':' disabled')+'><span class="gemart">'+gemArt(0)+'</span><b>100</b><small>看廣告免費獲得</small><span class="price">'+(adLeft()?'免費 · 今日剩 '+adLeft()+' 次':'今日已領完')+'</span></button>'+t.items.map((it,i)=>'<button class="stonecard" data-act="buy" data-value="'+i+'" aria-label="'+it.amount+' 靈石，'+it.price+'"><span class="gemart">'+gemArt(it.tier)+'</span><b>'+it.amount.toLocaleString('en-US')+'</b><small>靈石 · 1 : '+it.ratio+'</small><span class="price">'+it.price+'</span></button>').join('')+'</div>'
   :'<div class="shopgrid">'+t.items.map((it,i)=>'<article class="card"><b>'+it.name+'</b><p class="muted">'+it.desc+'</p><p class="price">'+(it.price||'價格待定')+'</p><button data-act="buy" data-value="'+i+'">'+(t.id==='free'?'領取':'購買')+'</button></article>').join('')+'</div>');
 }
 // 靈石圖卡的占位圖：檔位越高，寶石越多越大（之後換正式美術）
@@ -295,6 +299,7 @@ app.onclick=event=>{
  if(act==='back')battle=false;
  if(act==='sel')sel=Number(value);
  if(act==='shoptab'){shopTab=Number(value);shopMsg=''}
+ if(act==='ad'){if(adLeft()>0){data.ad.n++;data.stone=(data.stone||0)+100;shopMsg='看廣告獲得 100 靈石（今日剩 '+adLeft()+' 次；目前是測試版，尚未接上真正的廣告）。'}else shopMsg='今日看廣告次數已用完，明天再來。'}
  if(act==='buy'){const it=FS.shop[shopTab].items[Number(value)];shopMsg=it.amount?'購買 '+it.amount.toLocaleString('en-US')+' 靈石（'+it.price+'）尚未開放。':'「'+it.name+'」尚未開放。'}
  if(act==='nav')shopMsg='';
  if(act==='sksel')skSel=Number(value);
@@ -330,5 +335,6 @@ app.onclick=event=>{
  }
  save();draw();
 };
+try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){})}catch(e){}
 load();draw();
 </script>
