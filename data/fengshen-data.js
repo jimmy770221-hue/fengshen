@@ -58,6 +58,7 @@ window.FS={
  /* 商店雛型：分頁與商品皆為暫定內容，價格尚未決定（price 留空顯示「價格待定」）。尚未接金流，購買按鈕只提示未開放 */
  shop:[
   {id:'stone',name:'靈石',items:[]}, // 靈石檔位由下方 FS.stoneTiers 產生
+  {id:'exchange',name:'兌換',items:[]}, // 靈石兌換招募券（比例見 FS.recruit）
   {id:'pack',name:'禮包',items:[
    {name:'新手禮包',desc:'限購一次：招募券 ×10、指定神將 1 位（待定）',price:''},
    {name:'每日禮包',desc:'每日一次：招募券、少量靈石（內容待定）',price:''},
@@ -90,6 +91,8 @@ for(let k=2;k<=10;k++)FS.stages.push({name:'1-'+k,enemy:'待設計',story:'劇�
 FS.skillMaxLevel=5; // 每個神術等級上限
 
 // 靈石儲值檔位：[售價(NT$), 靈石倍率]；倍率由 10 倍逐級遞增到 15 倍；靈石數 = 售價 × 倍率（四捨五入）
+/* 招募：1 張招募券 = 150 靈石；單抽 1 張、5 連 5 張、10 連 9 張（9 折） */
+FS.recruit={ticketStone:150,pulls:[[1,1,'單抽'],[5,5,'5 連'],[10,9,'10 連']],exchange:[1,5,9]};
 FS.stoneTiers=[[33,10],[66,10.5],[99,11],[199,11.5],[399,12],[699,13],[1199,14],[1399,15],[1699,15]];
 FS.shop.find(t=>t.id==='stone').items=FS.stoneTiers.map(([price,ratio],i)=>({name:'靈石 第 '+(i+1)+' 檔',price:'NT$ '+price,ratio,amount:Math.round(price*ratio),tier:i}));
 

@@ -232,8 +232,8 @@ function shopPage(){
  const t=FS.shop[shopTab];
  return '<div class="eqtabs">'+FS.shop.map((x,i)=>x.id==='free'?'':'<button data-act="shoptab" data-value="'+i+'" aria-current="'+(i===shopTab)+'">'+x.name+'</button>').join('')+'</div>'+
   '<p class="result" role="status">'+shopMsg+'</p>'+
-  (t.id==='stone'?'<div class="stonegrid"><button class="stonecard ad" data-act="ad" aria-label="看廣告免費獲得 100 靈石，今日剩 '+adLeft()+' 次"'+(adLeft()?'':' disabled')+'><span class="gemart">'+gemArt(0)+'</span><b>100</b><small>看廣告免費獲得</small><span class="price">'+(adLeft()?'免費 · 今日剩 '+adLeft()+' 次':'今日已領完')+'</span></button>'+t.items.map((it,i)=>'<button class="stonecard" data-act="buy" data-value="'+i+'" aria-label="'+it.amount+' 靈石，'+it.price+'"><span class="gemart">'+gemArt(it.tier)+'</span><b>'+it.amount.toLocaleString('en-US')+'</b><small>靈石 · 1 : '+it.ratio+'</small><span class="price">'+it.price+'</span></button>').join('')+'</div>'
-  :'<div class="shopgrid">'+t.items.map((it,i)=>'<article class="card"><b>'+it.name+'</b><p class="muted">'+it.desc+'</p><p class="price">'+(it.price||'價格待定')+'</p><button data-act="buy" data-value="'+i+'">'+(t.id==='free'?'領取':'購買')+'</button></article>').join('')+'</div>');
+  (t.id==='exchange'?'<p class="muted">1 張招募券 = '+FS.recruit.ticketStone+' 靈石　｜　目前靈石 '+(data.stone||0).toLocaleString('en-US')+'　招募券 '+data.tickets+'</p><div class="shopgrid">'+FS.recruit.exchange.map(n=>'<article class="card"><b>招募券 ×'+n+'</b><p class="muted">'+(n===9?'剛好一次 10 連（9 折）':'依比例兌換')+'</p><p class="price">'+(n*FS.recruit.ticketStone).toLocaleString('en-US')+' 靈石</p><button data-act="exch" data-value="'+n+'" '+((data.stone||0)>=n*FS.recruit.ticketStone?'':'disabled')+'>兌換</button></article>').join('')+'</div>':(t.id==='stone'?'<div class="stonegrid"><button class="stonecard ad" data-act="ad" aria-label="看廣告免費獲得 100 靈石，今日剩 '+adLeft()+' 次"'+(adLeft()?'':' disabled')+'><span class="gemart">'+gemArt(0)+'</span><b>100</b><small>看廣告免費獲得</small><span class="price">'+(adLeft()?'免費 · 今日剩 '+adLeft()+' 次':'今日已領完')+'</span></button>'+t.items.map((it,i)=>'<button class="stonecard" data-act="buy" data-value="'+i+'" aria-label="'+it.amount+' 靈石，'+it.price+'"><span class="gemart">'+gemArt(it.tier)+'</span><b>'+it.amount.toLocaleString('en-US')+'</b><small>靈石 · 1 : '+it.ratio+'</small><span class="price">'+it.price+'</span></button>').join('')+'</div>'
+  :'<div class="shopgrid">'+t.items.map((it,i)=>'<article class="card"><b>'+it.name+'</b><p class="muted">'+it.desc+'</p><p class="price">'+(it.price||'價格待定')+'</p><button data-act="buy" data-value="'+i+'">'+(t.id==='free'?'領取':'購買')+'</button></article>').join('')+'</div>'));
 }
 // 靈石圖卡的占位圖：檔位越高，寶石越多越大（之後換正式美術）
 function gemArt(tier){
@@ -293,7 +293,7 @@ function _draw(){
  if(page==='神將')body=generalPage();
  if(page==='武裝')body=equipPage();
  if(page==='神術')body=skillPage();
- if(page==='招募神將')body='<div class="poolhall"><div><div class="eqtabs">'+[['hero','神將池'],['gear','武裝池（武器・裝備）']].map(([k,l])=>'<button data-act="poolkind" data-value="'+k+'" aria-current="'+(k===poolKind)+'">'+l+'</button>').join('')+'</div><h3>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+'</h3><p>試抽券 '+data.tickets+' 張</p><div class="actions">'+pools.map(([name],i)=>'<button data-act="pool" data-value="'+i+'" aria-current="'+(i===pool)+'">'+name+'</button>').join('')+'</div><p>普通 '+pools[pool][1][0]+'% · 稀有 '+pools[pool][1][1]+'% · 封神級 '+pools[pool][1][2]+'%</p><button data-act="pull" '+(data.tickets?'':'disabled')+'>招募一次 · 1 張</button><p class="result" role="status">'+result+'</p></div><div class="poolart" aria-hidden="true">'+(asset('ui/banner_'+poolKind)?'<img class="pbanner" src="'+asset('ui/banner_'+poolKind)+'" alt="" draggable="false">':silhouette(0))+'</div></div>';
+ if(page==='招募神將')body='<div class="poolhall"><div><div class="eqtabs">'+[['hero','神將池'],['gear','武裝池（武器・裝備）']].map(([k,l])=>'<button data-act="poolkind" data-value="'+k+'" aria-current="'+(k===poolKind)+'">'+l+'</button>').join('')+'</div><h3>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+'</h3><p>試抽券 '+data.tickets+' 張</p><div class="actions">'+pools.map(([name],i)=>'<button data-act="pool" data-value="'+i+'" aria-current="'+(i===pool)+'">'+name+'</button>').join('')+'</div><p>普通 '+pools[pool][1][0]+'% · 稀有 '+pools[pool][1][1]+'% · 封神級 '+pools[pool][1][2]+'%</p><div class="actions pullrow">'+FS.recruit.pulls.map(([n,c,l])=>'<button data-act="pull" data-value="'+n+'" '+(data.tickets>=c?'':'disabled')+'>'+l+' · '+c+' 張'+(n===10?'（9 折）':'')+'</button>').join('')+'</div><p class="result" role="status">'+result+'</p></div><div class="poolart" aria-hidden="true">'+(asset('ui/banner_'+poolKind)?'<img class="pbanner" src="'+asset('ui/banner_'+poolKind)+'" alt="" draggable="false">':silhouette(0))+'</div></div>';
  if(page==='商店')body=shopPage();
  if(page==='好友')body='<p>好友搜尋與邀請需連線服務。</p>';
  if(page==='飛鴿傳書')body=data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>';
@@ -320,6 +320,7 @@ app.onclick=event=>{
  if(act==='back')battle=false;
  if(act==='sel')sel=Number(value);
  if(act==='shoptab'){shopTab=Number(value);shopMsg=''}
+ if(act==='exch'){const n=Number(value),c=n*FS.recruit.ticketStone;if((data.stone||0)>=c){data.stone-=c;data.tickets+=n;shopMsg='兌換成功：花費 '+c.toLocaleString('en-US')+' 靈石，獲得招募券 ×'+n+'。'}else shopMsg='靈石不足，需要 '+c.toLocaleString('en-US')+' 靈石。'}
  if(act==='ad'){if(adLeft()>0){data.ad.n++;data.stone=(data.stone||0)+100;shopMsg='看廣告獲得 100 靈石（今日剩 '+adLeft()+' 次；目前是測試版，尚未接上真正的廣告）。'}else shopMsg='今日看廣告次數已用完，明天再來。'}
  if(act==='buy'){const it=FS.shop[shopTab].items[Number(value)];shopMsg=it.amount?(TEST_FREE_TOPUP?(data.stone=(data.stone||0)+it.amount,'測試期間免費入帳 '+it.amount.toLocaleString('en-US')+' 靈石（原價 '+it.price+'），目前靈石 '+data.stone.toLocaleString('en-US')+'。'):'購買 '+it.amount.toLocaleString('en-US')+' 靈石（'+it.price+'）尚未開放。'):'「'+it.name+'」尚未開放。'}
  if(act==='nav')shopMsg='';
@@ -335,23 +336,32 @@ app.onclick=event=>{
   else if(data.team.length<10&&data.owned[i])data.team.push(i);
  }
  if(act==='claim'&&!data.claimed){data.claimed=true;data.tickets+=5}
- if(act==='pull'&&data.tickets>0){
-  const [common,rare]=pools[pool][1],roll=Math.random()*100;
-  const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
-  if(poolKind==='hero'){
-   const candidates=roster.map((r,i)=>r[3]===rank?i:-1).filter(i=>i>=0);
-   const i=candidates[Math.floor(Math.random()*candidates.length)];
-   const duplicate=!!data.owned[i];
-   data.owned[i]=(data.owned[i]||0)+1;data.tickets--;
-   result='招募到 '+roster[i][0]+' · '+rank+(duplicate?'（持有數 +1）':'（新神將）');
-  }else{
-   // 武裝池：先等機率決定武器或裝備，再依稀有度抽一件（含專武、專屬裝備）
-   const kind=Math.random()<.5?'weapon':'armor';
-   const cands=FS.equipment[kind].filter(x=>x.rank===rank);
-   const it=cands[Math.floor(Math.random()*cands.length)];
-   const duplicate=!!data.gear[it.id];
-   data.gear[it.id]=(data.gear[it.id]||0)+1;data.tickets--;
-   result='招募到 '+it.name+' · '+rank+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）');
+ if(act==='pull'){
+  const pc=FS.recruit.pulls.find(p=>p[0]===Number(value));
+  if(pc&&data.tickets>=pc[1]){
+   data.tickets-=pc[1];const out=[];
+   for(let k=0;k<pc[0];k++){
+    const [common,rare]=pools[pool][1],roll=Math.random()*100;
+    const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
+    if(poolKind==='hero'){
+     const candidates=roster.map((r,i)=>r[3]===rank?i:-1).filter(i=>i>=0);
+     const i=candidates[Math.floor(Math.random()*candidates.length)];
+     const duplicate=!!data.owned[i];
+     data.owned[i]=(data.owned[i]||0)+1;
+     out.push({n:roster[i][0],r:rank,nw:!duplicate,txt:roster[i][0]+' · '+rank+(duplicate?'（持有數 +1）':'（新神將）')});
+    }else{
+     // 武裝池：先等機率決定武器或裝備，再依稀有度抽一件（含專武、專屬裝備）
+     const kind=Math.random()<.5?'weapon':'armor';
+     const cands=FS.equipment[kind].filter(x=>x.rank===rank);
+     const it=cands[Math.floor(Math.random()*cands.length)];
+     const duplicate=!!data.gear[it.id];
+     data.gear[it.id]=(data.gear[it.id]||0)+1;
+     out.push({n:it.name,r:rank,nw:!duplicate,txt:it.name+' · '+rank+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
+    }
+   }
+   if(out.length===1)result='招募到 '+out[0].txt;
+   else{const ord={'封神級':0,'稀有':1,'普通':2},g={};out.forEach(e=>{const k=e.n+'|'+e.r;(g[k]=g[k]||{n:e.n,r:e.r,c:0,nw:false});g[k].c++;if(e.nw)g[k].nw=true});
+    result='招募 '+pc[2]+'：'+Object.values(g).sort((a,b)=>ord[a.r]-ord[b.r]).map(e=>e.n+'（'+e.r+'）'+(e.c>1?'×'+e.c:'')+(e.nw?' 新':'')).join('、')}
   }
  }
  save();draw();
