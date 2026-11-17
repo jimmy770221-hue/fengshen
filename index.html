@@ -152,6 +152,9 @@ function audPanel(){return '<p>背景音樂 · <button data-act="audtoggle">'+(a
 function load(){
  try{data=JSON.parse(localStorage.getItem(saveKey+server))||defaults()}catch{data=defaults()}
  if(!data.gear)data.gear={};
+ // 截教（敵方）角色玩家不能持有：舊存檔裡若有，一併移除
+ if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k]||roster[k][2]!=='闡教')delete data.owned[k];}
+ if(Array.isArray(data.team)){data.team=data.team.filter(i=>data.owned&&data.owned[i]);if(!data.team.length)data.team=Object.keys(data.owned||{}).map(Number).slice(0,3);}
 }
 // 量出 iPhone 安全區（動態島、Home 條）的實際像素，給滿版的對戰畫面使用
 function safeInsets(){const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';document.body.appendChild(d);const c=getComputedStyle(d),r={t:parseFloat(c.paddingTop)||0,r:parseFloat(c.paddingRight)||0,b:parseFloat(c.paddingBottom)||0,l:parseFloat(c.paddingLeft)||0};d.remove();return r}
@@ -370,7 +373,7 @@ app.onclick=event=>{
     const [common,rare]=pools[pool][1],roll=Math.random()*100;
     const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
     if(poolKind==='hero'){
-     const candidates=roster.map((r,i)=>r[3]===rank?i:-1).filter(i=>i>=0);
+     const candidates=roster.map((r,i)=>r[3]===rank&&r[2]==='闡教'?i:-1).filter(i=>i>=0); // 只抽得到闡教（我方）角色
      const i=candidates[Math.floor(Math.random()*candidates.length)];
      const duplicate=!!data.owned[i];
      data.owned[i]=(data.owned[i]||0)+1;
