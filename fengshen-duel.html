@@ -5,12 +5,11 @@
 #config{margin-top:12px}summary{cursor:pointer;padding:8px}#choices{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}#choices [aria-pressed="true"]{border-color:#efd38f;background:#514429}main{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));padding-bottom:max(8px,env(safe-area-inset-bottom))}button{background:linear-gradient(#654432,#37251f);border-color:#be9152}.deck button{border-bottom-width:3px}canvas{border-color:#c99856}
 /* ── 全螢幕對戰版面：上＝戰場（左上暫停、右上狀態），下＝神術小圖示列＋武將卡片列 ── */
 html,body{height:100%;overflow:hidden}
-main{--sl:env(safe-area-inset-left);--sr:env(safe-area-inset-right);--sb:env(safe-area-inset-bottom);position:fixed;inset:0;max-width:none;margin:0;padding:0 max(0px,var(--sr)) var(--sb) max(0px,var(--sl));display:flex;flex-direction:column;background:#10151e}
-html.embed main{--sl:0px;--sr:0px;--sb:0px}
+main{--sl:env(safe-area-inset-left);--sr:env(safe-area-inset-right);--sb:env(safe-area-inset-bottom);position:fixed;inset:0;max-width:none;margin:0;padding:0;display:block;background:#10151e}
 main>header{display:none}
-.field{position:relative;flex:1 1 auto;min-height:0;background:linear-gradient(#1b2740,#10151e)}
-.field canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border:0;border-radius:0;background:transparent}
-#statusRow{position:absolute;left:8px;right:8px;top:max(6px,env(safe-area-inset-top));margin:0;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;pointer-events:none}
+.field{position:absolute;inset:0;background:linear-gradient(#1b2740,#10151e)}
+.field canvas{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:fill;border:0;border-radius:0;background:transparent}
+#statusRow{position:absolute;left:calc(var(--sl) + 8px);right:calc(var(--sr) + 8px);top:max(6px,env(safe-area-inset-top));margin:0;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;pointer-events:none}
 #statusRow>*{pointer-events:auto}
 #statusRow #pause{order:-1;min-height:40px;padding:4px 14px;font-size:14px;background:linear-gradient(#654432,#37251f);opacity:.95}
 #statusRow>span{font-size:13px;background:#10151ecc;border-radius:8px;padding:3px 8px;white-space:nowrap}
@@ -18,16 +17,16 @@ main>header{display:none}
 #statusRow progress{width:clamp(60px,14vw,140px)}
 #statusRow #base{margin-left:auto}
 #pausemenu{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:#000a}#pausemenu[hidden]{display:none}.pbox{display:flex;flex-direction:column;gap:8px;min-width:min(240px,80%);padding:14px 18px;background:#161d2b;border:2px solid #c99856;border-radius:12px}.pbox b{text-align:center;font-size:20px;color:#ffdda1}.pbox button{min-height:44px;font-size:16px}
-#armyRow{position:absolute;right:8px;top:calc(max(6px,env(safe-area-inset-top)) + 48px);margin:0;display:flex;gap:8px;font-size:12px;background:#10151ecc;border-radius:8px;padding:2px 8px}
-#status{position:absolute;left:50%;transform:translateX(-50%);bottom:6px;margin:0;min-height:0;font-size:13px;background:#10151ecc;border-radius:8px;padding:2px 10px;white-space:nowrap}
+#armyRow{position:absolute;right:calc(var(--sr) + 8px);top:calc(max(6px,env(safe-area-inset-top)) + 48px);margin:0;display:flex;gap:8px;font-size:12px;background:#10151ecc;border-radius:8px;padding:2px 8px}
+#status{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(6px,env(safe-area-inset-top)) + 98px);margin:0;min-height:0;font-size:13px;background:#10151ecc;border-radius:8px;padding:2px 10px;white-space:nowrap}
 #status:empty{display:none}
-.bar{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;padding:4px 8px 6px;background:#161d2b;border-top:2px solid #c99856}
+.bar{position:absolute;left:var(--sl);right:var(--sr);bottom:calc(var(--sb) + 2px);z-index:2;display:flex;flex-direction:column;gap:4px;padding:0 8px;background:none;border:0;pointer-events:none}.bar button{pointer-events:auto}.bar #deck{filter:drop-shadow(0 3px 5px #000a)}
 .bar .deck{margin:0;display:flex;gap:6px;justify-content:center;grid-template-columns:none}
-.bar #skills{gap:5px}
+.bar #skills{gap:5px;position:fixed;top:calc(max(6px,env(safe-area-inset-top)) + 50px);left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - var(--sl) - var(--sr) - 16px)}
 .bar #skills button{flex:0 0 auto;min-width:64px;min-height:36px;padding:2px 8px;font-size:12px;display:flex;align-items:center;gap:4px;border-bottom-width:2px;border-radius:18px}
 .bar #skills .dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid #1c1426;flex:none}
 .bar #deck{overflow-x:auto;justify-content:safe center;gap:5px;align-items:flex-end}
-.bar #deck>*{flex:0 0 auto;width:min(calc(25vh * .714),calc((100vw - 76px) / 11),96px);aspect-ratio:5/7;min-height:0}
+.bar #deck>*{flex:0 0 auto;width:min(calc(21vh * .714),calc((100vw - var(--sl) - var(--sr) - 76px) / 11),96px);aspect-ratio:5/7;min-height:0}
 .bar #deck button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;padding:3px 2px;line-height:1.15;border:2px solid #d9b877;border-radius:8px;overflow:hidden}
 .bar #deck button .face{display:block;flex:1 1 auto;min-height:0;width:100%;border-radius:5px;border:1px solid #1c1426}
 .bar #deck button .face.up{background:#8a5a2b;color:#ffe6b3;font-style:normal;display:grid;place-items:center;font-size:20px}
@@ -70,9 +69,13 @@ let DIFF=Object.assign({firstSpawn:3,startGap:3.25,minGap:1.65,gapSec:75,hp:.88,
 let loadout=[1,2,9,10,11],lobbySkills=false;
 {const sp=new URLSearchParams(location.search).get('skills');
  if(sp&&/^\d+(,\d+){4}$/.test(sp)){const l=[...new Set(sp.split(',').map(Number))];if(l.length===5&&l.every(i=>i<FS.skills.length)){loadout=l;lobbySkills=true}}}
-const floor=272,WORLD=2000,VIEW=1000,left=85,right=WORLD-85,maxHP=700;
+let VIEW=1000;const floor=272,WORLD=2000,left=85,right=WORLD-85,maxHP=700;
 let cam=0; // 橫向卷軸：鏡頭左緣的世界座標，開場在己方（左）基地
-const camMax=WORLD-VIEW;
+let camMax=WORLD-VIEW;
+// 滿版：畫布視野寬度依螢幕比例決定（高度固定 365），鏡頭範圍隨之調整；安全區（動態島、Home 條）由大廳量好傳進來
+function applySafe(){try{const v=parent.safeInsets&&parent.safeInsets();if(v){const m=document.querySelector('main');m.style.setProperty('--sl',v.l+'px');m.style.setProperty('--sr',v.r+'px');m.style.setProperty('--sb',v.b+'px')}}catch(e){}}
+function fitView(){applySafe();const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const w=Math.max(640,Math.min(WORLD,Math.round(365*r.width/r.height)));if(w!==VIEW||canvas.width!==w){VIEW=w;canvas.width=w}camMax=WORLD-VIEW;cam=Math.max(0,Math.min(camMax,cam))}
+addEventListener('resize',fitView);addEventListener('orientationchange',()=>setTimeout(fitView,200));
 let s, last=0;
 const press=(b,fn)=>{b.onpointerdown=e=>{e.preventDefault();fn()};b.onclick=e=>{if(e.detail===0)fn()}};
 const setHTML=(b,m)=>{if(b._m!==m){b._m=m;b.innerHTML=m}};
@@ -91,7 +94,7 @@ const skillButtons=Array.from({length:slotCount},(_,slot)=>{
 {let drag=null;
  canvas.style.touchAction='none';
  canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,cam};canvas.setPointerCapture(e.pointerId)});
- canvas.addEventListener('pointermove',e=>{if(!drag)return;const r=canvas.getBoundingClientRect(),sc=Math.min(r.width/VIEW,r.height/365);cam=Math.max(0,Math.min(camMax,drag.cam-(e.clientX-drag.x)/sc))});
+ canvas.addEventListener('pointermove',e=>{if(!drag)return;const r=canvas.getBoundingClientRect(),sc=r.height/365;cam=Math.max(0,Math.min(camMax,drag.cam-(e.clientX-drag.x)/sc))});
  const end=()=>{drag=null};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);}
 const allies=()=>s.actors.filter(a=>a.side===0&&a.hp>0);
 const enemies=()=>s.actors.filter(a=>a.side===1&&a.hp>0);
@@ -306,20 +309,20 @@ function draw(){
  }
  ctx.restore();
  if(s.countdown>0){
-  ctx.fillStyle='#ffe6b3';ctx.textAlign='center';ctx.font='bold 120px system-ui';ctx.lineWidth=8;ctx.strokeStyle='#151c2c';ctx.strokeText(String(Math.ceil(s.countdown)),500,215);ctx.fillText(String(Math.ceil(s.countdown)),500,215);
+  ctx.fillStyle='#ffe6b3';ctx.textAlign='center';ctx.font='bold 120px system-ui';ctx.lineWidth=8;ctx.strokeStyle='#151c2c';ctx.strokeText(String(Math.ceil(s.countdown)),VIEW/2,215);ctx.fillText(String(Math.ceil(s.countdown)),VIEW/2,215);
  }else if(!s.started||s.over||s.paused){
-  ctx.fillStyle='#151c2ccc';ctx.fillRect(325,121,350,67);ctx.fillStyle='#ffe6b3';ctx.textAlign='center';ctx.font='bold 30px system-ui';ctx.fillText(s.over||(s.paused?'暫停':'部署武將'),500,165);
+  ctx.fillStyle='#151c2ccc';ctx.fillRect(VIEW/2-175,121,350,67);ctx.fillStyle='#ffe6b3';ctx.textAlign='center';ctx.font='bold 30px system-ui';ctx.fillText(s.over||(s.paused?'暫停':'部署武將'),VIEW/2,165);
  }
 }
 function bar(x,y,width,value,color){ctx.fillStyle='#202839';ctx.fillRect(x,y,width,5);ctx.fillStyle=color;ctx.fillRect(x,y,width*Math.max(0,Math.min(1,value)),5);}
 let lastUI=0;
 function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm.hidden&&!loadingArt){s.countdown-=dt;if(s.countdown<=0){s.countdown=0;s.started=true;s.notice='開戰！';s.noticeTime=1.2;ui()}}update(dt);last=t;frameDt=s.paused||!s.started||s.over?0:dt;draw();if(t-lastUI>100){ui();lastUI=t;}requestAnimationFrame(frame);}
 let loadingArt=true;
-{const bb=window.asset&&window.asset('scene/battle_bar');if(bb){const b=document.querySelector('.bar');if(b){b.style.background='url('+bb+') center/100% 100% no-repeat';b.style.borderTop='0';window.assetImg&&window.assetImg('scene/battle_bar')}}}
+// 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);
 const list=[battlefield,baseImg[0],baseImg[1]];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
 const ok=i=>!i||(i.complete&&(i.naturalWidth||!i.src));
 let done=false;const fin=()=>{if(done)return;done=true;loadingArt=false;ov.remove()};
 const t0=performance.now();(function chk(){if(list.every(ok)||performance.now()-t0>5000)fin();else setTimeout(chk,60)})();})();
-reset();requestAnimationFrame(frame);
+fitView();reset();requestAnimationFrame(frame);
 </script>
