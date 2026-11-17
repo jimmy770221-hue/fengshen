@@ -81,7 +81,7 @@ addEventListener('resize',fitView);addEventListener('orientationchange',()=>setT
 let s, last=0;
 const press=(b,fn)=>{b.onpointerdown=e=>{e.preventDefault();fn()};b.onclick=e=>{if(e.detail===0)fn()}};
 const setHTML=(b,m)=>{if(b._m!==m){b._m=m;b.innerHTML=m}};
-function reset(){cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3};ui();}
+function reset(){cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3,rings:[],dying:[]};ui();}
 const buttons=units.map((u,i)=>{
  const button=document.createElement('button');press(button,()=>deploy(i));el('deck').append(button);return button;
 });
@@ -203,7 +203,7 @@ function update(dt){
   }
   if(near||atBase){
    if(a.wait>0)continue;
-   a.wait=a.period;a.swing=.24;
+   a.wait=a.period;a.swing=.24;a.aim=near?target.x:enemyBase;
    if(near){
     const victims=a.splash?opponents.filter(b=>Math.abs(b.x-target.x)<=a.splash):[target];
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
@@ -216,6 +216,7 @@ function update(dt){
   }
  }
  for(const a of s.actors)if(a.hp<=0&&a.side===1)s.energy=Math.min(s.cap,s.energy+Math.round((a.cost||20)*KILL_RATIO)); // 擊殺敵人獲得靈力
+ for(const a of s.actors)if(a.hp<=0&&a.spr&&a.spr.ready())startDying(a);
  s.actors=s.actors.filter(a=>a.hp>0);s.fx=s.fx.filter(f=>(f.life-=dt)>0);
 }
 function ui(){
@@ -256,10 +257,48 @@ function charSprite(a){
  const p=a.spr,moving=Math.abs(a.x-a.px)>.01;
  a.px=a.x;
  p.setMoving(moving,a.speed);
+ p.onEvent=e=>{if(e.name==='release')launchRing(a,e.offset);};
+ p.tint=a.hit>.04?1:0; // 受擊紅閃約 140 毫秒
  if(a.hit>0){if(!a.hitOn){a.hitOn=true;p.play('hit');}}else a.hitOn=false;
  if(a.swing>0){if(!a.swingOn){a.swingOn=true;p.play('cast');}}else a.swingOn=false;
  p.update(frameDt);
  return p;
+}
+// 乾坤圈：攻擊動畫放圈那一格才出現，只畫一枚；去程對準目標、回程只是動畫（傷害仍由原本的攻擊判定結算）
+const RING_OUT=.16,RING_BACK=.2,ringImg=window.assetImg?window.assetImg('weapon/fx_qiankunquan'):null,soulImg=window.assetImg?window.assetImg('fx/fx_soul'):null;
+function launchRing(a,off){
+ const dir=a.side?-1:1,x0=a.x+dir*off[0],y0=floor+off[1],tx=a.aim==null?a.x+dir*a.range:a.aim;
+ s.rings.push({a,dir,x0,y0,tx,t:0,spin:0});
+}
+// 倒下：HP 歸零後立刻停掉原本動作，改播倒下一次並停在最後一格，再淡出並升起靈魂
+function startDying(a){
+ const p=a.spr;p.onEvent=null;p.tint=0;p.play('fall');
+ s.dying.push({p,x:a.x,side:a.side,t:0});
+}
+function updateFx(dt){
+ for(const r of s.rings){r.t+=dt;r.spin+=dt*18;}
+ s.rings=s.rings.filter(r=>r.t<RING_OUT+RING_BACK);
+ for(const d of s.dying){d.t+=dt;d.p.update(dt);}
+ s.dying=s.dying.filter(d=>d.t<1.5);
+}
+function drawDying(){
+ for(const d of s.dying){
+  const alpha=d.t<.9?1:Math.max(0,1-(d.t-.9)/.5);
+  ctx.save();ctx.translate(d.x,floor);ctx.scale(d.side?-1:1,1);
+  d.p.draw(ctx,0,0,{alpha});ctx.restore();
+  if(soulImg&&soulImg.complete&&soulImg.naturalWidth&&d.t>.25){
+   const u=Math.min(1,(d.t-.25)/.7);ctx.save();ctx.globalAlpha=(1-u)*Math.min(1,u*6);
+   ctx.drawImage(soulImg,d.x-18,floor-34-u*46,36,36);ctx.restore();
+  }
+ }
+}
+function drawRings(){
+ if(!ringImg||!ringImg.complete||!ringImg.naturalWidth)return;
+ for(const r of s.rings){
+  const out=r.t<RING_OUT,u=out?r.t/RING_OUT:(r.t-RING_OUT)/RING_BACK;
+  const x=out?r.x0+(r.tx-r.x0)*u:r.tx+(r.x0-r.tx)*u;
+  ctx.save();ctx.translate(x,r.y0);ctx.rotate(r.spin);ctx.drawImage(ringImg,-17,-17,34,34);ctx.restore();
+ }
 }
 function draw(){
  ctx.save();ctx.translate(-Math.round(cam),0);
@@ -293,7 +332,7 @@ function draw(){
   const spr=a.art?charSprite(a):null;
   const ci=charImg(a.id),hasImg=ci&&ci.complete&&ci.naturalWidth;
   if(spr&&spr.ready()){
-   spr.draw(ctx,0,0);
+   spr.draw(ctx,0,0,{tint:spr.tint});
   }else if(hasImg){
    ctx.drawImage(ci,-CH*.4,-CH+4,CH*.8,CH);
   }else{
@@ -305,10 +344,12 @@ function draw(){
   }
   ctx.restore();if(a.stun||a.burn||a.poison||a.slowTime||(a.side===0&&(s.haste||s.rage))){ctx.fillStyle=a.stun?"#b4e9ff":a.poison?"#b5ea72":a.burn||s.rage&&a.side===0?"#ff9868":"#b7abef";ctx.beginPath();ctx.arc(a.x,y-((a.id&&charImg(a.id)&&charImg(a.id).naturalWidth)?CH+8:72),4,0,7);ctx.fill();}bar(a.x-16,y-((a.id&&charImg(a.id)&&charImg(a.id).naturalWidth)?CH+1:65),32,a.hp/a.maxHP,a.side?'#ee90a8':'#9adcb0');
  }
+ drawDying();
  for(const f of s.fx){
   ctx.save();ctx.globalAlpha=f.life/.28;ctx.strokeStyle=f.color;ctx.lineWidth=f.burst?7:4;ctx.beginPath();ctx.moveTo(f.x,floor-39);ctx.lineTo(f.to,floor-29);ctx.stroke();
   if(f.burst){ctx.beginPath();ctx.arc(f.to,floor-22,10+(.28-f.life)*70,0,7);ctx.stroke();}ctx.restore();
  }
+ drawRings();
  ctx.restore();
  if(s.countdown>0){
   ctx.fillStyle='#ffe6b3';ctx.textAlign='center';ctx.font='bold 120px system-ui';ctx.lineWidth=8;ctx.strokeStyle='#151c2c';ctx.strokeText(String(Math.ceil(s.countdown)),VIEW/2,215);ctx.fillText(String(Math.ceil(s.countdown)),VIEW/2,215);
@@ -318,11 +359,11 @@ function draw(){
 }
 function bar(x,y,width,value,color){ctx.fillStyle='#202839';ctx.fillRect(x,y,width,5);ctx.fillStyle=color;ctx.fillRect(x,y,width*Math.max(0,Math.min(1,value)),5);}
 let lastUI=0;
-function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm.hidden&&!loadingArt){s.countdown-=dt;if(s.countdown<=0){s.countdown=0;s.started=true;s.notice='開戰！';s.noticeTime=1.2;ui()}}update(dt);last=t;frameDt=s.paused||!s.started||s.over?0:dt;draw();if(t-lastUI>100){ui();lastUI=t;}requestAnimationFrame(frame);}
+function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm.hidden&&!loadingArt){s.countdown-=dt;if(s.countdown<=0){s.countdown=0;s.started=true;s.notice='開戰！';s.noticeTime=1.2;ui()}}update(dt);last=t;frameDt=s.paused||!s.started||s.over?0:dt;updateFx(frameDt);draw();if(t-lastUI>100){ui();lastUI=t;}requestAnimationFrame(frame);}
 let loadingArt=true;
 // 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);
-const list=[battlefield,baseImg[0],baseImg[1]];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
+const list=[battlefield,baseImg[0],baseImg[1],ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
 const ok=i=>!i||(i.complete&&(i.naturalWidth||!i.src));
 let done=false;const fin=()=>{if(done)return;done=true;loadingArt=false;ov.remove()};
 const t0=performance.now();(function chk(){if(list.every(ok)||performance.now()-t0>5000)fin();else setTimeout(chk,60)})();})();

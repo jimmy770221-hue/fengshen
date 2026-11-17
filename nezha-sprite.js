@@ -6,18 +6,24 @@
   'use strict';
 
   var DEFAULT = {
-    image: 'nezha-idle-sheet.png',
+    // 四張圖集（各 2×2）；key 以 window.asset() 解析成實際網址，找不到時直接當網址用
+    images: { move: 'char/nezha/sheet-move', blink: 'char/nezha/sheet-move-blink',
+              attack: 'char/nezha/sheet-attack', fall: 'char/nezha/sheet-fall' },
+    image: 'move',                   // 預設圖集（備援與就緒判斷用）
     grid: [2, 2],                    // 欄 × 列（格號由左到右、由上到下）
     anchor: [0.5, 0.94],             // 腳底錨點（格內比例；翻轉以此為軸）
     shadow: [0.22, 0.05],            // 地面陰影半徑（格寬、格高的比例）
+    blink: { every: 3.2, dur: 0.09, image: 'blink' },   // 待機／移動時約每 3.2 秒眨眼 90 毫秒（同格號換圖）
     anims: {
-      // 待機：沿用首頁原 CSS 動畫的時間軸，2.5 秒一輪（格 2 為眨眼）
-      idle: { steps: [[0, 1.125], [1, 0.325], [2, 0.125], [3, 0.375], [0, 0.55]], loop: true, still: 0 },
-      // 以下三個尚無專用圖集：暫用待機格 + fx 程式效果；之後換成專用格即可，其餘程式不用動
-      move: { steps: [[0, 0.16], [1, 0.16], [3, 0.16], [1, 0.16]], loop: true, still: 0, fx: 'run', refSpeed: 50 },
-      cast: { steps: [[1, 0.08], [3, 0.08], [0, 0.08]], loop: false, still: 1, prio: 1, fx: 'cast',
-              events: { 0: { name: 'cast', at: [0.78, 0.2] } } },        // at＝施法點（格內比例）
-      hit:  { steps: [[2, 0.09], [2, 0.09]], loop: false, still: 2, prio: 2, restart: true, fx: 'hit' }
+      // 待機：移動圖集第 0 格定格（眨眼另計）
+      idle: { steps: [[0, 1]], loop: true, still: 0, image: 'move' },
+      // 移動：4 格滑行，每格 160 毫秒
+      move: { steps: [[0, 0.16], [1, 0.16], [2, 0.16], [3, 0.16]], loop: true, still: 0, image: 'move', refSpeed: 50 },
+      // 攻擊：90／75／270／115 毫秒；第 2 格（伸手放圈）送出「release」事件，at＝手的位置（格內比例）
+      cast: { steps: [[0, 0.09], [1, 0.075], [2, 0.27], [3, 0.115]], loop: false, still: 0, prio: 1, image: 'attack',
+              events: { 2: { name: 'release', at: [0.84, 0.51] } } },
+      // 倒下：90／100／110／220 毫秒，只播一次，播完停在最後一格
+      fall: { steps: [[0, 0.09], [1, 0.10], [2, 0.11], [3, 0.22]], loop: false, still: 3, prio: 9, image: 'fall', hold: true }
     }
   };
 
@@ -31,7 +37,9 @@
   }
 
   var cache = {};
-  function loadImage(src) {
+  function resolve(key) { return (global.asset && global.asset(key)) || key; }
+  function loadImage(key) {
+    var src = resolve(key);
     if (cache[src]) return cache[src];
     var e = cache[src] = { img: new Image(), ok: false, failed: false };
     e.img.decoding = 'async';
@@ -80,7 +88,10 @@
     this.t = 0;
     this.rate = 1;
     this.one = null;
-    this.asset = loadImage(this.m.image);
+    this.bt = Math.random() * 3;           // 眨眼用的獨立時鐘（不隨動畫重置）
+    this.assets = {};
+    for (var k in this.m.images) this.assets[k] = loadImage(this.m.images[k]);
+    this.asset = this.assets[this.m.image];
   }
   var P = NezhaSprite.prototype;
 
@@ -95,6 +106,7 @@
   P.play = function (name) {
     var a = this.m.anims[name];
     if (!a || a.loop) return false;
+    if (this.one && this.one.done) return false;
     var cur = this.one && this.m.anims[this.one.name];
     if (cur && (a.prio || 0) < (cur.prio || 0)) return false;
     if (cur && name === this.one.name && !a.restart) return false;
@@ -126,7 +138,9 @@
   // 時間驅動：每個畫面呼叫一次，dt 單位為秒。事件與圖片是否載入無關
   P.update = function (dt) {
     dt = Math.min(Math.max(dt || 0, 0), 0.1);
+    this.bt += dt;
     var one = this.one;
+    if (one && one.done) return;                         // 已定格（倒下）
     if (!one) { this.t += dt * this.rate; return; }
     var a = this.m.anims[one.name];
     one.t += dt;
@@ -135,7 +149,10 @@
       if (this.one !== one) return;                     // 事件回呼中已改播其他動畫
       if (!one.fired[k] && (done || idx >= +k)) this._fire(a, one, k);
     }
-    if (done && this.one === one) this._finish(false);
+    if (done && this.one === one) {
+      if (a.hold) { one.done = true; if (this.onEnd) this.onEnd({ name: one.name, interrupted: false }); }
+      else this._finish(false);
+    }
   };
 
   P._pose = function () {
@@ -143,12 +160,14 @@
     var rm = this.reduceMotion === undefined ? reduced : this.reduceMotion;
     var cell = rm ? a.still : a.steps[stepAt(a, t)][0];
     var u = a.loop ? (t % a.total) / a.total : Math.min(1, t / a.total);
-    return { name: name, cell: cell, u: u, fx: rm ? null : a.fx };
+    var img = a.image || this.m.image, b = this.m.blink;
+    if (!this.one && b && !rm && (this.bt % b.every) < b.dur) img = b.image;
+    return { name: name, cell: cell, u: u, fx: rm ? null : a.fx, img: img };
   };
 
-  P._usable = function () {
-    var A = this.asset;
-    return !A.failed && A.ok && A.img.naturalWidth > 0;
+  P._usable = function (key) {
+    var A = key ? this.assets[key] : this.asset;
+    return !!A && !A.failed && A.ok && A.img.naturalWidth > 0;
   };
 
   // 目前一格畫出的寬高與倍率（圖未載入時用備援尺寸）
@@ -172,8 +191,15 @@
     return r;
   }
 
+  var _tc = null;
+  function tintCanvas(w, h) {
+    if (!_tc) _tc = document.createElement('canvas');
+    if (_tc.width !== w || _tc.height !== h) { _tc.width = w; _tc.height = h; }
+    return _tc;
+  }
+
   // (x, y)＝腳底位置（畫布座標）。o 可覆寫 scale、facing、alpha
-  P.draw = function (ctx, x, y, o) {
+  P.draw = function (ctx, x, y, o) {   // o.tint（0～1）＝受擊紅閃強度
     o = o || {};
     var face = (o.facing || this.facing) < 0 ? -1 : 1, p = this._pose(), d = this._dims(o), an = this.m.anchor;
     ctx.save();
@@ -192,13 +218,24 @@
     if (f.rot) ctx.rotate(f.rot);
     if (f.sc !== 1) ctx.scale(f.sc, f.sc);
     ctx.globalAlpha = baseAlpha * f.alpha;
-    if (this._usable()) {
+    var cur = this.assets[p.img];
+    if (this._usable() && this._usable(p.img)) {
       var g = this.m.grid, ins = 1;   // 來源矩形內縮 1px，避免縮放時串到相鄰格
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(this.asset.img,
-        (p.cell % g[0]) * d.cw + ins, Math.floor(p.cell / g[0]) * d.ch + ins, d.cw - 2 * ins, d.ch - 2 * ins,
-        (-an[0] * d.cw + ins) * d.s, (-an[1] * d.ch + ins) * d.s, (d.cw - 2 * ins) * d.s, (d.ch - 2 * ins) * d.s);
+      var sx = (p.cell % g[0]) * d.cw + ins, sy = Math.floor(p.cell / g[0]) * d.ch + ins, sw = d.cw - 2 * ins, sh = d.ch - 2 * ins;
+      var dx0 = (-an[0] * d.cw + ins) * d.s, dy0 = (-an[1] * d.ch + ins) * d.s, dw = sw * d.s, dh = sh * d.s;
+      ctx.drawImage(cur.img, sx, sy, sw, sh, dx0, dy0, dw, dh);
+      if (o.tint > 0) {   // 受擊紅閃：同一格再疊一層只染在角色身上的紅色
+        var tc = tintCanvas(sw, sh), tx = tc.getContext('2d');
+        tx.clearRect(0, 0, sw, sh);
+        tx.globalCompositeOperation = 'source-over';
+        tx.drawImage(cur.img, sx, sy, sw, sh, 0, 0, sw, sh);
+        tx.globalCompositeOperation = 'source-atop';
+        tx.fillStyle = 'rgba(255,40,30,1)'; tx.fillRect(0, 0, sw, sh);
+        ctx.globalAlpha = baseAlpha * f.alpha * Math.min(1, o.tint);
+        ctx.drawImage(tc, 0, 0, sw, sh, dx0, dy0, dw, dh);
+      }
     } else {
       this._fallback(ctx, p, d.h / 170);
     }
@@ -243,6 +280,12 @@
     return { stop: function () { stopped = true; cancelAnimationFrame(raf); } };
   };
 
+  // 預先載入所有圖集，回傳 Image 陣列（讓載入畫面可以等它們）
+  NezhaSprite.preload = function (manifest) {
+    var m = manifest || DEFAULT, out = [];
+    for (var k in m.images) out.push(loadImage(m.images[k]).img);
+    return out;
+  };
   NezhaSprite.DEFAULT = DEFAULT;
   NezhaSprite.cellAt = cellAt;
   global.NezhaSprite = NezhaSprite;

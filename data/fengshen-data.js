@@ -16,7 +16,7 @@ window.FS={
  pools:[['一般池',[80,18,2]],['神武池',[55,38,7]],['封神池',[50,35,15]]],
  /* 劇情試戰角色。編號＝順序（0～8），隊伍參數與存檔都用這個編號；0～4 為闡教（我方可用），5～8 為截教（敵方出兵） */
  characters:[
-  {id:'nezha',reach:'中程',name:'哪吒',faction:'闡教',rank:'普通',role:'火焰群攻',art:null,
+  {id:'nezha',reach:'中程',name:'哪吒',faction:'闡教',rank:'普通',role:'中距離・乾坤圈投擲',art:{height:104},
    stats:{cost:32,hp:92,damage:28,range:142,speed:54,period:1.15,cd:4,color:'#f88667',splash:49}},
   {id:'yangjian',reach:'遠程',name:'楊戩',faction:'闡教',rank:'稀有',role:'遠程單體',art:null,
    stats:{cost:34,hp:111,damage:49,range:184,speed:48,period:1.42,cd:4.7,color:'#aabdf3'}},
