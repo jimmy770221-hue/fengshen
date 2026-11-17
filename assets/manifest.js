@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "2de32f8c",
+ "v": "912183b5",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -12,7 +12,7 @@ window.ASSETS={
   "ui/icon_gold": "assets/ui/icon_gold.91dc2086.webp",
   "ui/icon_stone": "assets/ui/icon_stone.8cfbbc9b.webp",
   "ui/icon_ticket": "assets/ui/icon_ticket.e6ba93ba.webp",
-  "ui/logo": "assets/ui/logo.4749688c.webp",
+  "ui/logo": "assets/ui/logo.169da123.webp",
   "ui/menu_dock": "assets/ui/menu_dock.a2bfa61a.webp",
   "ui/menu_friend": "assets/ui/menu_friend.c12b7c5b.webp",
   "ui/menu_gear": "assets/ui/menu_gear.48e2893c.webp",
@@ -47,6 +47,7 @@ window.ASSETS={
   "scene/battle_1-1_wide": "assets/scene/battle_1-1_wide.4f37efae.webp",
   "scene/battle_bar": "assets/scene/battle_bar.1f2bd62a.webp",
   "scene/home_bg": "assets/scene/home_bg.cd6f6663.webp",
+  "scene/intro_bg": "assets/scene/intro_bg.0f459caa.webp",
   "scene/page_friend": "assets/scene/page_friend.941e1f1c.webp",
   "scene/page_gear": "assets/scene/page_gear.6e81a61a.webp",
   "scene/page_hero": "assets/scene/page_hero.0fe2ff7a.webp",
@@ -268,6 +269,10 @@ window.ASSETS={
    2075,
    758
   ],
+  "scene/intro_bg": [
+   2532,
+   1170
+  ],
   "scene/page_friend": [
    2532,
    1170
@@ -427,9 +432,11 @@ window.ASSETS={
  },
  "critical": [
   "scene/home_bg",
+  "scene/intro_bg",
   "ui/icon_gold",
   "ui/icon_stone",
   "ui/icon_ticket",
+  "ui/logo",
   "ui/menu_dock",
   "ui/menu_friend",
   "ui/menu_gear",
