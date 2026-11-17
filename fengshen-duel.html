@@ -17,6 +17,12 @@ main>header{display:none}
 #statusRow progress{width:clamp(60px,14vw,140px)}
 #statusRow #base{margin-left:auto}
 #endbox{position:absolute;inset:0;z-index:11;display:grid;place-items:center;background:#000c;padding:8px}#endbox[hidden]{display:none}.ebox{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:96%;padding:12px 18px;background:#161d2b;border:2px solid #c99856;border-radius:14px;text-align:center}.ebox h2{margin:0;font-size:clamp(22px,6vh,34px);color:#ffe6b3;letter-spacing:.3em}.ebox .win{color:#ffd36a;text-shadow:0 0 14px #ff9d3a}.ebox .team{display:flex;gap:6px;justify-content:center}.ebox .team figure{margin:0;width:clamp(48px,13vh,84px)}.ebox .team img{width:100%;display:block;border-radius:6px}.ebox .team i{display:block;aspect-ratio:5/7;border-radius:6px;background:#2a2233}.ebox .team small{display:block;font-size:11px;color:#e6d6ad}.ebox .rw{display:flex;gap:18px;font-size:clamp(15px,3.6vh,20px);color:#fff1cd}.ebox .lv{font-size:14px;color:#ffdda1}.ebox .lvbar{width:min(260px,70vw);height:8px;background:#202839;border-radius:99px;overflow:hidden;margin:3px auto 0}.ebox .lvbar b{display:block;height:100%;background:linear-gradient(#ffe18a,#d8962f)}.ebox .btns{display:flex;gap:10px}.ebox .btns button{min-width:110px}
+#endbox.full{position:fixed;inset:0;z-index:50;padding:0;background:#000}
+.ebox.full{position:relative;width:100%;height:100%;max-width:none;border:0;border-radius:0;justify-content:space-evenly;gap:0;padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:linear-gradient(#0009,#000b),var(--wbg,none) center/cover no-repeat,radial-gradient(ellipse at 50% 30%,#8a4d6b,#2b1d3a 70%)}
+.ebox.full h2{font-size:clamp(30px,11vh,84px);letter-spacing:.5em;margin:0;padding-left:.5em}
+.ebox.full .team{gap:clamp(8px,2vw,26px)}.ebox.full .team figure{width:min(17vw,22vh)}.ebox.full .team img,.ebox.full .team i{border:2px solid #e6b66b;box-shadow:0 0 18px #ffbb6755}.ebox.full .team small{font-size:clamp(13px,3.2vh,20px);margin-top:4px}
+.ebox.full .rw{font-size:clamp(20px,5.5vh,34px);gap:clamp(20px,5vw,60px);text-shadow:0 2px 6px #000}.ebox.full .lv{font-size:clamp(15px,3.6vh,22px)}.ebox.full .lvbar{width:min(520px,70vw);height:12px}
+.ebox.full .btns button{min-width:160px;min-height:48px;font-size:clamp(16px,4vh,22px)}
 #pausemenu{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:#000a}#pausemenu[hidden]{display:none}.pbox{display:flex;flex-direction:column;gap:8px;min-width:min(240px,80%);padding:14px 18px;background:#161d2b;border:2px solid #c99856;border-radius:12px}.pbox b{text-align:center;font-size:20px;color:#ffdda1}.pbox button{min-height:44px;font-size:16px}
 #armyRow{position:absolute;right:calc(var(--sr) + 8px);top:calc(max(6px,env(safe-area-inset-top)) + 48px);margin:0;display:flex;gap:8px;font-size:12px;background:#10151ecc;border-radius:8px;padding:2px 8px}
 #status{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(6px,env(safe-area-inset-top)) + 98px);margin:0;min-height:0;font-size:13px;background:#10151ecc;border-radius:8px;padding:2px 10px;white-space:nowrap}
@@ -165,7 +171,7 @@ const pm=el('pausemenu');
 const _q=new URLSearchParams(location.search),plv=Math.max(1,Number(_q.get('lv'))||1),pexp=Math.max(0,Number(_q.get('exp'))||0);
 const endBox=document.createElement('div');endBox.id='endbox';endBox.hidden=true;pm.parentNode.append(endBox);
 function leaveBattle(){if(window.parent!==window)parent.postMessage({type:'fs-back'},'*');else{reset()}}
-function hideEnd(){endBox.hidden=true;endBox.innerHTML=''}
+function hideEnd(){endBox.hidden=true;endBox.innerHTML='';endBox.classList.remove('full')}
 function showEnd(){
  s.endShown=true;
  if(!s.won){
@@ -175,7 +181,7 @@ function showEnd(){
  const st=FS.stages&&FS.stages[stageNo],rw=Object.assign({},st&&st.boss?FS.bossReward:FS.winReward,(st&&st.win)||{});
  const r=FS.gainExp(plv,pexp,rw.exp);
  const top5=(storyMode?teamIds:[]).slice(0,5).map(i=>{const c=FS.characters[i],u=window.asset&&window.asset('char/'+c.id+'/card');return '<figure>'+(u?'<img src="'+u+'" alt="">':'<i></i>')+'<small>'+c.name+'</small></figure>'}).join('');
- endBox.innerHTML='<div class="ebox"><h2 class="win">勝利</h2>'+(top5?'<div class="team">'+top5+'</div>':'')+
+ endBox.classList.add('full');endBox.innerHTML='<div class="ebox full" style="--wbg:url('+(window.asset&&window.asset('scene/home_bg')||'')+')"><h2 class="win">勝利</h2>'+(top5?'<div class="team">'+top5+'</div>':'')+
   '<div class="rw"><span>金幣 +'+rw.gold+'</span><span>經驗 +'+rw.exp+'</span></div>'+
   '<div class="lv">'+(r.ups?'升級！Lv.'+plv+' → Lv.'+r.lv:'Lv.'+r.lv)+'　經驗 '+r.exp+' / '+FS.expNeed(r.lv)+'</div><div class="lvbar"><b style="width:'+Math.min(100,r.exp/FS.expNeed(r.lv)*100)+'%"></b></div>'+
   '<div class="btns"><button id="eexit">返回</button></div></div>';
