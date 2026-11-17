@@ -76,7 +76,8 @@ let cam=0; // 橫向卷軸：鏡頭左緣的世界座標，開場在己方（左
 let camMax=WORLD-VIEW;
 // 滿版：畫布視野寬度依螢幕比例決定（高度固定 365），鏡頭範圍隨之調整；安全區（動態島、Home 條）由大廳量好傳進來
 function applySafe(){try{const v=parent.safeInsets&&parent.safeInsets();if(v){const m=document.querySelector('main');m.style.setProperty('--sl',v.l+'px');m.style.setProperty('--sr',v.r+'px');m.style.setProperty('--sb',v.b+'px')}}catch(e){}}
-function fitView(){applySafe();const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const w=Math.max(640,Math.min(WORLD,Math.round(365*r.width/r.height)));if(w!==VIEW||canvas.width!==w){VIEW=w;canvas.width=w}camMax=WORLD-VIEW;cam=Math.max(0,Math.min(camMax,cam))}
+let K=1; // 畫布解析度倍率：依實際螢幕大小放大，角色才不會霧霧的
+function fitView(){applySafe();const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const w=Math.max(640,Math.min(WORLD,Math.round(365*r.width/r.height)));K=Math.min(3,Math.max(1,Math.round(r.height*(window.devicePixelRatio||1)/365*2)/2));VIEW=w;if(canvas.width!==Math.round(w*K)||canvas.height!==Math.round(365*K)){canvas.width=Math.round(w*K);canvas.height=Math.round(365*K)}camMax=WORLD-VIEW;cam=Math.max(0,Math.min(camMax,cam))}
 addEventListener('resize',fitView);addEventListener('orientationchange',()=>setTimeout(fitView,200));
 let s, last=0;
 const press=(b,fn)=>{b.onpointerdown=e=>{e.preventDefault();fn()};b.onclick=e=>{if(e.detail===0)fn()}};
@@ -208,7 +209,7 @@ function update(dt){
     const victims=a.splash?opponents.filter(b=>Math.abs(b.x-target.x)<=a.splash):[target];
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
    }else s.hp[1-a.side]=Math.max(0,s.hp[1-a.side]-damage);
-   s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash});
+   s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash,noLine:!!a.art});
    if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';break;}
   }else{
    const blocked=s.actors.some(b=>b!==a&&b.side===a.side&&b.hp>0&&(b.x-a.x)*direction>0&&Math.abs(b.x-a.x)<21&&b.wait>0);
@@ -301,6 +302,7 @@ function drawRings(){
  }
 }
 function draw(){
+ ctx.setTransform(K,0,0,K,0,0);
  ctx.save();ctx.translate(-Math.round(cam),0);
  if(battlefield.complete&&battlefield.naturalWidth)ctx.drawImage(battlefield,0,0,WORLD,365);
  else{
@@ -346,7 +348,7 @@ function draw(){
  }
  drawDying();
  for(const f of s.fx){
-  ctx.save();ctx.globalAlpha=f.life/.28;ctx.strokeStyle=f.color;ctx.lineWidth=f.burst?7:4;ctx.beginPath();ctx.moveTo(f.x,floor-39);ctx.lineTo(f.to,floor-29);ctx.stroke();
+  ctx.save();ctx.globalAlpha=f.life/.28;ctx.strokeStyle=f.color;ctx.lineWidth=f.burst?7:4;if(!f.noLine){ctx.beginPath();ctx.moveTo(f.x,floor-39);ctx.lineTo(f.to,floor-29);ctx.stroke();}
   if(f.burst){ctx.beginPath();ctx.arc(f.to,floor-22,10+(.28-f.life)*70,0,7);ctx.stroke();}ctx.restore();
  }
  drawRings();
