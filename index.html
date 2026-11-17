@@ -153,7 +153,7 @@ function load(){
  try{data=JSON.parse(localStorage.getItem(saveKey+server))||defaults()}catch{data=defaults()}
  if(!data.gear)data.gear={};
  // 截教（敵方）角色玩家不能持有：舊存檔裡若有，一併移除
- if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k]||roster[k][2]!=='闡教')delete data.owned[k];}
+ if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k]||(roster[k][2]!=='闡教'&&!FS.characters[k].unlockLater))delete data.owned[k];}
  if(Array.isArray(data.team)){data.team=data.team.filter(i=>data.owned&&data.owned[i]);if(!data.team.length)data.team=Object.keys(data.owned||{}).map(Number).slice(0,3);}
 }
 // 量出 iPhone 安全區（動態島、Home 條）的實際像素，給滿版的對戰畫面使用

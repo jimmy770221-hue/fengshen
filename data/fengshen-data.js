@@ -26,7 +26,7 @@ window.FS={
    stats:{cost:36,hp:85,damage:9,range:130,speed:44,period:1.5,cd:4.4,color:'#e0d3a5',heal:42}},
   {id:'leizhenzi',reach:'近戰',name:'雷震子',faction:'闡教',rank:'稀有',role:'疾風連擊',art:null,
    stats:{cost:24,hp:68,damage:20,range:35,speed:105,period:.62,cd:1.4,color:'#8dd4c6'}},
-  {id:'shengongbao',reach:'遠程',name:'申公豹',faction:'截教',rank:'稀有',role:'遠程咒擊',art:null,
+  {id:'shengongbao',reach:'遠程',name:'申公豹',faction:'截教',rank:'稀有',role:'遠程咒擊',art:null,unlockLater:'後期關卡獎勵（關卡待設計）', /* 平時抽不到；之後通關指定關卡才可獲得 */
    stats:{cost:31,hp:111,damage:49,range:184,speed:48,period:1.42,cd:4.7,color:'#b496e5'}},
   {id:'jiuweihu',reach:'中程',name:'九尾狐',faction:'截教',rank:'封神級',role:'狐火群攻',art:null,
    stats:{cost:36,hp:92,damage:28,range:142,speed:54,period:1.15,cd:4,color:'#ff9ab3',splash:65}},
