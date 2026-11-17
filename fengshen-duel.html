@@ -328,7 +328,7 @@ function draw(){
   bar(x-45,98,90,s.hp[side]/maxHP,side?'#cd9de7':'#80d3a6');
  }
  for(const a of s.actors){
-  const y=floor-(a.wait<=0?Math.abs(Math.sin(s.time*11+a.x*.02))*4:0);
+  const y=floor-(a.wait<=0&&!a.art?Math.abs(Math.sin(s.time*11+a.x*.02))*4:0); // 有動畫圖集的角色是滑行，不上下跳
   if(a.side===0&&s.shield>0){ctx.strokeStyle="#f7d783";ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(a.x,y-29,21,32,0,0,7);ctx.stroke();}
   ctx.save();ctx.translate(a.x,y);ctx.scale(a.side?-1:1,1);
   const spr=a.art?charSprite(a):null;
