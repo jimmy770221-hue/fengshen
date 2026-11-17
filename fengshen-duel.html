@@ -16,6 +16,7 @@ main>header{display:none}
 #statusRow>span:first-of-type{display:flex;align-items:center;gap:6px}
 #statusRow progress{width:clamp(60px,14vw,140px)}
 #statusRow #base{margin-left:auto}
+#endbox{position:absolute;inset:0;z-index:11;display:grid;place-items:center;background:#000c;padding:8px}#endbox[hidden]{display:none}.ebox{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:96%;padding:12px 18px;background:#161d2b;border:2px solid #c99856;border-radius:14px;text-align:center}.ebox h2{margin:0;font-size:clamp(22px,6vh,34px);color:#ffe6b3;letter-spacing:.3em}.ebox .win{color:#ffd36a;text-shadow:0 0 14px #ff9d3a}.ebox .team{display:flex;gap:6px;justify-content:center}.ebox .team figure{margin:0;width:clamp(48px,13vh,84px)}.ebox .team img{width:100%;display:block;border-radius:6px}.ebox .team i{display:block;aspect-ratio:5/7;border-radius:6px;background:#2a2233}.ebox .team small{display:block;font-size:11px;color:#e6d6ad}.ebox .rw{display:flex;gap:18px;font-size:clamp(15px,3.6vh,20px);color:#fff1cd}.ebox .lv{font-size:14px;color:#ffdda1}.ebox .lvbar{width:min(260px,70vw);height:8px;background:#202839;border-radius:99px;overflow:hidden;margin:3px auto 0}.ebox .lvbar b{display:block;height:100%;background:linear-gradient(#ffe18a,#d8962f)}.ebox .btns{display:flex;gap:10px}.ebox .btns button{min-width:110px}
 #pausemenu{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:#000a}#pausemenu[hidden]{display:none}.pbox{display:flex;flex-direction:column;gap:8px;min-width:min(240px,80%);padding:14px 18px;background:#161d2b;border:2px solid #c99856;border-radius:12px}.pbox b{text-align:center;font-size:20px;color:#ffdda1}.pbox button{min-height:44px;font-size:16px}
 #armyRow{position:absolute;right:calc(var(--sr) + 8px);top:calc(max(6px,env(safe-area-inset-top)) + 48px);margin:0;display:flex;gap:8px;font-size:12px;background:#10151ecc;border-radius:8px;padding:2px 8px}
 #status{position:absolute;left:50%;transform:translateX(-50%);top:calc(max(6px,env(safe-area-inset-top)) + 98px);margin:0;min-height:0;font-size:13px;background:#10151ecc;border-radius:8px;padding:2px 10px;white-space:nowrap}
@@ -82,7 +83,7 @@ addEventListener('resize',fitView);addEventListener('orientationchange',()=>setT
 let s, last=0;
 const press=(b,fn)=>{b.onpointerdown=e=>{e.preventDefault();fn()};b.onclick=e=>{if(e.detail===0)fn()}};
 const setHTML=(b,m)=>{if(b._m!==m){b._m=m;b.innerHTML=m}};
-function reset(){cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3,rings:[],dying:[]};ui();}
+function reset(){if(typeof endBox!=='undefined')hideEnd();cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3,rings:[],dying:[]};ui();}
 const buttons=units.map((u,i)=>{
  const button=document.createElement('button');press(button,()=>deploy(i));el('deck').append(button);return button;
 });
@@ -160,6 +161,27 @@ press(upgrade,()=>{
 });
 function upgradeCost(){return 30+(s.level-1)*20;}
 const pm=el('pausemenu');
+// ===== 戰鬥結束畫面：輸了→退出／重新挑戰；贏了→勝利畫面（前五名武將）＋發放金幣與經驗值 =====
+const _q=new URLSearchParams(location.search),plv=Math.max(1,Number(_q.get('lv'))||1),pexp=Math.max(0,Number(_q.get('exp'))||0);
+const endBox=document.createElement('div');endBox.id='endbox';endBox.hidden=true;pm.parentNode.append(endBox);
+function leaveBattle(){if(window.parent!==window)parent.postMessage({type:'fs-back'},'*');else{reset()}}
+function hideEnd(){endBox.hidden=true;endBox.innerHTML=''}
+function showEnd(){
+ s.endShown=true;
+ if(!s.won){
+  endBox.innerHTML='<div class="ebox"><h2>戰敗</h2><div class="btns"><button id="eexit">退出</button><button id="eretry">重新挑戰</button></div></div>';
+  endBox.hidden=false;el('eexit').onclick=leaveBattle;el('eretry').onclick=()=>{hideEnd();reset()};return;
+ }
+ const st=FS.stages&&FS.stages[stageNo],rw=Object.assign({},st&&st.boss?FS.bossReward:FS.winReward,(st&&st.win)||{});
+ const r=FS.gainExp(plv,pexp,rw.exp);
+ const top5=(storyMode?teamIds:[]).slice(0,5).map(i=>{const c=FS.characters[i],u=window.asset&&window.asset('char/'+c.id+'/card');return '<figure>'+(u?'<img src="'+u+'" alt="">':'<i></i>')+'<small>'+c.name+'</small></figure>'}).join('');
+ endBox.innerHTML='<div class="ebox"><h2 class="win">勝利</h2>'+(top5?'<div class="team">'+top5+'</div>':'')+
+  '<div class="rw"><span>金幣 +'+rw.gold+'</span><span>經驗 +'+rw.exp+'</span></div>'+
+  '<div class="lv">'+(r.ups?'升級！Lv.'+plv+' → Lv.'+r.lv:'Lv.'+r.lv)+'　經驗 '+r.exp+' / '+FS.expNeed(r.lv)+'</div><div class="lvbar"><b style="width:'+Math.min(100,r.exp/FS.expNeed(r.lv)*100)+'%"></b></div>'+
+  '<div class="btns"><button id="eexit">返回</button></div></div>';
+ endBox.hidden=false;el('eexit').onclick=leaveBattle;
+ if(window.parent!==window&&!s.rewarded){s.rewarded=true;parent.postMessage({type:'fs-win',gold:rw.gold,exp:rw.exp,stage:stageNo},'*')}
+}
 const closeMenu=()=>{pm.hidden=true};
 el('reset').onclick=()=>{reset();closeMenu()};
 el('pause').onclick=()=>{if(s.started&&!s.over)s.paused=true;pm.hidden=false;ui()};
@@ -210,7 +232,7 @@ function update(dt){
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
    }else s.hp[1-a.side]=Math.max(0,s.hp[1-a.side]-damage);
    s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash,noLine:!!a.art});
-   if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';break;}
+   if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';s.won=a.side===0;break;}
   }else{
    const blocked=s.actors.some(b=>b!==a&&b.side===a.side&&b.hp>0&&(b.x-a.x)*direction>0&&Math.abs(b.x-a.x)<21&&b.wait>0);
    if(!blocked)a.x+=direction*a.speed*dt*(a.slowTime>0?.55:1)*(a.side===0&&s.haste>0?1.65:1);
@@ -361,7 +383,7 @@ function draw(){
 }
 function bar(x,y,width,value,color){ctx.fillStyle='#202839';ctx.fillRect(x,y,width,5);ctx.fillStyle=color;ctx.fillRect(x,y,width*Math.max(0,Math.min(1,value)),5);}
 let lastUI=0;
-function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm.hidden&&!loadingArt){s.countdown-=dt;if(s.countdown<=0){s.countdown=0;s.started=true;s.notice='開戰！';s.noticeTime=1.2;ui()}}update(dt);last=t;frameDt=s.paused||!s.started||s.over?0:dt;updateFx(frameDt);draw();if(t-lastUI>100){ui();lastUI=t;}requestAnimationFrame(frame);}
+function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm.hidden&&!loadingArt){s.countdown-=dt;if(s.countdown<=0){s.countdown=0;s.started=true;s.notice='開戰！';s.noticeTime=1.2;ui()}}update(dt);if(s.over&&!s.endShown)showEnd();last=t;frameDt=s.paused||!s.started||s.over?0:dt;updateFx(frameDt);draw();if(t-lastUI>100){ui();lastUI=t;}requestAnimationFrame(frame);}
 let loadingArt=true;
 // 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);

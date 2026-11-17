@@ -87,7 +87,14 @@ FS.stages=[
   // 敵軍難度：首次出兵秒數、出兵間隔（起始／最短／縮短速度）、敵兵血量與攻擊倍率（固定不隨時間變強）
   difficulty:{firstSpawn:5,startGap:4,minGap:2.5,gapSec:75,hp:.75,dmg:.7}}
 ];
-for(let k=2;k<=10;k++)FS.stages.push({name:'1-'+k,enemy:'待設計',story:'劇情待設計。',reward:'待設計',open:false});
+for(let k=2;k<=10;k++)FS.stages.push({name:'1-'+k,enemy:'待設計',story:'劇情待設計。',reward:'待設計',open:false,boss:k===10}); // 暫定 1-10 為 BOSS 關，可自行改
+/* 戰鬥勝利獎勵與玩家升級：金幣、經驗值。關卡可在 FS.stages[n].win 覆寫 {gold,exp}
+   升級所需經驗：第 1 級升 2 級要 expBase，之後每升一級為前一級的 expGrow 倍（1.15） */
+FS.player={expBase:100,expGrow:1.15};
+FS.winReward={gold:100,exp:50};      // 一般關卡
+FS.bossReward={gold:100,exp:100};    // BOSS 關卡（關卡資料標 boss:true）
+FS.expNeed=lv=>Math.round(FS.player.expBase*Math.pow(FS.player.expGrow,lv-1));
+FS.gainExp=(lv,exp,gain)=>{exp+=gain;let ups=0;while(exp>=FS.expNeed(lv)){exp-=FS.expNeed(lv);lv++;ups++}return{lv,exp,ups}};
 FS.skillMaxLevel=5; // 每個神術等級上限
 
 // 靈石儲值檔位：[售價(NT$), 靈石倍率]；倍率由 10 倍逐級遞增到 15 倍；靈石數 = 售價 × 倍率（四捨五入）

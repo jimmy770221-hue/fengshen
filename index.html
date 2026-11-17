@@ -132,7 +132,7 @@ const pools=FS.pools;
 window.asset=window.asset||(()=>''); // 圖片清單載入失敗時退回程式畫的備用樣式
 const menus=['首頁','闖關模式','PVP 模式','神將','武裝','神術','招募神將','商店','好友','飛鴿傳書','遊戲設定'];
 const saveKey='fengshen-lobby-v2';
-const defaults=()=>({tickets:12,stone:0,gold:0,owned:{0:1,1:1,2:1},gear:{},team:[0,1,2],claimed:false,skills:[],skillLv:{}});
+const defaults=()=>({tickets:12,stone:0,gold:0,lv:1,exp:0,owned:{0:1,1:1,2:1},gear:{},team:[0,1,2],claimed:false,skills:[],skillLv:{}});
 let data=defaults(),server='蓬萊',page='首頁',pool=0,poolKind='hero',result='',battle=false,sel=0,eqTab='weapon',eqFilter='全部',eqSel=0,skSel=0,shopTab=0,shopMsg='',modal='',stageSel=0,modalMsg='';
 
 /* ===== BGM：Web Audio 無縫循環（大廳／戰鬥） ===== */
@@ -152,6 +152,7 @@ function audPanel(){return '<p>背景音樂 · <button data-act="audtoggle">'+(a
 function load(){
  try{data=JSON.parse(localStorage.getItem(saveKey+server))||defaults()}catch{data=defaults()}
  if(!data.gear)data.gear={};
+ if(!(data.lv>=1))data.lv=1;if(!(data.exp>=0))data.exp=0;
  // 截教（敵方）角色玩家不能持有：舊存檔裡若有，一併移除
  if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k]||(roster[k][2]!=='闡教'&&!FS.characters[k].unlockLater))delete data.owned[k];}
  if(Array.isArray(data.team)){data.team=data.team.filter(i=>data.owned&&data.owned[i]);if(!data.team.length)data.team=Object.keys(data.owned||{}).map(Number).slice(0,3);}
@@ -298,7 +299,7 @@ function homeScreen(){
   return '<button class="h-slot" data-act="nav" data-value="神將" aria-label="'+roster[i][0]+'，前往調整隊伍" '+st+'><span class="pad'+(asset('scene/pedestal')?' img':'')+'" style="--ped:url('+asset('scene/pedestal')+')"></span><span class="figure">'+silhouette(i)+'</span></button>';
  }).join('');
  return '<div class="home"><div class="home-bg" style="--hbg:url('+asset('scene/home_bg')+')"></div><div class="hs">'+
-  '<button class="h-prof" data-act="modal" data-value="profile" aria-label="玩家資料：'+prof.name+'，點一下修改"><span class="av">'+silhouette(profAvatar(),'icon')+'</span><span class="pn">'+prof.name.replace(/</g,'&lt;')+'</span></button>'+
+  '<button class="h-prof" data-act="modal" data-value="profile" aria-label="玩家資料：'+prof.name+'，點一下修改"><span class="av">'+silhouette(profAvatar(),'icon')+'</span><span class="pn">'+prof.name.replace(/</g,'&lt;')+'<small>Lv.'+data.lv+'</small></span></button>'+
   '<div class="h-resrow"><div class="h-res" aria-label="招募券 '+data.tickets+'"><img class="ri" src="'+asset('ui/icon_ticket')+'" alt="">'+data.tickets+'</div><div class="h-res" aria-label="靈石 '+(data.stone||0)+'"><img class="ri" src="'+asset('ui/icon_stone')+'" alt="">'+(data.stone||0)+'</div><div class="h-res" aria-label="金幣 '+(data.gold||0)+'"><img class="ri" src="'+asset('ui/icon_gold')+'" alt="">'+(data.gold||0)+'</div></div>'+
   (asset('ui/btn_stage_v2')?'<button class="h-gate art" style="--gate:url('+asset('ui/btn_stage_v2')+')" data-act="nav" data-value="闖關模式" aria-label="闖關"></button>':'<button class="h-gate'+(asset('ui/btn_stage')?' img" style="--gate:url('+asset('ui/btn_stage')+')':'')+'" data-act="nav" data-value="闖關模式">闖關</button>')+
   slots+
@@ -317,7 +318,7 @@ function _draw(){
  app.classList.remove('ishome');
  {const pk={'神將':'page_hero','武裝':'page_gear','神術':'page_skill','招募神將':'page_recruit','商店':'page_shop','好友':'page_friend'}[page],pu=pk&&asset('scene/'+pk);app.classList.toggle('pg',!!pu);document.body.classList.toggle('pg',!!pu);if(pu){app.style.setProperty('--pgbg','url('+pu+')');document.body.style.setProperty('--pgbg','url('+pu+')')}else{app.style.removeProperty('--pgbg');document.body.style.removeProperty('--pgbg')}}
  let body='';
- if(page==='闖關模式')body=battle?'<button data-act="back">返回故事</button><iframe class="battleframe" title="對戰原型" src="fengshen-duel.html?team='+data.team.join(',')+((data.skills||[]).length===5?'&skills='+data.skills.join(','):'')+'&stage='+stageSel+'&embed=1"></iframe>':stagePage();
+ if(page==='闖關模式')body=battle?'<button data-act="back">返回故事</button><iframe class="battleframe" title="對戰原型" src="fengshen-duel.html?team='+data.team.join(',')+((data.skills||[]).length===5?'&skills='+data.skills.join(','):'')+'&stage='+stageSel+'&lv='+data.lv+'&exp='+data.exp+'&embed=1"></iframe>':stagePage();
  if(page==='PVP 模式')body='<p>即時對戰與排行需連線服務。</p>';
  if(page==='神將')body=generalPage();
  if(page==='武裝')body=equipPage();
@@ -330,7 +331,11 @@ function _draw(){
  app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>封神</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'||modal==='pooldesc'?modalBox():'');
  app.classList.toggle('inbattle',page==='闖關模式'&&battle);bgmPlay(page==='闖關模式'&&battle?'battle':'lobby');
 }
-window.addEventListener('message',e=>{if(e.data&&e.data.type==='fs-back'&&battle){battle=false;draw()}});
+window.addEventListener('message',e=>{if(!e.data)return;
+ if(e.data.type==='fs-back'&&battle){battle=false;draw()}
+ // 戰鬥勝利：發放金幣與經驗值（只在戰鬥中、每場一次），經驗值累積升級
+ if(e.data.type==='fs-win'&&battle){const g=Math.max(0,Math.floor(Number(e.data.gold))||0),x=Math.max(0,Math.floor(Number(e.data.exp))||0);data.gold+=g;const r=FS.gainExp(data.lv,data.exp,x);data.lv=r.lv;data.exp=r.exp;save()}
+});
 app.onclick=event=>{
  const button=event.target.closest('button[data-act]');if(!button)return;
  const {act,value}=button.dataset;
