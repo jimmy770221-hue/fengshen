@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>封神</title>
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>封神戰線</title><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="封神戰線"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#261a34">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#121b26;color:#faedcf;font:15px system-ui}main{padding:16px;max-width:1200px;margin:auto}h1{font-size:clamp(26px,5vw,54px);margin:.3em 0}button,select,input{font:inherit}button,select{background:#24394a;color:#fff2d5;border:1px solid #887951;border-radius:7px;padding:9px;min-height:40px;cursor:pointer}button:hover,button[aria-current=true]{background:#725638}button:disabled{opacity:.5}.layout{display:grid;grid-template-columns:155px 1fr;gap:12px}nav{display:grid;align-content:start;gap:5px}.panel{background:#1b2937;border:1px solid #605841;border-radius:12px;padding:14px;min-width:0}.cards,.actions{display:flex;flex-wrap:wrap;gap:8px}.card{background:#2c3945;border:1px solid #736746;border-radius:8px;padding:12px;min-width:110px}.muted{color:#c7bda6}iframe{width:100%;height:72vh;border:0}label{display:block;margin:8px 0}@media(max-width:740px){main{padding:8px}.layout{grid-template-columns:105px 1fr;gap:7px}nav button{font-size:12px;padding:5px;min-height:34px}.panel{padding:8px}}
 
@@ -53,6 +53,7 @@ main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1
 .hs button{position:absolute;padding:0;color:#fff1cd;font-weight:bold;-webkit-tap-highlight-color:transparent}
 .hs button:active{filter:brightness(1.25)}.hs button:focus-visible{outline:3px solid #ffd075;outline-offset:2px}
 .h-logo{position:absolute;left:1%;top:0;width:24%;max-height:30%;object-fit:contain;pointer-events:none}.h-title{position:absolute;left:2.5%;top:3%;font-size:5.4cqw;font-weight:800;letter-spacing:.3cqw;color:#ffe49b;text-shadow:.2cqw .3cqw #43221c,0 0 2cqw #f59655}
+.h-prof,.h-prof:hover{position:absolute;left:1.8%;top:1.5%;z-index:3;display:flex;align-items:center;gap:1.2cqw;padding:0 2.2cqw 0 0;min-height:44px;border:2px solid #e6b66b;border-radius:99px;background:linear-gradient(#5a3b2b,#2e1d17);color:#fff1cd;font-weight:bold;font-size:2.3cqw;max-width:30%;box-shadow:0 2px 8px #0008}.h-prof .av{width:7.4cqw;height:7.4cqw;min-width:48px;min-height:48px;margin:-4px 0 -4px -4px;border-radius:50%;border:3px solid #f0c66f;background:#2e1d17;overflow:hidden;flex:none;box-shadow:0 0 0 2px #43221c}.h-prof .av img{width:100%;height:100%;object-fit:cover;display:block}.h-prof .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.h-prof .pn small{display:block;font-size:.62em;color:#ffdda1;font-weight:normal;line-height:1.1}.pfname{width:100%;box-sizing:border-box;min-height:44px;font-size:18px;padding:4px 10px;border-radius:8px;border:2px solid #e6b66b;background:#0e1620;color:#fff1cd}.pfav{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin:6px 0}.pfav button{padding:0;min-height:64px;border-radius:50%;aspect-ratio:1;overflow:hidden;border:3px solid transparent;background:#0e1620}.pfav button[aria-pressed=true]{border-color:#ffd36b;box-shadow:0 0 10px #f5b94a}.pfav img{width:100%;height:100%;object-fit:cover;display:block}
 .h-resrow{position:absolute;right:2.5%;top:1%;display:flex;gap:.7cqw}
 .h-res .ri{width:2.6cqw;height:2.6cqw;min-width:26px;min-height:26px;margin-right:.6cqw}.h-resrow .h-res{position:static;min-width:44px;min-height:44px;display:flex;align-items:center;padding:0 1.2cqw;border-radius:99px;border:2px solid #e6b66b;background:linear-gradient(#5a3b2b,#2e1d17);color:#fff1cd;font-weight:bold;font-size:2cqw;white-space:nowrap;pointer-events:none;user-select:none}
 .h-gate.img{background:var(--gate) center/100% 100% no-repeat;border:0;box-shadow:none;color:#fff1cd;text-shadow:0 .3cqw .4cqw #5a0d08,0 0 1cqw #5a0d08}.h-gate{left:38%;top:3%;width:24%;height:21%;min-height:44px;border-radius:1.2cqw;border:.4cqw solid #e6b66b;background:linear-gradient(#a05034,#59271e);box-shadow:0 .5cqw #43241d,0 0 3cqw #ffbb6788;font-size:5.4cqw;letter-spacing:.8cqw;text-shadow:0 .2cqw #43221c}
@@ -116,6 +117,12 @@ function load(){
  if(!data.gear)data.gear={};
 }
 function save(){try{localStorage.setItem(saveKey+server,JSON.stringify(data))}catch{}}
+// 玩家資料（名稱、大頭照）：不分伺服器，另存一份
+const profKey='fengshen-profile-v1';
+let prof={name:'道友',avatar:null};
+try{const p=JSON.parse(localStorage.getItem(profKey));if(p&&typeof p.name==='string')prof=p}catch{}
+function saveProf(){try{localStorage.setItem(profKey,JSON.stringify(prof))}catch{}}
+function profAvatar(){const own=Object.keys(data.owned||{}).map(Number);return(prof.avatar!=null&&own.includes(prof.avatar))?prof.avatar:(data.team[0]!==undefined?data.team[0]:(own[0]||0))}
 // 占位美術：沒有角色圖時，依陣營上色的剪影（闡教＝金色光環、截教＝角）。之後有圖，改在這個函式讀 FS.characters[i].art
 function silhouette(i,kind){
  const c=FS.characters[i];
@@ -219,9 +226,14 @@ function skillPicker(){
  const sel2=data.skills||[];
  return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="神術配置"><div class="mhead"><b>神術配置 '+sel2.length+' / 5</b><button class="mx" data-act="closemodal" aria-label="完成">完成</button></div><div class="mbody"><div class="skpick">'+FS.skills.map((k,i)=>{const on=sel2.includes(i);return '<button class="skopt" data-act="skpick" data-value="'+i+'" aria-pressed="'+on+'"'+(!on&&sel2.length>=5?' disabled':'')+'><span class="skdot" style="background:'+k[3]+'"></span><b>'+k[1]+'</b><small>'+k[2]+'</small></button>'}).join('')+'</div></div></div>';
 }
+function profileBox(){
+ const cur=profAvatar(),own=Object.keys(data.owned||{}).map(Number).filter(i=>FS.characters[i]);
+ return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="玩家資料"><div class="mhead"><b>玩家資料</b><button class="mx" data-act="saveprof" aria-label="完成">完成</button></div><div class="mbody"><label for="pname"><b>玩家名稱</b>（最多 8 個字）</label><input id="pname" class="pfname" maxlength="8" value="'+prof.name.replace(/"/g,'&quot;')+'" autocomplete="off"><p style="margin:8px 0 0"><b>大頭照</b></p><div class="pfav">'+own.map(i=>'<button data-act="pickav" data-value="'+i+'" aria-pressed="'+(i===cur)+'" aria-label="'+FS.characters[i].name+'">'+silhouette(i,'icon')+'</button>').join('')+'</div></div></div>';
+}
 function modalBox(){
  if(!modal)return '';
  if(modal==='skills')return skillPicker();
+ if(modal==='profile')return profileBox();
  const mail=modal==='mail';
  const body=mail?(data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>')
   :'<p>帳號 · 本機訪客（'+server+'）</p><p class="result" role="status">'+modalMsg+'</p><button data-act="logout">登出</button><p>語言 · 繁體中文</p><p class="muted">音量、音效與通知待整合。</p><details><summary>說明與隱私</summary><p>此原型將招募與陣容存於本機瀏覽器。</p></details>';
@@ -234,7 +246,7 @@ function homeScreen(){
   return '<button class="h-slot" data-act="nav" data-value="神將" aria-label="'+roster[i][0]+'，前往調整隊伍" '+st+'><span class="pad'+(asset('scene/pedestal')?' img':'')+'" style="--ped:url('+asset('scene/pedestal')+')"></span><span class="figure">'+silhouette(i)+'</span></button>';
  }).join('');
  return '<div class="home"><div class="home-bg" style="--hbg:url('+asset('scene/home_bg')+')"></div><div class="hs">'+
-  (asset('ui/logo')?'<img class="h-logo" src="'+asset('ui/logo')+'" alt="'+FS.title+'">':'<div class="h-title">'+FS.title+'</div>')+
+  '<button class="h-prof" data-act="modal" data-value="profile" aria-label="玩家資料：'+prof.name+'，點一下修改"><span class="av">'+silhouette(profAvatar(),'icon')+'</span><span class="pn">'+prof.name.replace(/</g,'&lt;')+'</span></button>'+
   '<div class="h-resrow"><div class="h-res" aria-label="招募券 '+data.tickets+'"><img class="ri" src="'+asset('ui/icon_ticket')+'" alt="">'+data.tickets+'</div><div class="h-res" aria-label="靈石 '+(data.stone||0)+'"><img class="ri" src="'+asset('ui/icon_stone')+'" alt="">'+(data.stone||0)+'</div><div class="h-res" aria-label="金幣 '+(data.gold||0)+'"><img class="ri" src="'+asset('ui/icon_gold')+'" alt="">'+(data.gold||0)+'</div></div>'+
   (asset('ui/btn_stage_v2')?'<button class="h-gate art" style="--gate:url('+asset('ui/btn_stage_v2')+')" data-act="nav" data-value="闖關模式" aria-label="闖關"></button>':'<button class="h-gate'+(asset('ui/btn_stage')?' img" style="--gate:url('+asset('ui/btn_stage')+')':'')+'" data-act="nav" data-value="闖關模式">闖關</button>')+
   slots+
@@ -273,6 +285,9 @@ app.onclick=event=>{
  if(act==='skpick'){const l=data.skills||(data.skills=[]),v=Number(value),x=l.indexOf(v);if(x>=0)l.splice(x,1);else if(l.length<5)l.push(v);save()}
  if(act==='stagesel')stageSel=Number(value);
  if(act==='logout')modalMsg='登入功能尚未開放，目前為本機試玩，沒有帳號可登出，存檔不會被清除。';
+ const _pn=app.querySelector('#pname');if(_pn&&(act==='saveprof'||act==='pickav'||act==='closemodal')){const v=_pn.value.trim().slice(0,8);if(v){prof.name=v;saveProf()}}
+ if(act==='pickav'){prof.avatar=Number(value);saveProf()}
+ if(act==='saveprof'){modal=''}
  if(act==='modal'){modal=value;modalMsg=''}
  if(act==='closemodal'){modal='';modalMsg=''}
  if(act==='nav'){page=value;battle=false;modal=''}
