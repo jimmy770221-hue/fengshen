@@ -107,6 +107,7 @@ body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:1
 <script>
 const app=document.querySelector('#app');
 // 內容全部來自 data/fengshen-data.js；roster 每筆：[名稱,世界,陣營,稀有度]
+const RN={'普通':'散仙','稀有':'真仙','封神級':'金仙'},RFRAME={'普通':'青銅','稀有':'白銀','封神級':'黃金'},rn=r=>RN[r]||r; // 顯示用稀有度名稱（內部判斷仍用 普通／稀有／封神級）
 const roster=FS.characters.map(c=>[c.name,'封神',c.faction,c.rank]);
 const pools=FS.pools;
 window.asset=window.asset||(()=>''); // 圖片清單載入失敗時退回程式畫的備用樣式
@@ -152,14 +153,14 @@ function silhouette(i,kind){
  return '<svg class="sil" viewBox="0 0 60 112" aria-hidden="true">'+mark+'<ellipse cx="30" cy="106" rx="20" ry="5" fill="#0005"/><path d="M11 102Q9 64 30 57Q51 64 49 102Z" fill="'+col+'" stroke="#1c1426" stroke-width="2"/><circle cx="30" cy="38" r="16" fill="'+col+'" stroke="#1c1426" stroke-width="2"/><circle cx="30" cy="38" r="16" fill="#fff" opacity=".22"/><text x="30" y="90" text-anchor="middle" font-size="20" font-weight="700" fill="#1c1426">'+c.name[0]+'</text></svg>';
 }
 function cards(ids,edit=false){
- return '<div class="'+(edit?'collection':'cards')+'">'+ids.map(i=>{const [name,,faction,rank]=roster[i];return '<article class="card" data-rank="'+rank+'"><b>'+name+'</b><br><small>'+faction+' · '+rank+'</small><br><small>持有 '+data.owned[i]+'</small>'+(edit?'<br><button data-act="team" data-value="'+i+'">'+(data.team.includes(i)?'移出隊伍':'加入隊伍')+'</button>':'')+'</article>'}).join('')+'</div>';
+ return '<div class="'+(edit?'collection':'cards')+'">'+ids.map(i=>{const [name,,faction,rank]=roster[i];return '<article class="card" data-rank="'+rank+'"><b>'+name+'</b><br><small>'+faction+' · '+rn(rank)+'</small><br><small>持有 '+data.owned[i]+'</small>'+(edit?'<br><button data-act="team" data-value="'+i+'">'+(data.team.includes(i)?'移出隊伍':'加入隊伍')+'</button>':'')+'</article>'}).join('')+'</div>';
 }
 function formation(){
  return '<div class="cards">'+Array.from({length:5},(_,slot)=>{
   const i=data.team[slot];
   if(i===undefined)return '<article class="card empty"><div class="avatar">＋</div><div class="stand"></div><small>空位</small></article>';
   const [name,,faction,rank]=roster[i];
-  return '<article class="card"><div class="avatar">'+silhouette(i)+'</div><div class="stand"></div><b>'+name+'</b><br><small>'+faction+' · '+rank+'</small></article>';
+  return '<article class="card"><div class="avatar">'+silhouette(i)+'</div><div class="stand"></div><b>'+name+'</b><br><small>'+faction+' · '+rn(rank)+'</small></article>';
  }).join('')+'</div>';
 }
 // 首頁：5 個站位由左到右，隊伍第 1 位站中間
@@ -208,7 +209,7 @@ function equipPage(){
  const tabs='<div class="eqtabs">'+[['weapon','武器'],['armor','裝備']].map(([k,l])=>'<button data-act="eqtab" data-value="'+k+'" aria-current="'+(k===eqTab)+'">'+l+'</button>').join('')+'</div>';
  const filt='<div class="eqfilter">'+['全部',exKind].concat(types).map(k=>'<button data-act="eqfilter" data-value="'+k+'" aria-current="'+(k===eqFilter)+'">'+k+'</button>').join('')+'</div>';
  if(!list.length)return '<div class="gdetail"><div class="gside">'+tabs+filt+'<p class="muted">這個類別目前沒有武器。</p></div></div>';
- return '<div class="gdetail"><div class="gshow"><div class="gfig">'+equipIcon(eqTab,it)+'</div><div class="stand"></div><b>'+it.name+'</b><small>'+it.rank+' · '+it.desc+'</small></div>'+
+ return '<div class="gdetail"><div class="gshow"><div class="gfig">'+equipIcon(eqTab,it)+'</div><div class="stand"></div><b>'+it.name+'</b><small>'+rn(it.rank)+' · '+it.desc+'</small></div>'+
   '<div class="gside">'+tabs+filt+'<section class="gstat"><h3>數據</h3>'+(it.stats.length?'<dl>'+it.stats.map(([k,v])=>'<dt>'+k+'</dt><dd>'+v+'</dd>').join('')+'</dl>':'<p class="muted">數據待設計。</p>')+'</section></div></div>'+
   '<div class="collection">'+list.map((x,i)=>'<button class="gpick" data-act="eqsel" data-value="'+i+'" aria-current="'+(i===eqSel)+'"><span class="gm">'+equipIcon(eqTab,x)+'</span><b>'+x.name+'</b>'+(x.kind!=='一般'?'<small>'+x.owner+'</small>':'')+'<small class="own">'+(data.gear[x.id]?'持有 '+data.gear[x.id]:'未持有')+'</small>'+'</button>').join('')+'</div>';
 }
@@ -256,7 +257,7 @@ function profileBox(){
 function poolDesc(){
  const [c,r,f]=pools[pool][1],rk=['封神級','稀有','普通'];
  const list=poolKind==='hero'?rk.map(k=>[k,FS.characters.filter(x=>x.rank===k).map(x=>x.name)]):rk.map(k=>[k,['weapon','armor'].flatMap(t=>FS.equipment[t].filter(x=>x.rank===k).map(x=>x.name))]);
- return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="卡池說明"><div class="mhead"><b>'+(poolKind==='hero'?'神將':'武裝')+' 說明</b><button class="mx" data-act="closemodal" aria-label="完成">完成</button></div><div class="mbody" style="max-height:58vh;overflow:auto"><p>機率　普通 '+c+'%　稀有 '+r+'%　封神級 '+f+'%</p>'+list.map(([k,ns])=>'<p><b>'+k+'（'+ns.length+'）</b><br><span class="muted">'+(Object.entries(ns.reduce((g,n)=>(g[n]=(g[n]||0)+1,g),{})).map(([n,c])=>n+(c>1?' ×'+c:'')).join('、')||'—')+'</span></p>').join('')+'<p class="muted">抽中同一種時，持有數 +1。</p></div></div>';
+ return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="卡池說明"><div class="mhead"><b>'+(poolKind==='hero'?'神將':'武裝')+' 說明</b><button class="mx" data-act="closemodal" aria-label="完成">完成</button></div><div class="mbody" style="max-height:58vh;overflow:auto"><p>機率　散仙 '+c+'%　真仙 '+r+'%　金仙 '+f+'%</p><p class="muted">'+rk.slice().reverse().map(k=>rn(k)+'＝'+RFRAME[k]+'框').join('　')+'</p>'+list.map(([k,ns])=>'<p><b>'+rn(k)+'（'+RFRAME[k]+'框・'+ns.length+'）</b><br><span class="muted">'+(Object.entries(ns.reduce((g,n)=>(g[n]=(g[n]||0)+1,g),{})).map(([n,c])=>n+(c>1?' ×'+c:'')).join('、')||'—')+'</span></p>').join('')+'<p class="muted">抽中同一種時，持有數 +1。</p></div></div>';
 }
 function modalBox(){
  if(!modal)return '';
@@ -354,7 +355,7 @@ app.onclick=event=>{
      const i=candidates[Math.floor(Math.random()*candidates.length)];
      const duplicate=!!data.owned[i];
      data.owned[i]=(data.owned[i]||0)+1;
-     out.push({n:roster[i][0],r:rank,nw:!duplicate,txt:roster[i][0]+' · '+rank+(duplicate?'（持有數 +1）':'（新神將）')});
+     out.push({n:roster[i][0],r:rank,nw:!duplicate,txt:roster[i][0]+' · '+rn(rank)+(duplicate?'（持有數 +1）':'（新神將）')});
     }else{
      // 武裝池：先等機率決定武器或裝備，再依稀有度抽一件（含專武、專屬裝備）
      const kind=Math.random()<.5?'weapon':'armor';
@@ -362,12 +363,12 @@ app.onclick=event=>{
      const it=cands[Math.floor(Math.random()*cands.length)];
      const duplicate=!!data.gear[it.id];
      data.gear[it.id]=(data.gear[it.id]||0)+1;
-     out.push({n:it.name,r:rank,nw:!duplicate,txt:it.name+' · '+rank+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
+     out.push({n:it.name,r:rank,nw:!duplicate,txt:it.name+' · '+rn(rank)+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
     }
    }
    if(out.length===1)result='招募到 '+out[0].txt;
    else{const ord={'封神級':0,'稀有':1,'普通':2},g={};out.forEach(e=>{const k=e.n+'|'+e.r;(g[k]=g[k]||{n:e.n,r:e.r,c:0,nw:false});g[k].c++;if(e.nw)g[k].nw=true});
-    result='招募 '+pc[2]+'：'+Object.values(g).sort((a,b)=>ord[a.r]-ord[b.r]).map(e=>e.n+'（'+e.r+'）'+(e.c>1?'×'+e.c:'')+(e.nw?' 新':'')).join('、')}
+    result='招募 '+pc[2]+'：'+Object.values(g).sort((a,b)=>ord[a.r]-ord[b.r]).map(e=>e.n+'（'+rn(e.r)+'）'+(e.c>1?'×'+e.c:'')+(e.nw?' 新':'')).join('、')}
   }
  }
  save();draw();
