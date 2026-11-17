@@ -68,7 +68,7 @@ main:has(.layout) .layout{flex:1 1 auto;min-height:0;gap:6px}
 main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1a1226}
 .home{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;isolation:isolate;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .home-bg{position:absolute;inset:0;z-index:-1;background:var(--hbg,none) center bottom/cover no-repeat,radial-gradient(ellipse 36% 26% at 50% 50%,#ffd78a99,transparent 72%),radial-gradient(ellipse 26% 16% at 14% 30%,#ff9fb888,transparent 72%),radial-gradient(ellipse 26% 16% at 86% 24%,#b9a3ff88,transparent 72%),linear-gradient(#4a2f78 0%,#a4568c 32%,#ec9a6a 52%,#8d5a45 52.2%,#55372f 100%)}
-.hs{position:relative;container-type:inline-size;width:min(100%,calc((100dvh - env(safe-area-inset-bottom)) * 1846 / 852));aspect-ratio:1846/852}
+.hs{position:relative;container-type:inline-size;width:min(100%,calc((100dvh - env(safe-area-inset-bottom)) * 1846 / 852));height:min(calc(100dvh - env(safe-area-inset-bottom)),calc(100vw / 1.75))} /* 視窗較方時，舞台往上下撐滿，不再上下留一大塊空白 */
 .hs button{position:absolute;padding:0;color:#fff1cd;font-weight:bold;-webkit-tap-highlight-color:transparent}
 .hs button:active{filter:brightness(1.25)}.hs button:focus-visible{outline:3px solid #ffd075;outline-offset:2px}
 .h-logo{position:absolute;left:1%;top:0;width:24%;max-height:30%;object-fit:contain;pointer-events:none}.h-title{position:absolute;left:2.5%;top:3%;font-size:5.4cqw;font-weight:800;letter-spacing:.3cqw;color:#ffe49b;text-shadow:.2cqw .3cqw #43221c,0 0 2cqw #f59655}
@@ -79,7 +79,7 @@ main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1
 .h-sign{left:70%;top:15.5%;width:12%;height:12%;min-width:44px;min-height:44px;border-radius:1cqw;border:.35cqw solid #e6b66b;background:linear-gradient(#8a6a3a,#4a3520);box-shadow:0 .4cqw #2c1d12;font-size:3.4cqw;letter-spacing:.3cqw}
 .h-slot{top:28%;height:52%;min-width:44px;background:none;border:0;box-shadow:none;text-shadow:0 .2cqw .5cqw #251429}
 .h-slot .pad{position:absolute;left:0;right:0;bottom:11%;aspect-ratio:3.2/1;background:var(--ped,none) center/contain no-repeat,radial-gradient(ellipse at 50% 30%,#ffe9a8,#d79a45 55%,#6a4026);border-radius:50%;box-shadow:0 0 2.4cqw #ffc86a88}.h-slot .pad.img{background:var(--ped) center/contain no-repeat;border-radius:0;box-shadow:none}
-.h-slot .figure{position:absolute;left:0;right:0;top:0;bottom:19%;display:flex;align-items:flex-end;justify-content:center}.h-slot .figure .sil{height:100%;width:auto}
+.h-slot .figure{position:absolute;left:0;right:0;top:0;bottom:19%;display:flex;align-items:flex-end;justify-content:center}.h-slot .figure .sil{height:100%;width:auto;max-width:100%;object-fit:contain}
 .h-slot .nm{position:absolute;left:-8%;right:-8%;bottom:0;text-align:center;font-size:2.3cqw;line-height:1.2}
 .h-slot.empty .figure{align-items:center;font-size:6cqw;color:#ffe49b;opacity:.9}
 .h-dock{position:absolute;left:2.5%;right:2.5%;bottom:2%;height:15%;min-height:52px;display:grid;grid-template-columns:repeat(6,1fr);gap:1cqw;padding:.8cqw 1cqw;background:linear-gradient(#5a3b2b,#2e1d17);border:.35cqw solid #c99856;border-radius:1.6cqw}
