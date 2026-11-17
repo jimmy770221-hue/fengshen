@@ -10,12 +10,11 @@ main>header{display:none}
 .field{position:absolute;inset:0;background:linear-gradient(#1b2740,#10151e)}
 .field canvas{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:fill;border:0;border-radius:0;background:transparent}
 #statusRow{position:absolute;left:calc(var(--sl) + 8px);right:calc(var(--sr) + 8px);top:max(6px,env(safe-area-inset-top));margin:0;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;pointer-events:none}
-#statusRow>*{pointer-events:auto}
-#statusRow #pause{order:-1;min-height:40px;padding:4px 14px;font-size:14px;background:linear-gradient(#654432,#37251f);opacity:.95}
+#statusRow{justify-content:flex-start}#statusRow>*{pointer-events:auto}
+#statusRow #skills{position:static;transform:none;width:auto;max-width:none;display:flex;flex:0 0 auto;justify-content:flex-start;gap:6px;margin:0;grid-template-columns:none}#statusRow #skills button{flex:0 0 auto;min-width:0;width:40px;height:40px;min-height:0;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1;border:2px solid #be9152;background:linear-gradient(#654432,#37251f)}#statusRow #skills button img{width:28px;height:28px;object-fit:contain;pointer-events:none}#statusRow #skills button:disabled{opacity:.4}#statusRow #pause{order:-1;min-height:40px;padding:4px 14px;font-size:14px;background:linear-gradient(#654432,#37251f);opacity:.95}
 #statusRow>span{font-size:13px;background:#10151ecc;border-radius:8px;padding:3px 8px;white-space:nowrap}
 #statusRow>span:first-of-type{display:flex;align-items:center;gap:6px}
 #statusRow progress{width:clamp(60px,14vw,140px)}
-#statusRow #base{margin-left:auto}
 #endbox{position:absolute;inset:0;z-index:11;display:grid;place-items:center;background:#000c;padding:8px}#endbox[hidden]{display:none}.ebox{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:96%;padding:12px 18px;background:#161d2b;border:2px solid #c99856;border-radius:14px;text-align:center}.ebox h2{margin:0;font-size:clamp(22px,6vh,34px);color:#ffe6b3;letter-spacing:.3em}.ebox .win{color:#ffd36a;text-shadow:0 0 14px #ff9d3a}.ebox .team{display:flex;gap:6px;justify-content:center}.ebox .team figure{margin:0;width:clamp(48px,13vh,84px)}.ebox .team img{width:100%;display:block;border-radius:6px}.ebox .team i{display:block;aspect-ratio:5/7;border-radius:6px;background:#2a2233}.ebox .team small{display:block;font-size:11px;color:#e6d6ad}.ebox .rw{display:flex;gap:18px;font-size:clamp(15px,3.6vh,20px);color:#fff1cd}.ebox .lv{font-size:14px;color:#ffdda1}.ebox .lvbar{width:min(260px,70vw);height:8px;background:#202839;border-radius:99px;overflow:hidden;margin:3px auto 0}.ebox .lvbar b{display:block;height:100%;background:linear-gradient(#ffe18a,#d8962f)}.ebox .btns{display:flex;gap:10px}.ebox .btns button{min-width:110px}
 #endbox.full{position:fixed;inset:0;z-index:50;padding:0;background:#000}
 .ebox.full{position:relative;width:100%;height:100%;max-width:none;border:0;border-radius:0;justify-content:space-evenly;gap:0;padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--wbg,none) center bottom/cover no-repeat,radial-gradient(ellipse at 50% 30%,#ffd78a,#ec9a6a 50%,#a4568c)}
@@ -52,11 +51,11 @@ main>header{display:none}
 .bar #deck button.art{padding:0;border:0;border-radius:0;background:none;overflow:visible;box-shadow:none}.bar #deck .rti{position:absolute;top:5%;left:6%;width:clamp(26px,4.2vw,40px);height:auto;pointer-events:none;z-index:2}.bar #deck .frm{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}.bar #deck .rt{position:absolute;top:2px;left:2px;font:700 clamp(8px,1.4vw,11px)/1 system-ui;font-style:normal;color:#1c1426;padding:2px 4px;border-radius:4px}.bar #deck .cardempty{border:2px dashed #5d5568;border-radius:8px;background:#1a2132}
 </style><main><header><h1>封神</h1></header>
 <div class="field"><canvas id="field" width="1000" height="365" aria-label="左側闡教基地與右側截教基地的橫向戰場"></canvas>
-<div class="row" id="statusRow"><span><label for="meter">靈力</label> <progress id="meter" max="100"></progress> <b id="energy"></b></span><span id="base"></span><button id="pause">暫停</button></div>
+<div class="row" id="statusRow"><span><label for="meter">靈力</label> <progress id="meter" max="100"></progress> <b id="energy"></b></span><div class="deck" id="skills" aria-label="每場限用一次的神術"></div><button id="pause">暫停</button></div>
 <div class="row" id="armyRow"><b id="army"></b><small id="charges"></small></div>
 <p id="status" role="status"></p>
 <div id="pausemenu" hidden><div class="pbox" role="dialog" aria-modal="true" aria-label="暫停選單"><b>暫停</b><button id="resume">繼續</button><button id="reset">重新開始</button><button id="goback">返回故事</button></div></div></div>
-<div class="bar"><div class="deck" id="skills" aria-label="每場限用一次的神術"></div><div class="deck" id="deck"></div></div></main>
+<div class="bar"><div class="deck" id="deck"></div></div></main>
 <script src="assets/manifest.js"></script>
 <script src="data/fengshen-data.js"></script>
 <script src="nezha-sprite.js"></script>
@@ -99,6 +98,7 @@ function reset(){if(typeof endBox!=='undefined')hideEnd();cam=0;s={energy:55,cap
 const buttons=units.map((u,i)=>{
  const button=document.createElement('button');press(button,()=>deploy(i));el('deck').append(button);return button;
 });
+const SKILL_GLYPH={wind:'🌪️',fire:'🔥',thunder:'⚡',shock:'🌩️',ice:'❄️',poison:'☠️',slow:'🐢',haste:'💨',rage:'💢',ward:'🛡️',heal:'💚',energy:'🔮'};
 const skillButtons=Array.from({length:slotCount},(_,slot)=>{
  const button=document.createElement('button');
  press(button,()=>cast(loadout[slot]));
@@ -256,7 +256,6 @@ function update(dt){
 }
 function ui(){
  el('meter').max=s.cap;el('meter').value=s.energy;el('energy').textContent=Math.floor(s.energy)+' / '+s.cap;
- el('base').textContent=sideNames[0]+' '+Math.ceil(s.hp[0])+'　｜　'+sideNames[1]+' '+Math.ceil(s.hp[1]);
  buttons.forEach((b,i)=>{
   const u=units[i], wait=s.cd[i];
   const cu=u.id&&window.asset&&asset('char/'+u.id+'/card'); // 有卡面圖：圖鋪滿整張卡，不寫名字與特性，只留射程標與靈力/CD
@@ -273,7 +272,10 @@ function ui(){
  el('charges').textContent='大招剩餘 '+loadout.filter(i=>!s.used[i]).length+' / '+slotCount;
  skillButtons.forEach((b,slot)=>{
   const i=loadout[slot], skill=skills[i];
-  const markup=skill?'<i class="dot" style="background:'+skill[3]+'"></i>'+skill[1].split(' · ')[0]+(s.used[i]?'（已用）':''):'空欄';
+  // 圖示：有 assets/skill/icon_<代號> 圖檔就用圖，沒有就用暫代符號（之後放圖即可自動替換）
+  const su=skill&&window.asset&&window.asset('skill/icon_'+skill[0]);
+  const markup=skill?(su?'<img src="'+su+'" alt="">':SKILL_GLYPH[skill[0]]||'✦'):'';
+  b.title=skill?skill[1]:'';b.setAttribute('aria-label',skill?skill[1]:'空欄');
   setHTML(b,markup);
   b.disabled=!skill||!s.started||s.paused||!!s.over||s.used[i]||!canCast(skill[0],foes,team);
  });
