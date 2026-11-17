@@ -3,9 +3,11 @@
 /* ===== 開場畫面：滿版背景＋大標題，點一下進入大廳 ===== */
 #intro{position:fixed;inset:0;z-index:9000;background:#2a1838 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity .45s ease;overflow:hidden}
 #intro.out{opacity:0;pointer-events:none}
-#intro .ilogo{width:min(41vw,100vh);max-height:44vh;object-fit:contain;margin-top:-30vh;filter:drop-shadow(0 6px 18px #000a);animation:introfloat 4.2s ease-in-out infinite}
-#intro .itap{position:absolute;left:0;right:0;bottom:calc(11% + env(safe-area-inset-bottom));text-align:center;font-size:clamp(18px,4.2vh,30px);font-weight:900;letter-spacing:.35em;color:#fff1c9;text-shadow:0 0 10px #ff9d3a,0 2px 4px #3a1204,0 0 22px #000;animation:introblink 1.6s ease-in-out infinite}
-@keyframes introfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6vh)}}
+#intro .ibk{position:absolute;inset:-6%;background:center/cover no-repeat;filter:blur(18px) brightness(.9)}
+#intro .ist{position:relative;background:center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
+#intro .ilogo{width:calc(var(--sw,100vw)*.41);max-height:calc(var(--sh,100vh)*.44);object-fit:contain;margin-top:calc(var(--sh,100vh)*-.30);filter:drop-shadow(0 6px 18px #000a);animation:introfloat 4.2s ease-in-out infinite}
+#intro .itap{position:absolute;left:0;right:0;bottom:calc(11% + env(safe-area-inset-bottom));text-align:center;font-size:clamp(18px,calc(var(--sh,100vh)*.042),30px);font-weight:900;letter-spacing:.35em;color:#fff1c9;text-shadow:0 0 10px #ff9d3a,0 2px 4px #3a1204,0 0 22px #000;animation:introblink 1.6s ease-in-out infinite}
+@keyframes introfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--sh,100vh)*-.016))}}
 @keyframes introblink{0%,100%{opacity:1}50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){#intro .ilogo,#intro .itap{animation:none}}
 </style>
@@ -407,10 +409,10 @@ load();draw();
  const bg=window.asset&&asset('scene/intro_bg'),lg=window.asset&&asset('ui/logo');
  const d=document.createElement('div');d.id='intro';d.setAttribute('role','button');d.setAttribute('aria-label','封神戰線，點擊畫面開始');
  if(bg)d.style.backgroundImage='url('+bg+')';
- d.innerHTML=(lg?'<img class="ilogo" src="'+lg+'" alt="封神戰線" draggable="false">':'<h1 style="color:#ffd98a;font-size:8vh;text-shadow:0 3px 10px #000">封神戰線</h1>')+'<div class="itap">點擊畫面開始</div>';
+ d.innerHTML=(bg?'<div class="ibk" style="background-image:url('+bg+')"></div>':'')+'<div class="ist"'+(bg?' style="background-image:url('+bg+')"':'')+'>'+(lg?'<img class="ilogo" src="'+lg+'" alt="封神戰線" draggable="false">':'<h1 style="color:#ffd98a;font-size:8vh;text-shadow:0 3px 10px #000">封神戰線</h1>')+'<div class="itap">點擊畫面開始</div></div>';
  document.body.appendChild(d);
  /* 手機一開始就是橫的：用實際視窗大小撐滿並回到頂端，視窗改變時重算 */
- const fit=()=>{if(!d.isConnected)return;const vv=window.visualViewport,w=Math.round(vv?vv.width:innerWidth),h=Math.round(vv?vv.height:innerHeight);d.style.top='0';d.style.left='0';d.style.right='auto';d.style.bottom='auto';d.style.width=w+'px';d.style.height=h+'px';window.scrollTo(0,0)};
+ const fit=()=>{if(!d.isConnected)return;const vv=window.visualViewport,w=Math.round(vv?vv.width:innerWidth),h=Math.round(vv?vv.height:innerHeight);d.style.top='0';d.style.left='0';d.style.right='auto';d.style.bottom='auto';d.style.width=w+'px';d.style.height=h+'px';const st=d.querySelector('.ist');if(st){const R=2532/1170,sw=Math.min(w,h*R),sh=sw/R;st.style.width=sw+'px';st.style.height=sh+'px';d.style.setProperty('--sw',sw+'px');d.style.setProperty('--sh',sh+'px')}window.scrollTo(0,0)};
  fit();[60,200,500,1000,2000].forEach(t=>setTimeout(fit,t));
  window.addEventListener('resize',fit);window.addEventListener('orientationchange',()=>{fit();setTimeout(fit,150);setTimeout(fit,500)});
  if(window.visualViewport){visualViewport.addEventListener('resize',fit);visualViewport.addEventListener('scroll',fit)}
