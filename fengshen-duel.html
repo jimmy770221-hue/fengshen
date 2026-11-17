@@ -94,7 +94,7 @@ addEventListener('resize',fitView);addEventListener('orientationchange',()=>setT
 let s, last=0;
 const press=(b,fn)=>{b.onpointerdown=e=>{e.preventDefault();fn()};b.onclick=e=>{if(e.detail===0)fn()}};
 const setHTML=(b,m)=>{if(b._m!==m){b._m=m;b.innerHTML=m}};
-function reset(){if(typeof endBox!=='undefined')hideEnd();cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3,rings:[],dying:[]};ui();}
+function reset(){if(typeof endBox!=='undefined')hideEnd();cam=0;s={energy:55,cap:100,level:1,hp:[maxHP,maxHP],actors:[],fx:[],bh:[null,null],cd:units.map(()=>0),spawn:DIFF.firstSpawn,time:0,paused:false,used:skills.map(()=>false),shield:0,haste:0,rage:0,notice:'',noticeTime:0,over:'',started:false,countdown:3,rings:[],dying:[]};ui();}
 const buttons=units.map((u,i)=>{
  const button=document.createElement('button');press(button,()=>deploy(i));el('deck').append(button);return button;
 });
@@ -242,7 +242,8 @@ function update(dt){
    if(near){
     const victims=a.splash?opponents.filter(b=>Math.abs(b.x-target.x)<=a.splash):[target];
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
-   }else s.hp[1-a.side]=Math.max(0,s.hp[1-a.side]-damage);
+   }else{const sd=1-a.side,n=performance.now(),old=s.bh[sd];s.hp[sd]=Math.max(0,s.hp[sd]-damage);
+    if(s.hp[sd]===0)s.bh[sd]={t0:n,big:true};else if(!old||old.big!==true&&n-old.t0>90)s.bh[sd]={t0:n,big:false};}
    s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash,noLine:!!a.art});
    if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';s.won=a.side===0;break;}
   }else{
@@ -284,6 +285,12 @@ function ui(){
 }
 const battlefield=window.assetImg?window.assetImg('scene/battle_1-1_wide'):new Image();
 const baseImg=[window.assetImg?window.assetImg('scene/base_chanjiao'):new Image(),window.assetImg?window.assetImg('scene/base_jiejiao'):new Image()];
+/* 基地損壞圖：依血量比例換圖（完好／受損1/4／1/2／3/4／全毀） */
+const BASE_ST=['','_quarter','_half','_three_quarter','_destroyed'];
+const baseSt=['chanjiao','jiejiao'].map((f,i)=>BASE_ST.map((st,j)=>j===0?baseImg[i]:(window.assetImg?window.assetImg('scene/base_'+f+st):new Image())));
+const baseHitImg=window.assetImg?window.assetImg('fx/fx_base_hit'):new Image();
+const BH_T=[45,110,195,290],BH_REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+function baseState(hp){const r=hp/maxHP;return r<=0?4:r<=.25?3:r<=.5?2:r<=.75?1:0}
 // 戰場背景圖尚未製作：不載入圖檔，畫面用程式畫的占位場景（見 draw）。之後有圖時設定 battlefield.src 即可
 // 角色動畫：只負責「畫面表現」，不改動任何戰鬥數值或判定。有設定美術（art）的角色各有一個播放器
 const charImgs={};const charImg=id=>id&&window.assetImg?(charImgs[id]||(charImgs[id]=window.assetImg('char/'+id+'/portrait'))):null;
@@ -354,12 +361,23 @@ function draw(){
  }
  for(let side=0;side<2;side++){
   const x=side?right:left,bi=baseImg[side];
-  if(bi.complete&&bi.naturalWidth)ctx.drawImage(bi,x-88,floor-163,176,176);
+  const bst=baseState(s.hp[side]),bimg=baseSt[side][bst],hit=s.bh[side],ht=hit?(performance.now()-hit.t0)/(hit.big?1.6:1):9e9;
+  if(bimg.complete&&bimg.naturalWidth){
+   const sh=(!BH_REDUCE&&ht<120)?Math.sin(ht*.12)*2.5*(1-ht/120):0;
+   ctx.drawImage(bimg,x-88+sh,floor-163,176,176);
+   if(ht<120){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(BH_REDUCE?.25:.4)*(1-ht/120);ctx.drawImage(bimg,x-88+sh,floor-163,176,176);ctx.restore();}
+  }else if(bi.complete&&bi.naturalWidth)ctx.drawImage(bi,x-88,floor-163,176,176);
   else{
   ctx.fillStyle=side?'#573e65':'#2e665f';ctx.fillRect(x-35,192,70,94);
   ctx.fillStyle='#202634';ctx.fillRect(x-18,232,36,54);
   ctx.fillStyle=side?'#b78acb':'#e7bb70';
   for(let j=0;j<3;j++){ctx.beginPath();ctx.moveTo(x-48+j*6,204-j*18);ctx.lineTo(x,175-j*18);ctx.lineTo(x+48-j*6,204-j*18);ctx.fill();}
+  }
+  if(hit&&baseHitImg.complete&&baseHitImg.naturalWidth){
+   const tt=ht,k=BH_T.findIndex(v=>tt<v);
+   if(k>=0){const sz=hit.big?150:96,cx=hit.big?x:x+(side?-46:46),cy=hit.big?floor-70:floor-78;
+    ctx.save();ctx.globalAlpha=BH_REDUCE?.7:1;ctx.drawImage(baseHitImg,(k%2)*256,(k>>1)*256,256,256,cx-sz/2,cy-sz/2,sz,sz);ctx.restore();}
+   else if(!hit.big||ht>=BH_T[3])s.bh[side]=hit.big?hit:null;
   }
   bar(x-45,98,90,s.hp[side]/maxHP,side?'#cd9de7':'#80d3a6');
  }
@@ -401,7 +419,7 @@ function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm
 let loadingArt=true;
 // 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);
-const list=[battlefield,baseImg[0],baseImg[1],ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
+const list=[battlefield,...baseSt[0],...baseSt[1],baseHitImg,ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
 const ok=i=>!i||(i.complete&&(i.naturalWidth||!i.src));
 let done=false;const fin=()=>{if(done)return;done=true;loadingArt=false;ov.remove()};
 const t0=performance.now();(function chk(){if(list.every(ok)||performance.now()-t0>5000)fin();else setTimeout(chk,60)})();})();

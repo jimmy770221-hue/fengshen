@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "953641d0",
+ "v": "b211d698",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -92,7 +92,16 @@ window.ASSETS={
   "gear/a_yijia": "assets/gear/a_yijia.614ac17d.webp",
   "skill/fx_fire": "assets/skill/fx_fire.0ecb567e.webp",
   "skill/icon_fire": "assets/skill/icon_fire.05d2c5e8.webp",
-  "fx/fx_soul": "assets/fx/fx_soul.519b7cbb.webp"
+  "fx/fx_soul": "assets/fx/fx_soul.519b7cbb.webp",
+  "scene/base_chanjiao_quarter": "assets/scene/base_chanjiao_quarter.6ba6e054.webp",
+  "scene/base_chanjiao_half": "assets/scene/base_chanjiao_half.ebb5c84b.webp",
+  "scene/base_chanjiao_three_quarter": "assets/scene/base_chanjiao_three_quarter.aafa642f.webp",
+  "scene/base_chanjiao_destroyed": "assets/scene/base_chanjiao_destroyed.005db221.webp",
+  "scene/base_jiejiao_quarter": "assets/scene/base_jiejiao_quarter.a13281bc.webp",
+  "scene/base_jiejiao_half": "assets/scene/base_jiejiao_half.067b7654.webp",
+  "scene/base_jiejiao_three_quarter": "assets/scene/base_jiejiao_three_quarter.e8391efc.webp",
+  "scene/base_jiejiao_destroyed": "assets/scene/base_jiejiao_destroyed.a1c28b1f.webp",
+  "fx/fx_base_hit": "assets/fx/fx_base_hit.be6baaec.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -458,6 +467,42 @@ window.ASSETS={
   "fx/fx_soul": [
    128,
    128
+  ],
+  "scene/base_chanjiao_quarter": [
+   512,
+   512
+  ],
+  "scene/base_chanjiao_half": [
+   512,
+   512
+  ],
+  "scene/base_chanjiao_three_quarter": [
+   512,
+   512
+  ],
+  "scene/base_chanjiao_destroyed": [
+   512,
+   512
+  ],
+  "scene/base_jiejiao_quarter": [
+   512,
+   512
+  ],
+  "scene/base_jiejiao_half": [
+   512,
+   512
+  ],
+  "scene/base_jiejiao_three_quarter": [
+   512,
+   512
+  ],
+  "scene/base_jiejiao_destroyed": [
+   512,
+   512
+  ],
+  "fx/fx_base_hit": [
+   512,
+   512
   ]
  },
  "critical": [
