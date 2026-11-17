@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "912183b5",
+ "v": "953641d0",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -62,6 +62,10 @@ window.ASSETS={
   "char/nezha/card": "assets/char/nezha/card.ecaf37b5.webp",
   "char/nezha/icon": "assets/char/nezha/icon.55a69373.webp",
   "char/nezha/portrait": "assets/char/nezha/portrait.7874f0a5.webp",
+  "char/nezha/sheet-move": "assets/char/nezha/sheet-move.a1444201.webp",
+  "char/nezha/sheet-move-blink": "assets/char/nezha/sheet-move-blink.ec022211.webp",
+  "char/nezha/sheet-attack": "assets/char/nezha/sheet-attack.848a4323.webp",
+  "char/nezha/sheet-fall": "assets/char/nezha/sheet-fall.2cb37930.webp",
   "char/yangjian/card": "assets/char/yangjian/card.55651942.webp",
   "char/yangjian/icon": "assets/char/yangjian/icon.a5a64dd9.webp",
   "char/yangjian/portrait": "assets/char/yangjian/portrait.6b4c5239.webp",
@@ -84,9 +88,11 @@ window.ASSETS={
   "char/jiuweihu/icon": "assets/char/jiuweihu/icon.0e180373.webp",
   "char/jiuweihu/portrait": "assets/char/jiuweihu/portrait.9a328110.webp",
   "weapon/w_jian": "assets/weapon/w_jian.4345bb42.webp",
+  "weapon/fx_qiankunquan": "assets/weapon/fx_qiankunquan.3d75286d.webp",
   "gear/a_yijia": "assets/gear/a_yijia.614ac17d.webp",
   "skill/fx_fire": "assets/skill/fx_fire.0ecb567e.webp",
-  "skill/icon_fire": "assets/skill/icon_fire.05d2c5e8.webp"
+  "skill/icon_fire": "assets/skill/icon_fire.05d2c5e8.webp",
+  "fx/fx_soul": "assets/fx/fx_soul.519b7cbb.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -426,6 +432,30 @@ window.ASSETS={
    512
   ],
   "skill/icon_fire": [
+   128,
+   128
+  ],
+  "char/nezha/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/nezha/sheet-move-blink": [
+   1024,
+   1024
+  ],
+  "char/nezha/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/nezha/sheet-fall": [
+   1024,
+   1024
+  ],
+  "weapon/fx_qiankunquan": [
+   256,
+   256
+  ],
+  "fx/fx_soul": [
    128,
    128
   ]
