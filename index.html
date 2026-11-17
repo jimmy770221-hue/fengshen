@@ -1,0 +1,319 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>封神</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#121b26;color:#faedcf;font:15px system-ui}main{padding:16px;max-width:1200px;margin:auto}h1{font-size:clamp(26px,5vw,54px);margin:.3em 0}button,select,input{font:inherit}button,select{background:#24394a;color:#fff2d5;border:1px solid #887951;border-radius:7px;padding:9px;min-height:40px;cursor:pointer}button:hover,button[aria-current=true]{background:#725638}button:disabled{opacity:.5}.layout{display:grid;grid-template-columns:155px 1fr;gap:12px}nav{display:grid;align-content:start;gap:5px}.panel{background:#1b2937;border:1px solid #605841;border-radius:12px;padding:14px;min-width:0}.cards,.actions{display:flex;flex-wrap:wrap;gap:8px}.card{background:#2c3945;border:1px solid #736746;border-radius:8px;padding:12px;min-width:110px}.muted{color:#c7bda6}iframe{width:100%;height:72vh;border:0}label{display:block;margin:8px 0}@media(max-width:740px){main{padding:8px}.layout{grid-template-columns:105px 1fr;gap:7px}nav button{font-size:12px;padding:5px;min-height:34px}.panel{padding:8px}}
+
+.layout{display:flex;flex-direction:column-reverse}.layout nav{display:flex;overflow-x:auto;padding:5px;gap:7px;background:#312521;border-radius:12px}.layout nav button{flex:0 0 auto;min-height:44px;background:#453228}.layout nav button[aria-current=true]{background:#82603a}
+.stage{position:relative;padding:12px 8px 8px;text-align:center;border-radius:12px;background:radial-gradient(ellipse at 50% 105%,#765938 5%,#3a3549 54%,#20273e 85%)}.stage .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:14px auto;max-width:780px}.stage .card{min-width:0;padding:4px;background:transparent;border:0}.avatar{height:72px;display:grid;place-items:center;color:#f9ce7c;font-size:36px;text-shadow:0 3px 9px #15152b}.avatar img{height:100%;max-height:72px;max-width:100%;object-fit:contain}.stand{height:12px;margin:0 auto 5px;width:90%;max-width:105px;background:linear-gradient(#e7bf71,#916341);border:2px solid #f1ce83;border-radius:50%;box-shadow:0 4px #4a352c}.collection{display:flex;overflow-x:auto;padding:6px 2px;gap:8px}.collection .card{flex:0 0 130px;background:#443655}.collection .card[data-rank="普通"]{background:#50392e}.panel h2{margin:.3em 0}.stage button{background:#855234;border-color:#e6bf75}.resources{float:right;color:#f4d590}.empty{opacity:.65}
+@media(max-height:450px){.stage{padding-top:4px}.stage .cards{margin:5px auto}.stage .avatar,.stage .avatar img{height:52px}.stage .card small{display:none}.stage .stand{height:8px}.panel{padding:7px}}
+
+.stage{isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 50% 120%,#e3a35d 0%,#79547b 46%,#253454 78%,#172338)}
+.stage:before,.stage:after{content:"";position:absolute;pointer-events:none;z-index:-1;inset:0}
+.stage:before{background:radial-gradient(ellipse at 15% 40%,#f8c69555,transparent 27%),radial-gradient(ellipse at 84% 27%,#bca7ff55,transparent 25%);animation:sky-drift 12s ease-in-out infinite alternate}
+.stage:after{inset:35% -15% -45%;background:radial-gradient(ellipse at center,#d79d5a 0%,#8d604d 50%,transparent 51%);opacity:.55}
+.stage .stand{box-shadow:0 4px #543530,0 0 13px #ffcb7255}
+.stage .avatar img{display:block;width:auto;mix-blend-mode:multiply}
+.stage .avatar:has(img){background:radial-gradient(ellipse at 50% 87%,#ffd27d80,transparent 55%);animation:hero-idle 3.4s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes hero-idle{50%{transform:translateY(-3px) scale(1.018,1.028)}}
+@keyframes sky-drift{to{transform:translateX(4%)}}
+@media(prefers-reduced-motion:reduce){.stage:before,.stage .avatar:has(img){animation:none}}
+
+.stage:before,.stage:after{display:none}.stage .cards{flex:0 0 100%;align-items:end;margin:auto 0 0;max-width:none;text-shadow:0 2px 3px #251429}
+.stage .avatar:has(img){animation:none;background:none}.stage .avatar img{mix-blend-mode:normal}
+.stage .avatar{height:clamp(58px,22vh,150px)}.stage .avatar img{max-height:none}.stage .stand{height:14px}
+/* 哪吒待機動畫改由 JS 依全域時間換格（見 syncNezha），重新渲染不會重播 */
+.stage{border:2px solid #c78d48;box-shadow:inset 0 0 22px #3c223a}.stage button,.poolhall h3,.poolhall p{margin:2px 0}.poolhall .eqtabs{margin-bottom:2px}.poolhall .eqtabs button,.poolhall .actions button{min-height:34px;padding:2px 12px}.poolhall button[data-act=pull]{min-height:38px}
+.poolhall button{background:linear-gradient(#a05034,#59271e);border:2px solid #e6b66b;box-shadow:0 3px #43241d;color:#fff1cd;font-weight:bold}
+.stage .gate{font-size:clamp(16px,3vw,29px);padding:7px 25px}.stage .stand{height:18px;background:radial-gradient(ellipse at 50% 18%,#ffe8a2,#ce7f32 55%,#633a26 60%);box-shadow:0 0 15px #ffbb67}
+.layout nav button{min-width:44px;min-height:44px;border-color:#bc8d53;background:linear-gradient(#593b2b,#34221b)}.layout nav button[aria-current=true]{background:linear-gradient(#a47442,#624224)}
+.layout nav .illustrated{padding:0;border:0}.layout nav .illustrated[aria-current=true]{outline:2px solid #ffd075;outline-offset:-2px}
+.battleframe{height:72dvh;background:#1a2236;border-radius:10px}
+/* ── 橫向矮螢幕（iPhone 橫向）：整頁不捲動，底部按鈕列固定且避開 Home 條；內容區自行捲動 ── */
+@media (orientation:landscape) and (max-height:520px){
+main:has(.layout){display:flex;flex-direction:column;height:100dvh;gap:4px;padding-top:max(4px,env(safe-area-inset-top));padding-bottom:max(6px,env(safe-area-inset-bottom))}
+main:has(.layout)>header{flex:0 0 auto;line-height:1.2}
+main:has(.layout) .layout{flex:1 1 auto;min-height:0;gap:6px}
+.layout .panel{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;padding:6px 10px}
+.layout .panel>h2{font-size:15px;margin:0 0 4px}
+.layout nav{flex:0 0 auto;gap:5px;padding:4px 6px}
+.layout nav button:not(.illustrated){padding:4px 6px;font-size:12px}
+.stage{min-height:0;padding:6px 8px;gap:4px}
+.stage .avatar{height:clamp(52px,22vh,84px)}
+.stage .gate{padding:5px 22px}
+.stage button:not(.gate){min-height:40px;padding:4px 12px}
+}
+/* ── 首頁：整張底圖就是畫面，所有選單按鈕是貼在圖上的透明熱區（座標以 1846×852 原圖換算成百分比） ── */
+/* 填滿：同一張圖放大＋模糊鋪滿整個螢幕當延伸背景，前景圖仍等比例完整顯示，按鈕位置不變 */
+.poolart{align-self:center;height:min(220px,32vh)}.poolart .pbanner{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:10px;display:block}.poolart .sil{height:100%;width:100%}
+
+/* ── 首頁：四層疊合。①填滿層 ②場景層（角色站位）③介面層（招牌、按鈕）都放進比例 1846:852 的安全區舞台，不同螢幕比例都不會裁掉按鈕 ── */
+main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1a1226}
+.home{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;isolation:isolate;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.home-bg{position:absolute;inset:0;z-index:-1;background:var(--hbg,none) center bottom/cover no-repeat,radial-gradient(ellipse 36% 26% at 50% 50%,#ffd78a99,transparent 72%),radial-gradient(ellipse 26% 16% at 14% 30%,#ff9fb888,transparent 72%),radial-gradient(ellipse 26% 16% at 86% 24%,#b9a3ff88,transparent 72%),linear-gradient(#4a2f78 0%,#a4568c 32%,#ec9a6a 52%,#8d5a45 52.2%,#55372f 100%)}
+.hs{position:relative;container-type:inline-size;width:min(100%,calc((100dvh - env(safe-area-inset-bottom)) * 1846 / 852));aspect-ratio:1846/852}
+.hs button{position:absolute;padding:0;color:#fff1cd;font-weight:bold;-webkit-tap-highlight-color:transparent}
+.hs button:active{filter:brightness(1.25)}.hs button:focus-visible{outline:3px solid #ffd075;outline-offset:2px}
+.h-logo{position:absolute;left:1%;top:0;width:24%;max-height:30%;object-fit:contain;pointer-events:none}.h-title{position:absolute;left:2.5%;top:3%;font-size:5.4cqw;font-weight:800;letter-spacing:.3cqw;color:#ffe49b;text-shadow:.2cqw .3cqw #43221c,0 0 2cqw #f59655}
+.h-resrow{position:absolute;right:2.5%;top:1%;display:flex;gap:.7cqw}
+.h-res .ri{width:2.6cqw;height:2.6cqw;min-width:26px;min-height:26px;margin-right:.6cqw}.h-resrow .h-res{position:static;min-width:44px;min-height:44px;display:flex;align-items:center;padding:0 1.2cqw;border-radius:99px;border:2px solid #e6b66b;background:linear-gradient(#5a3b2b,#2e1d17);color:#fff1cd;font-weight:bold;font-size:2cqw;white-space:nowrap;pointer-events:none;user-select:none}
+.h-gate.img{background:var(--gate) center/100% 100% no-repeat;border:0;box-shadow:none;color:#fff1cd;text-shadow:0 .3cqw .4cqw #5a0d08,0 0 1cqw #5a0d08}.h-gate{left:38%;top:3%;width:24%;height:21%;min-height:44px;border-radius:1.2cqw;border:.4cqw solid #e6b66b;background:linear-gradient(#a05034,#59271e);box-shadow:0 .5cqw #43241d,0 0 3cqw #ffbb6788;font-size:5.4cqw;letter-spacing:.8cqw;text-shadow:0 .2cqw #43221c}
+.h-sign{left:70%;top:15.5%;width:12%;height:12%;min-width:44px;min-height:44px;border-radius:1cqw;border:.35cqw solid #e6b66b;background:linear-gradient(#8a6a3a,#4a3520);box-shadow:0 .4cqw #2c1d12;font-size:3.4cqw;letter-spacing:.3cqw}
+.h-slot{top:28%;height:52%;min-width:44px;background:none;border:0;box-shadow:none;text-shadow:0 .2cqw .5cqw #251429}
+.h-slot .pad{position:absolute;left:0;right:0;bottom:11%;aspect-ratio:3.2/1;background:var(--ped,none) center/contain no-repeat,radial-gradient(ellipse at 50% 30%,#ffe9a8,#d79a45 55%,#6a4026);border-radius:50%;box-shadow:0 0 2.4cqw #ffc86a88}.h-slot .pad.img{background:var(--ped) center/contain no-repeat;border-radius:0;box-shadow:none}
+.h-slot .figure{position:absolute;left:0;right:0;top:0;bottom:19%;display:flex;align-items:flex-end;justify-content:center}.h-slot .figure .sil{height:100%;width:auto}
+.h-slot .nm{position:absolute;left:-8%;right:-8%;bottom:0;text-align:center;font-size:2.3cqw;line-height:1.2}
+.h-slot.empty .figure{align-items:center;font-size:6cqw;color:#ffe49b;opacity:.9}
+.h-dock{position:absolute;left:2.5%;right:2.5%;bottom:2%;height:15%;min-height:52px;display:grid;grid-template-columns:repeat(6,1fr);gap:1cqw;padding:.8cqw 1cqw;background:linear-gradient(#5a3b2b,#2e1d17);border:.35cqw solid #c99856;border-radius:1.6cqw}
+.h-icon{right:2.5%;width:5cqw;height:5cqw;min-width:44px;min-height:44px;border-radius:50%;border:.3cqw solid #e6b66b;background:linear-gradient(#5a3b2b,#2e1d17);box-shadow:0 .3cqw #1c120d;display:grid;place-items:center}.h-icon svg{width:62%;height:62%}.h-icon img{width:80%;height:80%;pointer-events:none}
+.h-dock button .mi{height:62%;width:auto;margin-right:.5cqw;pointer-events:none}.h-dock button{display:flex;align-items:center;justify-content:center;position:static;min-height:44px;height:100%;border-radius:1cqw;border:.25cqw solid #bc8d53;background:linear-gradient(#7a5236,#3d2a1f);font-size:2.6cqw}
+.gdetail{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
+.gshow{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;padding:10px;border:2px solid #c78d48;border-radius:12px;background:linear-gradient(#5b3b86,#b25f8f 55%,#d98c5a);text-shadow:0 2px 3px #251429}
+.gshow.hero{display:flex;align-items:center;justify-content:center;padding:0}.gshow.hero .gfig{height:clamp(150px,54vh,460px);align-items:center}.gshow.hero .gfig .sil{height:100%;width:auto;max-width:100%;object-fit:contain}.gfig{height:clamp(110px,38vh,260px);display:flex;align-items:flex-end}.gfig .sil{height:100%;width:auto}
+.gside{display:flex;flex-direction:column;gap:8px;min-width:0}.gside section{background:#2c3945;border:1px solid #736746;border-radius:8px;padding:8px 12px}.gside h3{margin:0 0 6px;color:#ffdda1;font-size:15px}
+.gstat dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}.gstat dt{color:#c7bda6}.gstat dd{margin:0;text-align:right;font-weight:bold;font-size:18px}
+.gup p{margin:0 0 6px}
+.collection .gpick{flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:#443655}.collection .gpick[aria-current=true]{background:#965c36;outline:2px solid #ffe0a6}.collection .gpick.cardpick{position:relative;flex:0 0 min(66px,13.2vh);aspect-ratio:5/7;padding:0;background:none;border:0;overflow:visible}.cardpick .cface{position:absolute;inset:2.5% 2%;width:96%;height:95%;object-fit:cover;border-radius:6%/4%}.cardpick .cfrm{position:absolute;pointer-events:none}.collection .gpick.cardpick[aria-current=true]{background:none;outline:0;filter:drop-shadow(0 0 5px #ffe0a6) drop-shadow(0 0 2px #ffe0a6);transform:translateY(-3px)}.gpick .own{opacity:.75}.gpick .gm{height:44px;display:flex;align-items:flex-end}.gpick .gm .sil{height:100%;width:auto}
+.backhome{min-height:44px;padding:4px 14px;margin-right:6px;border-color:#e6b66b;background:linear-gradient(#a05034,#59271e);font-weight:bold}header{display:flex;align-items:center;gap:6px}header .resources{margin-left:auto;float:none}
+.eqfilter{display:flex;gap:4px;overflow-x:auto;padding:3px 3px 4px;margin-bottom:4px;-webkit-overflow-scrolling:touch}.eqfilter button{flex:0 0 auto;min-height:30px;padding:2px 9px;font-size:13px}.eqfilter [aria-current=true]{background:#965c36;outline:2px solid #ffe0a6}.eqtabs{display:flex;gap:8px;margin-bottom:8px}.eqtabs button{flex:1;font-weight:bold}.eqtabs [aria-current=true]{background:linear-gradient(#a47442,#624224);border-color:#e6b66b}
+.stonegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}.stonecard{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 4px;min-height:96px;border-radius:10px;border:2px solid #be9152;background:linear-gradient(#3b4a63,#232c3d)}.stonecard .gemart img{width:64px;height:48px;object-fit:contain;display:block}.stonecard .gemart svg{width:64px;height:40px;display:block}.stonecard b{font-size:18px;color:#bff6ee}.stonecard small{font-size:11px;color:#c5b998}.stonecard .price{color:#ffda8c;font-weight:bold;font-size:14px}
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}.shopgrid .card{display:flex;flex-direction:column;gap:2px}.shopgrid p{margin:2px 0}.shopgrid .price{color:#ffda8c;font-weight:bold;margin-top:auto}
+.mback,.mback:hover{position:absolute;inset:0;z-index:5;border:0;border-radius:0;background:#000a;padding:0}.mbox{position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);width:min(86%,420px);max-height:80%;overflow:auto;background:#1b2937;border:2px solid #e6b66b;border-radius:12px;padding:10px 14px;box-shadow:0 8px 30px #000a;color:#faedcf}.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.mhead b{font-size:17px;color:#ffdda1}.mx{min-width:44px;min-height:44px;padding:0}.mbody p{margin:6px 0}
+.smap-wrap{display:grid;grid-template-columns:1.9fr 1fr;gap:8px;height:clamp(150px,73vh,440px)}.smap{position:relative;min-height:0;border-radius:12px;border:2px solid #e6b66b;background:linear-gradient(#0a0814aa,#0a081466),var(--smapbg,none) center/cover no-repeat,radial-gradient(ellipse at 50% 100%,#8a6540 5%,#4a3a52 55%,#2a2a4a 90%);overflow:hidden}.smap svg{position:absolute;inset:0;width:100%;height:100%}.schap{position:absolute;left:10px;top:6px;z-index:1;font-weight:bold;color:#ffdda1;font-size:14px}.snode{position:absolute;transform:translate(-50%,-50%);width:50px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:8px;border:2px solid #d9b877;background:#6b3f2a;font-size:14px;font-weight:bold;color:#fff1cd;box-shadow:none}.snode.lock{background:#2f2b3d;border-color:#5d5568;color:#8d8798}.snode[aria-current=true]{border-color:#fff;border-width:3px;box-shadow:none;outline:0}
+.sinfo{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:12px;border:2px solid #5b4b3a;background:#243242;overflow:auto}.sinfo b{font-size:17px;color:#ffdda1}.sinfo p{margin:2px 0;font-size:13px}.sinfo>small{font-size:12px}.sinfo button{margin-top:auto}
+.mfix{position:fixed!important}.mbox.mfix{max-height:92%}.skcfg{margin-top:2px}.skcfg>b{font-size:14px;color:#ffdda1}.skslots{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:3px}.skslot{min-height:44px;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:8px}.skslot small{font-size:11px}.skplus{font-size:20px;color:#d9b877}.skdot{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid #1c1426;flex:none}.skpick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.skopt{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;min-height:60px;text-align:left}.skopt small{font-size:11px;opacity:.8}.skopt[aria-pressed=true]{background:#965c36;outline:2px solid #ffe0a6}.skopt:disabled{opacity:.45}
+.sil{display:block;overflow:visible}.avatar{display:flex;align-items:flex-end;justify-content:center;font-size:30px}.avatar .sil{height:100%;width:auto;max-width:100%}
+@media (orientation:landscape) and (max-height:520px){
+.backhome{min-height:36px;padding:2px 12px}.eqtabs{margin-bottom:4px}.eqtabs button{min-height:34px;padding:2px 10px}.gdetail{gap:8px}.gfig{height:clamp(60px,20vh,84px)}.gshow{padding:6px}.gside{gap:4px}.gside section{padding:4px 10px}.gside h3{margin:0 0 2px;font-size:13px}.gstat dl{grid-template-columns:auto 1fr auto 1fr;gap:2px 10px}.gstat dd{font-size:15px}.gstat dl.gmain{grid-template-columns:auto 1fr auto 1fr auto 1fr}.gstat dl.gsub{margin-top:4px;padding-top:4px;border-top:1px solid #ffffff22}.gstat dl.gsub dt{font-size:12px}.gstat dl.gsub dd{font-size:13px;font-weight:600;color:#d9cfb6}.gup p{display:none}.shopgrid .card{padding:6px 10px}.shopgrid .card p.muted{font-size:12px}.page-shop .result{min-height:0;margin:2px 0}.gside section p{margin:0;font-size:13px}.gup{display:flex;align-items:center;gap:8px}.gup h3{margin:0}.gside button{min-height:34px;padding:2px 10px}.collection .gpick{flex:0 0 84px;flex-direction:column;gap:0;min-height:60px}.gpick b,.gpick small{white-space:nowrap;font-size:12px}.gpick .gm{height:30px}
+}
+/* 戰鬥中：對戰頁鋪滿整個螢幕（任何尺寸皆適用；安全區由這裡處理，對戰頁以 embed=1 不重複處理） */
+main.inbattle{padding:0}
+main.inbattle>header,main.inbattle nav,main.inbattle .panel>h2{display:none}
+main.inbattle .panel{padding:0;border:0;background:none;box-shadow:none;overflow:visible}
+main.inbattle .battleframe{position:fixed;z-index:3;top:0;left:env(safe-area-inset-left);width:calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));height:calc(100dvh - env(safe-area-inset-bottom));border-radius:0}
+main.inbattle [data-act=back]{display:none;position:fixed;z-index:4;top:max(6px,env(safe-area-inset-top));right:calc(env(safe-area-inset-right) + 8px);min-height:40px;padding:3px 10px;font-size:13px;opacity:.95}
+.h-dock.art{left:1.5%;right:1.5%;bottom:0;height:27%;min-height:0;padding:0;gap:0;border:0;border-radius:0;background:none;align-items:end}
+.h-dock.art::before{content:"";position:absolute;left:0;right:0;top:37%;bottom:27%;background:var(--dock) center/100% 100% no-repeat;pointer-events:none}
+.h-dock.art .mbtn{position:relative;background:none;border:0;box-shadow:none;padding:0;min-height:0;height:100%;border-radius:0}.h-dock.art .mbtn img{height:100%;width:100%;object-fit:contain;pointer-events:none}.h-dock.art .mbtn:active img{filter:brightness(1.2)}
+.h-slot.empty .figure img.plus{height:62%;width:auto;opacity:1}
+.h-gate.art{left:33%;top:0;width:34%;height:auto;aspect-ratio:900/520;min-height:0;background:var(--gate) center/contain no-repeat;border:0;box-shadow:none;font-size:0;color:transparent}.h-gate.art:active{filter:brightness(1.15)}
+body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:100dvh}main.pg .layout .panel{background:rgba(28,20,40,.7)}main.pg header{text-shadow:0 1px 3px #000}
+.h-slot:hover,.h-slot[aria-current=true],.h-dock.art .mbtn:hover,.h-gate.art:hover{background:none}.h-slot:active{filter:none}.h-slot:hover .figure,.h-slot:active .figure{filter:brightness(1.12)}.h-slot:focus-visible{outline:0}.h-gate.art:hover{background:var(--gate) center/contain no-repeat}
+.stonegrid{grid-template-columns:repeat(auto-fit,minmax(clamp(120px,15vw,200px),1fr));gap:clamp(8px,1.4vh,16px)}.stonecard{padding:clamp(6px,1.4vh,16px) 4px;min-height:clamp(92px,calc(47vh - 90px),300px);justify-content:center;gap:clamp(1px,.6vh,6px)}.stonecard .gemart img{width:auto;height:clamp(44px,calc(27vh - 55px),190px);max-width:100%}.stonecard b{font-size:clamp(18px,3.4vh,34px)}.stonecard small{font-size:clamp(11px,1.6vh,15px)}.stonecard .price{font-size:clamp(14px,2.2vh,22px)}
+</style><main id="app"></main>
+<script src="assets/manifest.js"></script>
+<script src="data/fengshen-data.js"></script>
+<script>
+const app=document.querySelector('#app');
+// 內容全部來自 data/fengshen-data.js；roster 每筆：[名稱,世界,陣營,稀有度]
+const roster=FS.characters.map(c=>[c.name,'封神',c.faction,c.rank]);
+const pools=FS.pools;
+window.asset=window.asset||(()=>''); // 圖片清單載入失敗時退回程式畫的備用樣式
+const menus=['首頁','闖關模式','PVP 模式','神將','武裝','神術','招募神將','商店','好友','飛鴿傳書','遊戲設定'];
+const saveKey='fengshen-lobby-v2';
+const defaults=()=>({tickets:12,stone:0,gold:0,owned:{0:1,1:1,2:1},gear:{},team:[0,1,2],claimed:false,skills:[],skillLv:{}});
+let data=defaults(),server='蓬萊',page='首頁',pool=0,poolKind='hero',result='',battle=false,sel=0,eqTab='weapon',eqFilter='全部',eqSel=0,skSel=0,shopTab=0,shopMsg='',modal='',stageSel=0,modalMsg='';
+function load(){
+ try{data=JSON.parse(localStorage.getItem(saveKey+server))||defaults()}catch{data=defaults()}
+ if(!data.gear)data.gear={};
+}
+function save(){try{localStorage.setItem(saveKey+server,JSON.stringify(data))}catch{}}
+// 占位美術：沒有角色圖時，依陣營上色的剪影（闡教＝金色光環、截教＝角）。之後有圖，改在這個函式讀 FS.characters[i].art
+function silhouette(i,kind){
+ const c=FS.characters[i];
+ const au=window.asset&&asset('char/'+c.id+'/'+(kind||'portrait')); // 有角色圖就用圖（立繪 portrait／頭像 icon），沒有才畫剪影
+ if(au)return '<img class="sil art" src="'+au+'" alt="'+c.name+'" draggable="false" decoding="async">';
+ const col=c.stats.color,fc=FS.factions[c.faction].color;
+ const mark=c.faction==='闡教'?'<circle cx="30" cy="38" r="25" fill="none" stroke="'+fc+'" stroke-width="2" stroke-dasharray="3 4"/>':'<path d="M15 28 9 8 25 21ZM45 28 51 8 35 21Z" fill="'+fc+'"/>';
+ return '<svg class="sil" viewBox="0 0 60 112" aria-hidden="true">'+mark+'<ellipse cx="30" cy="106" rx="20" ry="5" fill="#0005"/><path d="M11 102Q9 64 30 57Q51 64 49 102Z" fill="'+col+'" stroke="#1c1426" stroke-width="2"/><circle cx="30" cy="38" r="16" fill="'+col+'" stroke="#1c1426" stroke-width="2"/><circle cx="30" cy="38" r="16" fill="#fff" opacity=".22"/><text x="30" y="90" text-anchor="middle" font-size="20" font-weight="700" fill="#1c1426">'+c.name[0]+'</text></svg>';
+}
+function cards(ids,edit=false){
+ return '<div class="'+(edit?'collection':'cards')+'">'+ids.map(i=>{const [name,,faction,rank]=roster[i];return '<article class="card" data-rank="'+rank+'"><b>'+name+'</b><br><small>'+faction+' · '+rank+'</small><br><small>持有 '+data.owned[i]+'</small>'+(edit?'<br><button data-act="team" data-value="'+i+'">'+(data.team.includes(i)?'移出隊伍':'加入隊伍')+'</button>':'')+'</article>'}).join('')+'</div>';
+}
+function formation(){
+ return '<div class="cards">'+Array.from({length:5},(_,slot)=>{
+  const i=data.team[slot];
+  if(i===undefined)return '<article class="card empty"><div class="avatar">＋</div><div class="stand"></div><small>空位</small></article>';
+  const [name,,faction,rank]=roster[i];
+  return '<article class="card"><div class="avatar">'+silhouette(i)+'</div><div class="stand"></div><b>'+name+'</b><br><small>'+faction+' · '+rank+'</small></article>';
+ }).join('')+'</div>';
+}
+// 首頁：5 個站位由左到右，隊伍第 1 位站中間
+const homeSlots=[{cx:14,w:18,t:3},{cx:32,w:18,t:1},{cx:50,w:22,t:0},{cx:68,w:18,t:2},{cx:86,w:18,t:4}];
+const _cx={};function centerHomeFigs(){document.querySelectorAll('.h-slot .figure img.sil').forEach(im=>{const go=()=>{const k=im.src;if(_cx[k]===undefined){try{const W=64,H=80,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,W,H);const d=x.getImageData(0,0,W,H).data;let sw=0,sx=0;for(let y=Math.floor(H*.35);y<H;y++)for(let i=0;i<W;i++){const a=d[(y*W+i)*4+3];if(a>40){sw+=a;sx+=a*i}}_cx[k]=sw?sx/sw/W:.5}catch(e){_cx[k]=.5}}im.style.transform='translateX('+((.5-_cx[k])*100).toFixed(1)+'%)'};if(im.complete&&im.naturalWidth)go();else im.addEventListener('load',go,{once:true})})}
+const homeDock=[['神將','神將','shenjiang','hero'],['武裝','武裝','wuzhuang','gear'],['神術','神術','shenshu','skill'],['招募','招募神將','zhaomu','recruit'],['商店','商店','shangdian','shop'],['好友','好友','haoyou','friend']];
+// 右側小圖示：信箱、設定（不屬於重要選單）
+const homeIcons=[['信箱','mail','<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 7.5 12 14l8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'],['設定','settings','<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>']];
+// 神將頁：左＝展示位，右＝數據與強化欄位；底部橫列選擇神將
+function stagePage(){
+ if(!(stageSel>=0&&stageSel<FS.stages.length))stageSel=0;
+ const g=FS.stages[stageSel];
+ const pts=FS.stages.map((_,k)=>[14+(k%5)*18,34+Math.floor(k/5)*34]);
+ return '<div class="smap-wrap"><div class="smap" style="--smapbg:url('+asset('scene/stage_map')+')"><span class="schap">'+FS.chapter.name+' · 共 '+FS.stages.length+' 小關</span>'+
+  FS.stages.map((t,k)=>'<button class="snode'+(t.open?'':' lock')+'" style="left:'+pts[k][0]+'%;top:'+pts[k][1]+'%" data-act="stagesel" data-value="'+k+'" aria-current="'+(k===stageSel)+'" aria-label="1-'+(k+1)+(t.open?'':'（鎖定）')+'">'+'1-'+(k+1)+'</button>').join('')+'</div>'+
+  '<div class="sinfo"><b>'+g.name+'</b><small>'+g.enemy+'</small><p>'+g.story+'</p><p class="muted">通關獎勵：'+g.reward+'</p><p class="muted">我方隊伍：'+(data.team.length?data.team.map(i=>roster[i][0]).join('、'):'尚未編隊')+'</p>'+
+  '<div class="skcfg"><b>神術配置 '+(data.skills||[]).length+' / 5</b><div class="skslots">'+[0,1,2,3,4].map(n=>{const i=(data.skills||[])[n];return '<button class="skslot" data-act="modal" data-value="skills" aria-label="神術欄位 '+(n+1)+'">'+(i===undefined?'<span class="skplus">＋</span>':'<span class="skdot" style="background:'+FS.skills[i][3]+'"></span><small>'+FS.skills[i][1].split(' · ')[0]+'</small>')+'</button>'}).join('')+'</div></div>'+
+  '<button data-act="battle" '+(g.open&&data.team.length?'':'disabled')+'>'+(g.open?'開始戰鬥':'尚未開放')+'</button></div></div>';
+}
+function generalPage(){
+ const owned=Object.keys(data.owned).map(Number);
+ if(!owned.includes(sel))sel=owned[0];
+ if(sel===undefined)return '<p>尚未擁有神將，請先招募。</p>';
+ const c=FS.characters[sel],st=c.stats,inTeam=data.team.includes(sel);
+ return '<div class="gdetail"><div class="gshow hero"><div class="gfig">'+silhouette(sel)+'</div></div>'+
+  '<div class="gside"><section class="gstat"><h3>數據</h3><dl class="gmain"><dt>傷害</dt><dd>'+st.damage+'</dd><dt>防禦</dt><dd>'+Math.round((st.armor||0)*100)+'%</dd><dt>血量</dt><dd>'+st.hp+'</dd><dt>攻速</dt><dd>'+(1/st.period).toFixed(2)+'</dd><dt>移動速度</dt><dd>'+st.speed+'</dd></dl><dl class="gsub"><dt>召喚靈力</dt><dd>'+st.cost+'</dd><dt>CD 時間</dt><dd>'+st.cd+' 秒</dd></dl></section>'+
+  '<section class="gup"><h3>強化</h3><p class="muted">強化內容待設計。</p><button disabled>強化</button></section>'+
+  '<button data-act="team" data-value="'+sel+'">'+(inTeam?'移出隊伍':'加入隊伍')+'（出戰 '+data.team.length+' / 10）</button></div></div>'+
+  '<div class="collection">'+owned.map(i=>{const cu=asset('char/'+FS.characters[i].id+'/card');if(cu){const rk=FS.characters[i].rank,fm={'普通':'frame_putong','稀有':'frame_xiyou','封神級':'frame_fengshen'}[rk],fb={'普通':[6,7,394,553],'稀有':[6,43,394,517],'封神級':[6,45,394,515]}[rk]||[0,0,400,560],w=fb[2]-fb[0],h=fb[3]-fb[1],fa=fm&&asset('ui/'+fm);return '<button class="gpick cardpick" aria-label="'+roster[i][0]+'" data-act="sel" data-value="'+i+'" aria-current="'+(i===sel)+'"><img class="cface" src="'+cu+'" alt="">'+(fa?'<img class="cfrm" src="'+fa+'" alt="" style="left:'+(-fb[0]/w*100)+'%;top:'+(-fb[1]/h*100)+'%;width:'+(400/w*100)+'%;height:'+(560/h*100)+'%">':'')+'</button>'}return '<button class="gpick" data-act="sel" data-value="'+i+'" aria-current="'+(i===sel)+'"><span class="gm">'+silhouette(i,'icon')+'</span><b>'+roster[i][0]+'</b><small style="color:'+FS.reachTypes[FS.characters[i].reach]+'">'+FS.characters[i].reach+'</small>'+(data.team.includes(i)?'<small>出戰中</small>':'')+'</button>'}).join('')+'</div>';
+}
+// 武裝頁：左＝介紹畫面，右＝上方切換「武器／裝備」，下方為數據；底部橫列選擇項目
+const EQ_ART={'w_劍':'weapon/w_jian','a_衣甲':'gear/a_yijia'}; // 已有圖的武器／裝備（id → 資源代號），其餘先用示意圖
+function equipIcon(tab,it){
+ const eu=it&&EQ_ART[it.id]&&window.asset&&asset(EQ_ART[it.id]);
+ if(eu)return '<img class="sil art" src="'+eu+'" alt="'+it.name+'" draggable="false" decoding="async">';
+ return tab==='weapon'
+  ?'<svg class="sil" viewBox="0 0 60 112" aria-hidden="true"><path d="M30 4 36 18V74H24V18Z" fill="#cfd6e6" stroke="#1c1426" stroke-width="2"/><rect x="12" y="74" width="36" height="8" rx="3" fill="#c99856" stroke="#1c1426" stroke-width="2"/><rect x="26" y="82" width="8" height="22" rx="2" fill="#7a5236" stroke="#1c1426" stroke-width="2"/></svg>'
+  :'<svg class="sil" viewBox="0 0 60 112" aria-hidden="true"><path d="M8 18Q30 8 52 18V58Q52 88 30 104Q8 88 8 58Z" fill="#c99856" stroke="#1c1426" stroke-width="2"/><path d="M30 18V100M12 50H48" stroke="#1c1426" stroke-width="2" opacity=".55"/></svg>';
+}
+function equipPage(){
+ const full=FS.equipment[eqTab];
+ const exKind=eqTab==='weapon'?'專武':'專屬',types=eqTab==='weapon'?FS.weaponTypes:FS.armorTypes;
+ const list=full.filter(x=>eqFilter==='全部'||(eqFilter===exKind?x.kind===exKind:x.type===eqFilter));
+ if(eqSel>=list.length)eqSel=0;
+ const it=list[eqSel];
+ const tabs='<div class="eqtabs">'+[['weapon','武器'],['armor','裝備']].map(([k,l])=>'<button data-act="eqtab" data-value="'+k+'" aria-current="'+(k===eqTab)+'">'+l+'</button>').join('')+'</div>';
+ const filt='<div class="eqfilter">'+['全部',exKind].concat(types).map(k=>'<button data-act="eqfilter" data-value="'+k+'" aria-current="'+(k===eqFilter)+'">'+k+'</button>').join('')+'</div>';
+ if(!list.length)return '<div class="gdetail"><div class="gside">'+tabs+filt+'<p class="muted">這個類別目前沒有武器。</p></div></div>';
+ return '<div class="gdetail"><div class="gshow"><div class="gfig">'+equipIcon(eqTab,it)+'</div><div class="stand"></div><b>'+it.name+'</b><small>'+it.rank+' · '+it.desc+'</small></div>'+
+  '<div class="gside">'+tabs+filt+'<section class="gstat"><h3>數據</h3>'+(it.stats.length?'<dl>'+it.stats.map(([k,v])=>'<dt>'+k+'</dt><dd>'+v+'</dd>').join('')+'</dl>':'<p class="muted">數據待設計。</p>')+'</section></div></div>'+
+  '<div class="collection">'+list.map((x,i)=>'<button class="gpick" data-act="eqsel" data-value="'+i+'" aria-current="'+(i===eqSel)+'"><span class="gm">'+equipIcon(eqTab,x)+'</span><b>'+x.name+'</b>'+(x.kind!=='一般'?'<small>'+x.owner+'</small>':'')+'<small class="own">'+(data.gear[x.id]?'持有 '+data.gear[x.id]:'未持有')+'</small>'+'</button>').join('')+'</div>';
+}
+// 神術頁：左＝介紹畫面，右＝效果、數據、強化與配置；底部橫列選擇神術
+function skillIcon(i){const c=FS.skills[i][3];const su=window.asset&&asset('skill/icon_'+FS.skills[i][0]);if(su)return '<img class="sil art" src="'+su+'" alt="" draggable="false" decoding="async">';return '<svg class="sil" viewBox="0 0 60 112" aria-hidden="true"><circle cx="30" cy="52" r="26" fill="'+c+'" stroke="#1c1426" stroke-width="2"/><circle cx="30" cy="52" r="26" fill="#fff" opacity=".2"/><circle cx="30" cy="52" r="14" fill="none" stroke="#1c1426" stroke-width="2" opacity=".5"/><text x="30" y="60" text-anchor="middle" font-size="22" font-weight="700" fill="#1c1426">'+FS.skills[i][1][0]+'</text></svg>';}
+function skillPage(){
+ const sk=FS.skills[skSel];
+ return '<div class="gdetail"><div class="gshow"><div class="gfig">'+skillIcon(skSel)+'</div><div class="stand"></div><b>'+sk[1]+'</b><small>'+sk[2]+'</small></div>'+
+  '<div class="gside"><section class="gstat"><h3>效果</h3><p>'+sk[2]+'</p></section>'+
+  '<section class="gstat"><h3>數據</h3><p class="muted">數據待設計。</p></section>'+
+  '<section class="gup"><h3>強化　Lv.'+((data.skillLv||{})[skSel]||1)+' / '+FS.skillMaxLevel+'</h3><p class="muted">強化內容待設計。</p><button disabled>強化</button></section>'+
+  '<button data-act="battle">前往試戰配置</button></div></div>'+
+  '<div class="collection">'+FS.skills.map((x,i)=>'<button class="gpick" data-act="sksel" data-value="'+i+'" aria-current="'+(i===skSel)+'"><span class="gm">'+skillIcon(i)+'</span><b>'+x[1].split(' · ').pop()+'</b></button>').join('')+'</div>';
+}
+// 商店（雛型）：上方分頁，下方商品卡；尚未接金流，購買只顯示提示
+function shopPage(){
+ const t=FS.shop[shopTab];
+ return '<div class="eqtabs">'+FS.shop.map((x,i)=>'<button data-act="shoptab" data-value="'+i+'" aria-current="'+(i===shopTab)+'">'+x.name+'</button>').join('')+'</div>'+
+  '<p class="result" role="status">'+shopMsg+'</p>'+
+  (t.id==='stone'?'<div class="stonegrid">'+t.items.map((it,i)=>'<button class="stonecard" data-act="buy" data-value="'+i+'" aria-label="'+it.amount+' 靈石，'+it.price+'"><span class="gemart">'+gemArt(it.tier)+'</span><b>'+it.amount.toLocaleString('en-US')+'</b><small>靈石 · 1 : '+it.ratio+'</small><span class="price">'+it.price+'</span></button>').join('')+'</div>'
+  :'<div class="shopgrid">'+t.items.map((it,i)=>'<article class="card"><b>'+it.name+'</b><p class="muted">'+it.desc+'</p><p class="price">'+(it.price||'價格待定')+'</p><button data-act="buy" data-value="'+i+'">'+(t.id==='free'?'領取':'購買')+'</button></article>').join('')+'</div>');
+}
+// 靈石圖卡的占位圖：檔位越高，寶石越多越大（之後換正式美術）
+function gemArt(tier){
+ const gu=window.asset&&asset('ui/stone_tier'+(tier+1));
+ if(gu)return '<img src="'+gu+'" alt="" draggable="false" decoding="async">';
+ const n=tier<3?1:tier<6?2:3,gem=(x,y,r)=>'<polygon points="'+x+','+(y-r)+' '+(x+r*.85)+','+y+' '+x+','+(y+r)+' '+(x-r*.85)+','+y+'" fill="#7be0d0" stroke="#17323a" stroke-width="2"/><polygon points="'+x+','+(y-r)+' '+(x+r*.85)+','+y+' '+x+','+y+'" fill="#bff6ee"/>';
+ const r=12+tier*1.6;
+ return '<svg viewBox="0 0 80 56" aria-hidden="true">'+(n===1?gem(40,30,r):n===2?gem(28,32,r*.8)+gem(52,28,r*.9):gem(22,34,r*.62)+gem(58,34,r*.62)+gem(40,26,r*.82))+'</svg>';
+}
+function dockButton(name){return '<button data-act="nav" data-value="'+name+'" aria-current="'+String(name===page)+'">'+name+'</button>';}
+// 首頁小視窗：信箱、設定（不是獨立分頁）
+function skillPicker(){
+ const sel2=data.skills||[];
+ return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="神術配置"><div class="mhead"><b>神術配置 '+sel2.length+' / 5</b><button class="mx" data-act="closemodal" aria-label="完成">完成</button></div><div class="mbody"><div class="skpick">'+FS.skills.map((k,i)=>{const on=sel2.includes(i);return '<button class="skopt" data-act="skpick" data-value="'+i+'" aria-pressed="'+on+'"'+(!on&&sel2.length>=5?' disabled':'')+'><span class="skdot" style="background:'+k[3]+'"></span><b>'+k[1]+'</b><small>'+k[2]+'</small></button>'}).join('')+'</div></div></div>';
+}
+function modalBox(){
+ if(!modal)return '';
+ if(modal==='skills')return skillPicker();
+ const mail=modal==='mail';
+ const body=mail?(data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>')
+  :'<p>帳號 · 本機訪客（'+server+'）</p><p class="result" role="status">'+modalMsg+'</p><button data-act="logout">登出</button><p>語言 · 繁體中文</p><p class="muted">音量、音效與通知待整合。</p><details><summary>說明與隱私</summary><p>此原型將招募與陣容存於本機瀏覽器。</p></details>';
+ return '<button class="mback" data-act="closemodal" aria-label="關閉"></button><div class="mbox" role="dialog" aria-modal="true" aria-label="'+(mail?'信箱':'設定')+'"><div class="mhead"><b>'+(mail?'信箱':'設定')+'</b><button class="mx" data-act="closemodal" aria-label="關閉">✕</button></div><div class="mbody">'+body+'</div></div>';
+}
+function homeScreen(){
+ const slots=homeSlots.map(p=>{
+  const i=data.team[p.t],st='style="left:'+(p.cx-p.w/2)+'%;width:'+p.w+'%"';
+  if(i===undefined)return '<button class="h-slot empty" data-act="nav" data-value="神將" aria-label="空位，前往調整隊伍" '+st+'><span class="pad'+(asset('scene/pedestal')?' img':'')+'" style="--ped:url('+asset('scene/pedestal')+')"></span><span class="figure">'+(asset('ui/slot_plus')?'<img class="plus" src="'+asset('ui/slot_plus')+'" alt="">':'＋')+'</span></button>';
+  return '<button class="h-slot" data-act="nav" data-value="神將" aria-label="'+roster[i][0]+'，前往調整隊伍" '+st+'><span class="pad'+(asset('scene/pedestal')?' img':'')+'" style="--ped:url('+asset('scene/pedestal')+')"></span><span class="figure">'+silhouette(i)+'</span></button>';
+ }).join('');
+ return '<div class="home"><div class="home-bg" style="--hbg:url('+asset('scene/home_bg')+')"></div><div class="hs">'+
+  (asset('ui/logo')?'<img class="h-logo" src="'+asset('ui/logo')+'" alt="'+FS.title+'">':'<div class="h-title">'+FS.title+'</div>')+
+  '<div class="h-resrow"><div class="h-res" aria-label="招募券 '+data.tickets+'"><img class="ri" src="'+asset('ui/icon_ticket')+'" alt="">'+data.tickets+'</div><div class="h-res" aria-label="靈石 '+(data.stone||0)+'"><img class="ri" src="'+asset('ui/icon_stone')+'" alt="">'+(data.stone||0)+'</div><div class="h-res" aria-label="金幣 '+(data.gold||0)+'"><img class="ri" src="'+asset('ui/icon_gold')+'" alt="">'+(data.gold||0)+'</div></div>'+
+  (asset('ui/btn_stage_v2')?'<button class="h-gate art" style="--gate:url('+asset('ui/btn_stage_v2')+')" data-act="nav" data-value="闖關模式" aria-label="闖關"></button>':'<button class="h-gate'+(asset('ui/btn_stage')?' img" style="--gate:url('+asset('ui/btn_stage')+')':'')+'" data-act="nav" data-value="闖關模式">闖關</button>')+
+  slots+
+  homeIcons.map(([label,v,svg],i)=>'<button class="h-icon" style="top:'+(27+i*17)+'%" data-act="modal" data-value="'+v+'" aria-label="'+label+'"><img src="'+asset(v==='mail'?'ui/menu_xinxiang':'ui/menu_shezhi')+'" alt="">'+(asset(v==='mail'?'ui/menu_xinxiang':'ui/menu_shezhi')?'':svg)+'</button>').join('')+
+  '<nav class="h-dock'+(asset('ui/menu_dock')?' art" style="--dock:url('+asset('ui/menu_dock')+')':'')+'" aria-label="遊戲選單">'+homeDock.map(([label,v,ic,k])=>asset('ui/menu_'+k)?'<button class="mbtn" data-act="nav" data-value="'+v+'" aria-label="'+label+'"><img src="'+asset('ui/menu_'+k)+'" alt=""></button>':'<button data-act="nav" data-value="'+v+'"><img class="mi" src="'+asset('ui/menu_'+ic)+'" alt="">'+label+'</button>').join('')+'</nav>'+
+  '</div>'+modalBox()+'</div>';
+}
+const _loaded=new Map();let _gateTok=0;
+function gateArt(){const urls=new Set();app.querySelectorAll('img[src]').forEach(i=>urls.add(i.getAttribute('src')));[app,...app.querySelectorAll('[style*="url("]')].forEach(e=>{if(!e.getAttribute('style'))return;const m=e.getAttribute('style').match(/url\(["']?([^"')]+)["']?\)/g)||[];m.forEach(x=>urls.add(x.replace(/^url\(["']?|["']?\)$/g,'')))});
+const wait=[];urls.forEach(u=>{if(!u||/^data:/.test(u)||u.indexOf('undefined')>=0)return;let r=_loaded.get(u);if(!r){const im=new Image();r={im,done:false};_loaded.set(u,r);const f=()=>{r.done=true};im.onload=im.onerror=f;im.src=u;if(im.complete)r.done=true}if(!r.done)wait.push(r)});
+const tok=++_gateTok;if(!wait.length){app.style.visibility='';return}
+app.style.visibility='hidden';const t0=performance.now();(function chk(){if(tok!==_gateTok)return;if(wait.every(r=>r.done)||performance.now()-t0>4000){app.style.visibility='';return}setTimeout(chk,50)})()}
+function draw(){_draw();gateArt()}
+function _draw(){
+ if(page==='首頁'){document.body.classList.remove('pg');app.className='ishome';app.innerHTML=homeScreen();centerHomeFigs();return}
+ app.classList.remove('ishome');
+ {const pk={'神將':'page_hero','武裝':'page_gear','神術':'page_skill','招募神將':'page_recruit','商店':'page_shop','好友':'page_friend'}[page],pu=pk&&asset('scene/'+pk);app.classList.toggle('pg',!!pu);document.body.classList.toggle('pg',!!pu);if(pu){app.style.setProperty('--pgbg','url('+pu+')');document.body.style.setProperty('--pgbg','url('+pu+')')}else{app.style.removeProperty('--pgbg');document.body.style.removeProperty('--pgbg')}}
+ let body='';
+ if(page==='闖關模式')body=battle?'<button data-act="back">返回故事</button><iframe class="battleframe" title="對戰原型" src="fengshen-duel.html?team='+data.team.join(',')+((data.skills||[]).length===5?'&skills='+data.skills.join(','):'')+'&stage='+stageSel+'&embed=1"></iframe>':stagePage();
+ if(page==='PVP 模式')body='<p>即時對戰與排行需連線服務。</p>';
+ if(page==='神將')body=generalPage();
+ if(page==='武裝')body=equipPage();
+ if(page==='神術')body=skillPage();
+ if(page==='招募神將')body='<div class="poolhall"><div><div class="eqtabs">'+[['hero','神將池'],['gear','武裝池（武器・裝備）']].map(([k,l])=>'<button data-act="poolkind" data-value="'+k+'" aria-current="'+(k===poolKind)+'">'+l+'</button>').join('')+'</div><h3>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+'</h3><p>試抽券 '+data.tickets+' 張</p><div class="actions">'+pools.map(([name],i)=>'<button data-act="pool" data-value="'+i+'" aria-current="'+(i===pool)+'">'+name+'</button>').join('')+'</div><p>普通 '+pools[pool][1][0]+'% · 稀有 '+pools[pool][1][1]+'% · 封神級 '+pools[pool][1][2]+'%</p><button data-act="pull" '+(data.tickets?'':'disabled')+'>招募一次 · 1 張</button><p class="result" role="status">'+result+'</p></div><div class="poolart" aria-hidden="true">'+(asset('ui/banner_'+poolKind)?'<img class="pbanner" src="'+asset('ui/banner_'+poolKind)+'" alt="" draggable="false">':silhouette(0))+'</div></div>';
+ if(page==='商店')body=shopPage();
+ if(page==='好友')body='<p>好友搜尋與邀請需連線服務。</p>';
+ if(page==='飛鴿傳書')body=data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>';
+ if(page==='遊戲設定')body='<p>語言 · 繁體中文</p><p>音量、音效與通知待整合。</p><details><summary>說明與隱私</summary><p>此原型將招募與陣容存於本機瀏覽器。</p></details>';
+ app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>封神</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'?modalBox():'');
+ app.classList.toggle('inbattle',page==='闖關模式'&&battle);
+}
+window.addEventListener('message',e=>{if(e.data&&e.data.type==='fs-back'&&battle){battle=false;draw()}});
+app.onclick=event=>{
+ const button=event.target.closest('button[data-act]');if(!button)return;
+ const {act,value}=button.dataset;
+ if(act==='skpick'){const l=data.skills||(data.skills=[]),v=Number(value),x=l.indexOf(v);if(x>=0)l.splice(x,1);else if(l.length<5)l.push(v);save()}
+ if(act==='stagesel')stageSel=Number(value);
+ if(act==='logout')modalMsg='登入功能尚未開放，目前為本機試玩，沒有帳號可登出，存檔不會被清除。';
+ if(act==='modal'){modal=value;modalMsg=''}
+ if(act==='closemodal'){modal='';modalMsg=''}
+ if(act==='nav'){page=value;battle=false;modal=''}
+ if(act==='battle'&&data.team.length){page='闖關模式';battle=true}
+ if(act==='back')battle=false;
+ if(act==='sel')sel=Number(value);
+ if(act==='shoptab'){shopTab=Number(value);shopMsg=''}
+ if(act==='buy'){const it=FS.shop[shopTab].items[Number(value)];shopMsg=it.amount?'購買 '+it.amount.toLocaleString('en-US')+' 靈石（'+it.price+'）尚未開放。':'「'+it.name+'」尚未開放。'}
+ if(act==='nav')shopMsg='';
+ if(act==='sksel')skSel=Number(value);
+ if(act==='eqtab'){eqTab=value;eqSel=0;eqFilter='全部'}
+ if(act==='eqfilter'){eqFilter=value;eqSel=0}
+ if(act==='eqsel')eqSel=Number(value);
+ if(act==='pool'){pool=Number(value);result=''}
+ if(act==='poolkind'){poolKind=value;result=''}
+ if(act==='team'){
+  const i=Number(value);
+  if(data.team.includes(i))data.team=data.team.filter(x=>x!==i);
+  else if(data.team.length<10&&data.owned[i])data.team.push(i);
+ }
+ if(act==='claim'&&!data.claimed){data.claimed=true;data.tickets+=5}
+ if(act==='pull'&&data.tickets>0){
+  const [common,rare]=pools[pool][1],roll=Math.random()*100;
+  const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
+  if(poolKind==='hero'){
+   const candidates=roster.map((r,i)=>r[3]===rank?i:-1).filter(i=>i>=0);
+   const i=candidates[Math.floor(Math.random()*candidates.length)];
+   const duplicate=!!data.owned[i];
+   data.owned[i]=(data.owned[i]||0)+1;data.tickets--;
+   result='招募到 '+roster[i][0]+' · '+rank+(duplicate?'（持有數 +1）':'（新神將）');
+  }else{
+   // 武裝池：先等機率決定武器或裝備，再依稀有度抽一件（含專武、專屬裝備）
+   const kind=Math.random()<.5?'weapon':'armor';
+   const cands=FS.equipment[kind].filter(x=>x.rank===rank);
+   const it=cands[Math.floor(Math.random()*cands.length)];
+   const duplicate=!!data.gear[it.id];
+   data.gear[it.id]=(data.gear[it.id]||0)+1;data.tickets--;
+   result='招募到 '+it.name+' · '+rank+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）');
+  }
+ }
+ save();draw();
+};
+load();draw();
+</script>
