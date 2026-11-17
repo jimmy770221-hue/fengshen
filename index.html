@@ -209,6 +209,8 @@ function skillPage(){
   '<div class="collection">'+FS.skills.map((x,i)=>'<button class="gpick" data-act="sksel" data-value="'+i+'" aria-current="'+(i===skSel)+'"><span class="gm">'+skillIcon(i)+'</span><b>'+x[1].split(' · ').pop()+'</b></button>').join('')+'</div>';
 }
 // 商店（雛型）：上方分頁，下方商品卡；尚未接金流，購買只顯示提示
+// 測試期間：點靈石儲值格直接免費入帳（正式上線前改成 false）
+const TEST_FREE_TOPUP=true;
 function adLeft(){const d=new Date(),k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();if(!data.ad||data.ad.d!==k)data.ad={d:k,n:0};return Math.max(0,3-data.ad.n)}
 function shopPage(){
  if(FS.shop[shopTab].id==='free')shopTab=0;
@@ -302,7 +304,7 @@ app.onclick=event=>{
  if(act==='sel')sel=Number(value);
  if(act==='shoptab'){shopTab=Number(value);shopMsg=''}
  if(act==='ad'){if(adLeft()>0){data.ad.n++;data.stone=(data.stone||0)+100;shopMsg='看廣告獲得 100 靈石（今日剩 '+adLeft()+' 次；目前是測試版，尚未接上真正的廣告）。'}else shopMsg='今日看廣告次數已用完，明天再來。'}
- if(act==='buy'){const it=FS.shop[shopTab].items[Number(value)];shopMsg=it.amount?'購買 '+it.amount.toLocaleString('en-US')+' 靈石（'+it.price+'）尚未開放。':'「'+it.name+'」尚未開放。'}
+ if(act==='buy'){const it=FS.shop[shopTab].items[Number(value)];shopMsg=it.amount?(TEST_FREE_TOPUP?(data.stone=(data.stone||0)+it.amount,'測試期間免費入帳 '+it.amount.toLocaleString('en-US')+' 靈石（原價 '+it.price+'），目前靈石 '+data.stone.toLocaleString('en-US')+'。'):'購買 '+it.amount.toLocaleString('en-US')+' 靈石（'+it.price+'）尚未開放。'):'「'+it.name+'」尚未開放。'}
  if(act==='nav')shopMsg='';
  if(act==='sksel')skSel=Number(value);
  if(act==='eqtab'){eqTab=value;eqSel=0;eqFilter='全部'}
