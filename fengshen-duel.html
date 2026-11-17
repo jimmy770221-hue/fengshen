@@ -288,7 +288,7 @@ const charImgs={};const charImg=id=>id&&window.assetImg?(charImgs[id]||(charImgs
 const CH=100; // 角色立繪暫代：場上顯示高度（之後換動畫圖集再調）
 let frameDt=0;
 function charSprite(a){
- if(!a.spr){a.spr=new NezhaSprite({manifest:a.art.manifest,height:a.art.height||100,shadow:false});a.px=a.x;}
+ if(!a.spr){a.spr=new NezhaSprite({manifest:a.art.manifest,height:a.art.height||100,shadow:false,reduceMotion:false});a.px=a.x;}
  const p=a.spr,moving=Math.abs(a.x-a.px)>.01;
  a.px=a.x;
  p.setMoving(moving,a.speed);
