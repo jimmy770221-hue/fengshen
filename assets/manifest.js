@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "b211d698",
+ "v": "123f314e",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -101,7 +101,10 @@ window.ASSETS={
   "scene/base_jiejiao_half": "assets/scene/base_jiejiao_half.067b7654.webp",
   "scene/base_jiejiao_three_quarter": "assets/scene/base_jiejiao_three_quarter.e8391efc.webp",
   "scene/base_jiejiao_destroyed": "assets/scene/base_jiejiao_destroyed.a1c28b1f.webp",
-  "fx/fx_base_hit": "assets/fx/fx_base_hit.be6baaec.webp"
+  "fx/fx_base_hit": "assets/fx/fx_base_hit.be6baaec.webp",
+  "scene/intro_bg_clean": "assets/scene/intro_bg_clean.f9bf28d2.webp",
+  "scene/intro_chars_left": "assets/scene/intro_chars_left.baa3d0e3.webp",
+  "scene/intro_chars_right": "assets/scene/intro_chars_right.76debaa9.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -503,11 +506,22 @@ window.ASSETS={
   "fx/fx_base_hit": [
    512,
    512
+  ],
+  "scene/intro_bg_clean": [
+   2532,
+   1170
+  ],
+  "scene/intro_chars_left": [
+   1151,
+   1271
+  ],
+  "scene/intro_chars_right": [
+   1084,
+   1486
   ]
  },
  "critical": [
   "scene/home_bg",
-  "scene/intro_bg",
   "ui/icon_gold",
   "ui/icon_stone",
   "ui/icon_ticket",
@@ -526,7 +540,10 @@ window.ASSETS={
   "ui/menu_skill",
   "ui/menu_wuzhuang",
   "ui/menu_xinxiang",
-  "ui/menu_zhaomu"
+  "ui/menu_zhaomu",
+  "scene/intro_bg_clean",
+  "scene/intro_chars_left",
+  "scene/intro_chars_right"
  ]
 };
 window.asset=function(k){return window.ASSETS.files[k]||''};
