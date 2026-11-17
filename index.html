@@ -21,7 +21,7 @@
 .stage .avatar:has(img){animation:none;background:none}.stage .avatar img{mix-blend-mode:normal}
 .stage .avatar{height:clamp(58px,22vh,150px)}.stage .avatar img{max-height:none}.stage .stand{height:14px}
 /* 哪吒待機動畫改由 JS 依全域時間換格（見 syncNezha），重新渲染不會重播 */
-.stage{border:2px solid #c78d48;box-shadow:inset 0 0 22px #3c223a}.stage button,.poolhall h3,.poolhall p{margin:2px 0}.poolhall .eqtabs{margin-bottom:2px}.poolhall .eqtabs button,.poolhall .actions button{min-height:34px;padding:2px 12px}.poolhall button[data-act=pull]{min-height:38px}
+.stage{border:2px solid #c78d48;box-shadow:inset 0 0 22px #3c223a}.stage button,.poolhall h3,.poolhall p{margin:2px 0}.poolhall .eqtabs{margin-bottom:2px}.poolhall .eqtabs button,.poolhall .actions button{min-height:34px;padding:2px 12px}.poolhall button[data-act=pull]{min-height:38px}.poolhall .linkbtn{min-height:0;padding:0 2px;border:0;box-shadow:none;background:none;color:#ffdda1;text-decoration:underline;font-weight:normal;font-size:inherit}
 .poolhall button{background:linear-gradient(#a05034,#59271e);border:2px solid #e6b66b;box-shadow:0 3px #43241d;color:#fff1cd;font-weight:bold}
 .stage .gate{font-size:clamp(16px,3vw,29px);padding:7px 25px}.stage .stand{height:18px;background:radial-gradient(ellipse at 50% 18%,#ffe8a2,#ce7f32 55%,#633a26 60%);box-shadow:0 0 15px #ffbb67}
 .layout nav button{min-width:44px;min-height:44px;border-color:#bc8d53;background:linear-gradient(#593b2b,#34221b)}.layout nav button[aria-current=true]{background:linear-gradient(#a47442,#624224)}
@@ -253,9 +253,15 @@ function profileBox(){
  const cur=profAvatar(),own=Object.keys(data.owned||{}).map(Number).filter(i=>FS.characters[i]);
  return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="玩家資料"><div class="mhead"><b>玩家資料</b><button class="mx" data-act="saveprof" aria-label="完成">完成</button></div><div class="mbody"><label for="pname"><b>玩家名稱</b>（最多 8 個字）</label><input id="pname" class="pfname" maxlength="8" value="'+prof.name.replace(/"/g,'&quot;')+'" autocomplete="off"><p style="margin:8px 0 0"><b>大頭照</b></p><div class="pfav">'+own.map(i=>'<button data-act="pickav" data-value="'+i+'" aria-pressed="'+(i===cur)+'" aria-label="'+FS.characters[i].name+'">'+silhouette(i,'icon')+'</button>').join('')+'</div></div></div>';
 }
+function poolDesc(){
+ const [c,r,f]=pools[pool][1],rk=['封神級','稀有','普通'];
+ const list=poolKind==='hero'?rk.map(k=>[k,FS.characters.filter(x=>x.rank===k).map(x=>x.name)]):rk.map(k=>[k,['weapon','armor'].flatMap(t=>FS.equipment[t].filter(x=>x.rank===k).map(x=>x.name))]);
+ return '<button class="mback mfix" data-act="closemodal" aria-label="關閉"></button><div class="mbox mfix" role="dialog" aria-modal="true" aria-label="卡池說明"><div class="mhead"><b>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+' 說明</b><button class="mx" data-act="closemodal" aria-label="完成">完成</button></div><div class="mbody" style="max-height:58vh;overflow:auto"><p>機率　普通 '+c+'%　稀有 '+r+'%　封神級 '+f+'%</p>'+list.map(([k,ns])=>'<p><b>'+k+'（'+ns.length+'）</b><br><span class="muted">'+(Object.entries(ns.reduce((g,n)=>(g[n]=(g[n]||0)+1,g),{})).map(([n,c])=>n+(c>1?' ×'+c:'')).join('、')||'—')+'</span></p>').join('')+'<p class="muted">抽中同一種時，持有數 +1。</p></div></div>';
+}
 function modalBox(){
  if(!modal)return '';
  if(modal==='skills')return skillPicker();
+ if(modal==='pooldesc')return poolDesc();
  if(modal==='profile')return profileBox();
  const mail=modal==='mail';
  const body=mail?(data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>')
@@ -293,12 +299,12 @@ function _draw(){
  if(page==='神將')body=generalPage();
  if(page==='武裝')body=equipPage();
  if(page==='神術')body=skillPage();
- if(page==='招募神將')body='<div class="poolhall"><div><div class="eqtabs">'+[['hero','神將池'],['gear','武裝池（武器・裝備）']].map(([k,l])=>'<button data-act="poolkind" data-value="'+k+'" aria-current="'+(k===poolKind)+'">'+l+'</button>').join('')+'</div><h3>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+'</h3><p>試抽券 '+data.tickets+' 張</p><div class="actions">'+pools.map(([name],i)=>'<button data-act="pool" data-value="'+i+'" aria-current="'+(i===pool)+'">'+name+'</button>').join('')+'</div><p>普通 '+pools[pool][1][0]+'% · 稀有 '+pools[pool][1][1]+'% · 封神級 '+pools[pool][1][2]+'%</p><div class="actions pullrow">'+FS.recruit.pulls.map(([n,c,l])=>'<button data-act="pull" data-value="'+n+'" '+(data.tickets>=c?'':'disabled')+'>'+l+' · '+c+' 張'+(n===10?'（9 折）':'')+'</button>').join('')+'</div><p class="result" role="status">'+result+'</p></div><div class="poolart" aria-hidden="true">'+(asset('ui/banner_'+poolKind)?'<img class="pbanner" src="'+asset('ui/banner_'+poolKind)+'" alt="" draggable="false">':silhouette(0))+'</div></div>';
+ if(page==='招募神將')body='<div class="poolhall"><div><div class="eqtabs">'+[['hero','神將池'],['gear','武裝池（武器・裝備）']].map(([k,l])=>'<button data-act="poolkind" data-value="'+k+'" aria-current="'+(k===poolKind)+'">'+l+'</button>').join('')+'</div><h3>'+(poolKind==='hero'?'神將':'武裝')+' · '+pools[pool][0]+'</h3><p>試抽券 '+data.tickets+' 張　<button class="linkbtn" data-act="modal" data-value="pooldesc">ⓘ 說明</button></p><div class="actions">'+pools.map(([name],i)=>'<button data-act="pool" data-value="'+i+'" aria-current="'+(i===pool)+'">'+name+'</button>').join('')+'</div><div class="actions pullrow">'+FS.recruit.pulls.map(([n,c,l])=>'<button data-act="pull" data-value="'+n+'" '+(data.tickets>=c?'':'disabled')+'>'+l+' · '+c+' 張'+(n===10?'（9 折）':'')+'</button>').join('')+'</div><p class="result" role="status">'+result+'</p></div><div class="poolart" aria-hidden="true">'+(asset('ui/banner_'+poolKind)?'<img class="pbanner" src="'+asset('ui/banner_'+poolKind)+'" alt="" draggable="false">':silhouette(0))+'</div></div>';
  if(page==='商店')body=shopPage();
  if(page==='好友')body='<p>好友搜尋與邀請需連線服務。</p>';
  if(page==='飛鴿傳書')body=data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>';
  if(page==='遊戲設定')body='<p>語言 · 繁體中文</p>'+audPanel()+'<details><summary>說明與隱私</summary><p>此原型將招募與陣容存於本機瀏覽器。</p></details>';
- app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>封神</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'?modalBox():'');
+ app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>封神</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'||modal==='pooldesc'?modalBox():'');
  app.classList.toggle('inbattle',page==='闖關模式'&&battle);bgmPlay(page==='闖關模式'&&battle?'battle':'lobby');
 }
 window.addEventListener('message',e=>{if(e.data&&e.data.type==='fs-back'&&battle){battle=false;draw()}});
