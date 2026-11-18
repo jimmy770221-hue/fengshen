@@ -3,6 +3,39 @@
 /* ===== 開場畫面：滿版背景＋大標題，點一下進入大廳 ===== */
 #intro{position:fixed;inset:0;z-index:9000;background:#2a1838 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity .45s ease;overflow:hidden}
 #intro.out{opacity:0;pointer-events:none}
+#gacha{position:fixed;inset:0;z-index:9000;overflow:hidden;color:#fff;-webkit-user-select:none;user-select:none;touch-action:manipulation;animation:gcIn .3s both}
+#gacha.end{opacity:0;transition:opacity .25s}
+#gacha.gc-n{--c:#8fb8ff;--c2:#1a2b4d;--fd:1.5s}#gacha.gc-p{--c:#c88cff;--c2:#3a1a58;--fd:1.5s}#gacha.gc-g{--c:#ffd35a;--c2:#573a10;--fd:2.1s}
+.gc-bg{position:absolute;inset:-5%;background:radial-gradient(circle at 50% 52%,var(--c2) 0,#0a0612 72%);animation:gcPulse 1.6s ease-in-out infinite}
+.gc-circle{position:absolute;left:50%;top:52%;width:62vmin;height:62vmin;margin:-31vmin 0 0 -31vmin;border-radius:50%;border:3px solid var(--c);box-shadow:0 0 5vmin var(--c),inset 0 0 6vmin var(--c);background:repeating-conic-gradient(from 0deg,transparent 0 14deg,color-mix(in srgb,var(--c) 38%,transparent) 14deg 16deg);animation:gcSpin 3s linear infinite,gcPop .7s cubic-bezier(.2,1.4,.4,1) both}
+.gc-circle i{position:absolute;inset:14%;border-radius:50%;border:2px dashed var(--c);animation:gcSpin 2.2s linear infinite reverse}.gc-circle i+i{inset:30%;border-style:solid;animation-duration:4s;animation-direction:normal}
+.gc-beam{position:absolute;left:50%;top:52%;width:16vmin;height:130vh;margin-left:-8vmin;transform-origin:50% 0;background:linear-gradient(180deg,var(--c),transparent 80%);opacity:0;filter:blur(6px);transform:scaleY(0) rotate(180deg);animation:gcBeam 1s ease-out calc(var(--fd) - .9s) both}
+.gc-flash{position:absolute;inset:0;background:#fff;opacity:0;animation:gcFlash .55s ease-out var(--fd) both}
+#gacha.rev .gc-circle,#gacha.rev .gc-beam,#gacha.rev .gc-flash{display:none}
+.gc-hint{position:absolute;left:0;right:0;bottom:calc(8px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:#fff9;letter-spacing:.2em;pointer-events:none}
+.gc-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(44px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
+.gc-grid{display:grid;gap:2.2vh 1.6vw;justify-content:center;align-content:center;perspective:900px}
+.gc-grid.n1{grid-template-columns:repeat(1,auto)}.gc-grid.n5{grid-template-columns:repeat(5,auto)}.gc-grid.n10{grid-template-columns:repeat(5,auto)}
+.gc-card{height:58vh;aspect-ratio:2/3;position:relative}.gc-grid.n1 .gc-card{height:66vh}.gc-grid.n10 .gc-card{height:31vh}
+.gc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,1.3,.5,1)}.gc-card.flip .gc-in{transform:rotateY(180deg)}
+.gc-back,.gc-front{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:3px solid #c9a24b}
+.gc-back{background:repeating-linear-gradient(45deg,#2c1f4a 0 8px,#241a3d 8px 16px);display:flex;align-items:center;justify-content:center;font-size:5vh;color:#e6c273;box-shadow:0 0 14px #000a}
+.gc-front{transform:rotateY(180deg);background:linear-gradient(180deg,#2b2142,#15101f)}
+.gc-front img{width:100%;height:100%;object-fit:cover;display:block}.gc-card.gear .gc-front img{object-fit:contain;padding:14%}
+.gc-front .gc-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8vh}
+.gc-front b{position:absolute;left:0;right:0;bottom:0;padding:14px 4px 6px;text-align:center;font-size:clamp(11px,2.8vh,20px);background:linear-gradient(0deg,#000d,transparent);text-shadow:0 1px 3px #000}
+.gc-grid.n10 .gc-front b{font-size:clamp(10px,2.3vh,14px);padding-top:10px}
+.gc-front em{position:absolute;left:4px;top:4px;font-style:normal;font-size:clamp(10px,2.3vh,15px);padding:1px 7px;border-radius:9px;background:#000a;border:1px solid currentColor}
+.gc-front u{position:absolute;right:4px;top:4px;text-decoration:none;font-size:clamp(9px,2vh,13px);font-weight:700;padding:1px 6px;border-radius:9px;background:#e33;color:#fff}
+.r-n .gc-front{border-color:#9db4d8}.r-n em{color:#b9cdf0}
+.r-p .gc-front{border-color:#c58bff;box-shadow:0 0 18px #c58bffaa}.r-p em{color:#d9b3ff}
+.r-g .gc-front{border-color:#ffd35a;box-shadow:0 0 26px #ffd35a}.r-g em{color:#ffd35a}
+.gc-card.flip.r-g{animation:gcGold 1.3s ease-in-out infinite}
+.gc-ok{margin-top:1.6vh;min-width:120px;padding:8px 26px;font-size:16px;border-radius:22px;border:2px solid #e6c273;background:linear-gradient(180deg,#7a4a1e,#4a2a10);color:#ffe6a8;cursor:pointer}
+@keyframes gcIn{from{opacity:0}to{opacity:1}}@keyframes gcSpin{to{transform:rotate(360deg)}}@keyframes gcPop{from{transform:scale(.1);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes gcPulse{50%{filter:brightness(1.35)}}@keyframes gcBeam{0%{opacity:0;transform:scaleY(0)}30%{opacity:.95}100%{opacity:.9;transform:scaleY(1)}}
+@keyframes gcFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}@keyframes gcGold{50%{filter:drop-shadow(0 0 14px #ffd35a)}}
+
 .audrow{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}.audrow span{min-width:4.5em}.audsl{flex:1 1 auto;min-width:120px;max-width:300px;height:32px;accent-color:#e8b34a;touch-action:pan-x;-webkit-user-select:none;user-select:none}.audpc{min-width:3em;text-align:right}
 @media (display-mode:standalone){@supports (height:100lvh){#intro{bottom:auto;height:100lvh}.home{bottom:auto;height:100lvh}}}
 #intro .ibg{position:fixed;top:-160px;bottom:-160px;left:-160px;right:-160px;background:center/cover no-repeat}
@@ -421,7 +454,7 @@ app.onclick=event=>{
      const i=candidates[Math.floor(Math.random()*candidates.length)];
      const duplicate=!!data.owned[i];
      data.owned[i]=(data.owned[i]||0)+1;
-     out.push({n:roster[i][0],r:rank,nw:!duplicate,txt:roster[i][0]+' · '+rn(rank)+(duplicate?'（持有數 +1）':'（新神將）')});
+     out.push({n:roster[i][0],r:rank,a:'char/'+FS.characters[i].id+'/card',nw:!duplicate,txt:roster[i][0]+' · '+rn(rank)+(duplicate?'（持有數 +1）':'（新神將）')});
     }else{
      // 武裝池：先等機率決定武器或裝備，再依稀有度抽一件（含專武、專屬裝備）
      const kind=Math.random()<.5?'weapon':'armor';
@@ -429,10 +462,10 @@ app.onclick=event=>{
      const it=cands[Math.floor(Math.random()*cands.length)];
      const duplicate=!!data.gear[it.id];
      data.gear[it.id]=(data.gear[it.id]||0)+1;
-     out.push({n:it.name,r:rank,nw:!duplicate,txt:it.name+' · '+rn(rank)+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
+     out.push({n:it.name,r:rank,a:EQ_ART[it.id]||'',gear:1,nw:!duplicate,txt:it.name+' · '+rn(rank)+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
     }
    }
-   setTimeout(()=>window.sfx(out.some(e=>e.r!=='普通')?'pull_rare':'pull'),120);
+   setTimeout(()=>window.sfx('pull'),120);try{gachaShow(out)}catch(e){}
    if(out.length===1)result='招募到 '+out[0].txt;
    else{const ord={'封神級':0,'稀有':1,'普通':2},g={};out.forEach(e=>{const k=e.n+'|'+e.r;(g[k]=g[k]||{n:e.n,r:e.r,c:0,nw:false});g[k].c++;if(e.nw)g[k].nw=true});
     result='招募 '+pc[2]+'：'+Object.values(g).sort((a,b)=>ord[a.r]-ord[b.r]).map(e=>e.n+'（'+rn(e.r)+'）'+(e.c>1?'×'+e.c:'')+(e.nw?' 新':'')).join('、')}
@@ -440,6 +473,29 @@ app.onclick=event=>{
  }
  save();draw();
 };
+
+/* ===== 抽卡動畫：魔法陣蓄力 → 光柱 → 閃光 → 翻牌（點一下跳過；十連逐張翻開） ===== */
+function gachaShow(out){
+ const old=document.getElementById('gacha');if(old)old.remove();
+ const K=r=>r==='封神級'?'g':r==='稀有'?'p':'n';
+ const top=out.some(e=>e.r==='封神級')?'g':out.some(e=>e.r==='稀有')?'p':'n';
+ const A=k=>k&&window.asset&&asset(k)||'';
+ const d=document.createElement('div');d.id='gacha';d.className='gc-'+top;
+ d.innerHTML='<div class="gc-bg"></div><div class="gc-circle"><i></i><i></i></div><div class="gc-beam"></div><div class="gc-flash"></div><div class="gc-stage"></div><div class="gc-hint">點一下跳過</div>';
+ document.body.appendChild(d);
+ const stage=d.querySelector('.gc-stage'),hint=d.querySelector('.gc-hint');let phase=1,tmr;
+ const card=(e,i)=>{const img=A(e.a);return '<div class="gc-card r-'+K(e.r)+(e.gear?' gear':'')+'"><div class="gc-in"><div class="gc-back"><span>仙</span></div><div class="gc-front">'+(img?'<img src="'+img+'" alt="" draggable="false">':'<span class="gc-ph">'+e.n.slice(0,1)+'</span>')+'<em>'+rn(e.r)+'</em><b>'+e.n+'</b>'+(e.nw?'<u>NEW</u>':'')+'</div></div></div>'};
+ const flip=(c,e)=>{if(c.classList.contains('flip'))return;c.classList.add('flip');if(e.r==='封神級')window.sfx('pull_rare');else if(e.r==='稀有')window.sfx('ui_confirm')};
+ function reveal(){if(phase!==1)return;phase=2;clearTimeout(tmr);d.classList.add('rev');
+  stage.innerHTML='<div class="gc-grid n'+out.length+'">'+out.map(card).join('')+'</div><button class="gc-ok" type="button">確定</button>';
+  hint.textContent=out.length>1?'點一下全部翻開':'';
+  const cs=[...stage.querySelectorAll('.gc-card')];
+  cs.forEach((c,i)=>setTimeout(()=>flip(c,out[i]),350+i*(out.length>1?280:0)));
+  stage.querySelector('.gc-ok').onclick=ev=>{ev.stopPropagation();d.classList.add('end');setTimeout(()=>d.remove(),260)};
+ }
+ d.onclick=()=>{if(phase===1)reveal();else{[...stage.querySelectorAll('.gc-card')].forEach((c,i)=>flip(c,out[i]));hint.textContent=''}};
+ tmr=setTimeout(reveal,top==='g'?2700:2100);
+}
 try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){})}catch(e){}
 load();draw();
 /* ===== 開場畫面：每次開啟 APP 顯示一次，點一下進入（同時啟動背景音樂） ===== */
