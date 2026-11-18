@@ -391,7 +391,7 @@ function draw(){
  ctx.strokeStyle='#555c67';for(let i=0;i<WORLD;i+=53){ctx.beginPath();ctx.moveTo(i,293);ctx.lineTo(i-20,365);ctx.stroke();}
  }
  for(let side=0;side<2;side++){
-  const x=side?right:left,bi=baseImg[side];
+  const x=(side?right:left)+(side?-25:25),bi=baseImg[side];
   const bst=baseState(s.hp[side]),bimg=baseSt[side][bst],hit=s.bh[side],ht=hit?(performance.now()-hit.t0)/(hit.big?1.6:1):9e9;
   if(bimg.complete&&bimg.naturalWidth){
    const sh=(!BH_REDUCE&&ht<120)?Math.sin(ht*.12)*2.5*(1-ht/120):0;
