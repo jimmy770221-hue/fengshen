@@ -139,6 +139,10 @@ body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:1
 .uiart .poolhall .pcard .pimg img{object-fit:fill}
 .uiart .poolhall .pcard .pplate{position:absolute;left:12%;right:12%;bottom:7%;padding:0;background:none}
 .uiart .poolhall .pcard .pbadge{top:8px;right:10px}
+
+/* 大廳固定舞台：1920×1080，整體等比例縮放置中（測試） */
+.home .h-dock.art{bottom:0}
+.home .hs{position:absolute;left:50%;top:50%;width:1920px;height:1080px;margin:-540px 0 0 -960px;transform:scale(var(--s,.3));transform-origin:50% 50%}
 </style><div id="rot" role="alert"><i>📱</i><div>請將手機橫放</div><small style="font-size:14px;font-weight:normal;color:#ffdda1">《諸仙陣》只支援橫向遊玩</small></div><main id="app"></main>
 <script src="assets/manifest.js"></script>
 <script src="data/fengshen-data.js"></script>
@@ -334,9 +338,11 @@ const wait=[];urls.forEach(u=>{if(!u||/^data:/.test(u)||u.indexOf('undefined')>=
 const tok=++_gateTok;if(!wait.length){app.style.visibility='';return}
 app.style.visibility='hidden';const t0=performance.now();(function chk(){if(tok!==_gateTok)return;if(wait.every(r=>r.done)||performance.now()-t0>4000){app.style.visibility='';return}setTimeout(chk,50)})()}
 function uiArt(){const r=document.documentElement,m={'--btn-pri':'ui/btn_primary','--btn-sec':'ui/btn_secondary','--btn-tab':'ui/btn_tab','--btn-sq':'ui/btn_square','--pnl':'ui/panel_detail'};let ok=true;for(const k in m){const u=window.asset&&asset(m[k]);if(u)r.style.setProperty(k,'url('+u+')');else ok=false}r.classList.toggle('uiart',ok)}
+function fitHome(){const h=document.querySelector('.home');if(!h)return;const vv=window.visualViewport,w=vv?vv.width:innerWidth,t=vv?vv.height:innerHeight;h.style.setProperty('--s',Math.min(w/1920,t/1080))}
+(function(){const f=()=>{fitHome();setTimeout(fitHome,60);setTimeout(fitHome,250)};window.addEventListener('resize',f);window.addEventListener('orientationchange',f);if(window.visualViewport)visualViewport.addEventListener('resize',fitHome)})();
 function draw(){uiArt();_draw();gateArt()}
 function _draw(){
- if(page==='首頁'){document.body.classList.remove('pg');app.className='ishome';app.innerHTML=homeScreen();centerHomeFigs();return}
+ if(page==='首頁'){document.body.classList.remove('pg');app.className='ishome';app.innerHTML=homeScreen();fitHome();centerHomeFigs();return}
  app.classList.remove('ishome');
  {const pk={'神將':'page_hero','武裝':'page_gear','神術':'page_skill','招募神將':'page_recruit','商店':'page_shop','好友':'page_friend'}[page],pu=pk&&asset('scene/'+pk);app.classList.toggle('pg',!!pu);document.body.classList.toggle('pg',!!pu);if(pu){app.style.setProperty('--pgbg','url('+pu+')');document.body.style.setProperty('--pgbg','url('+pu+')')}else{app.style.removeProperty('--pgbg');document.body.style.removeProperty('--pgbg')}}
  let body='';
