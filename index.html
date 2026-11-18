@@ -159,15 +159,15 @@ const defaults=()=>({tickets:12,stone:0,gold:0,lv:1,exp:0,owned:{0:1,1:1,2:1},ge
 let data=defaults(),server='蓬萊',page='首頁',pool=0,poolKind='hero',result='',battle=false,sel=0,eqTab='weapon',eqFilter='全部',eqSel=0,skSel=0,shopTab=0,shopMsg='',modal='',stageSel=0,modalMsg='';
 
 /* ===== BGM：Web Audio 無縫循環（大廳／戰鬥） ===== */
-const BGM={lobby:{src:'audio/bgm-lobby.mp3',ls:50.109,le:120.572},battle:{src:'audio/bgm-battle.mp3',ls:30.140,le:96.814}};
+const BGM={lobby:[{src:'audio/bgm-lobby.mp3',ls:50.109,le:120.572},{src:'audio/bgm-lobby2.mp3',ls:50.480,le:120.945}],battle:[{src:'audio/bgm-battle.mp3',ls:30.140,le:96.814},{src:'audio/bgm-battle2.mp3',ls:30.140,le:126.854}]};const bgmIdx={lobby:-1,battle:-1};
 const audKey='fengshen-audio-v1';let aud={on:true,vol:.6};
 try{const a=JSON.parse(localStorage.getItem(audKey));if(a&&typeof a.vol==='number')aud=a}catch{}
 function saveAud(){try{localStorage.setItem(audKey,JSON.stringify(aud))}catch{}}
 let actx=null,gainN=null,curSrc=null,curName='',want='lobby',bufs={},hid=false;
 function bgmCtx(){if(actx)return actx;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;actx=new C();gainN=actx.createGain();gainN.connect(actx.destination);bgmVol();return actx}
 function bgmVol(){if(gainN)gainN.gain.value=aud.on?aud.vol:0}
-function bgmLoad(n){if(bufs[n])return bufs[n];bufs[n]=fetch(BGM[n].src).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>actx.decodeAudioData(b,ok,no))).catch(()=>null);return bufs[n]}
-async function bgmPlay(n){want=n;if(!actx||curName===n||hid)return;const b=await bgmLoad(n);if(!b||want!==n||curName===n)return;if(curSrc){try{curSrc.stop()}catch{}curSrc=null}const s=actx.createBufferSource();s.buffer=b;s.loop=true;s.loopStart=BGM[n].ls;s.loopEnd=BGM[n].le;s.connect(gainN);s.start(0);curSrc=s;curName=n}
+function bgmLoad(n,i){const k=n+i;if(bufs[k])return bufs[k];bufs[k]=fetch(BGM[n][i].src).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>actx.decodeAudioData(b,ok,no))).catch(()=>null);return bufs[k]}
+async function bgmPlay(n){want=n;if(!actx||curName===n||hid)return;const L=BGM[n].length;let i=(bgmIdx[n]+1)%L,b=await bgmLoad(n,i);if(!b&&L>1){i=(i+1)%L;b=await bgmLoad(n,i)}if(!b||want!==n||curName===n)return;bgmIdx[n]=i;if(curSrc){try{curSrc.stop()}catch{}curSrc=null}const s=actx.createBufferSource();s.buffer=b;s.loop=true;s.loopStart=BGM[n][i].ls;s.loopEnd=BGM[n][i].le;s.connect(gainN);s.start(0);curSrc=s;curName=n}
 function bgmStart(){const c=bgmCtx();if(!c)return;if(c.state!=='running')c.resume();bgmPlay(want)}
 ['pointerdown','touchend','click'].forEach(e=>document.addEventListener(e,bgmStart,{passive:true}));
 document.addEventListener('visibilitychange',()=>{hid=document.hidden;if(!actx)return;if(hid){actx.suspend()}else{actx.resume().then(()=>bgmPlay(want))}});
