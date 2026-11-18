@@ -478,7 +478,7 @@ app.onclick=event=>{
     const [common,rare]=pools[pool][1],roll=Math.random()*100;
     const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
     if(poolKind==='hero'){
-     const candidates=roster.map((r,i)=>r[3]===rank&&!FS.characters[i].unlockLater?i:-1).filter(i=>i>=0); // 闡教、截教都抽得到；申公豹是後期關卡獎勵，不進抽卡
+     const candidates=roster.map((r,i)=>r[3]===rank?i:-1).filter(i=>i>=0); // 闡教、截教全部抽得到（申公豹暫時放進來測試；之後若改回後期獎勵，這裡再排除 unlockLater）
      const i=candidates[Math.floor(Math.random()*candidates.length)];
      const duplicate=!!data.owned[i];
      data.owned[i]=(data.owned[i]||0)+1;
