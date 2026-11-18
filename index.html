@@ -3,7 +3,7 @@
 /* ===== 開場畫面：滿版背景＋大標題，點一下進入大廳 ===== */
 #intro{position:fixed;inset:0;z-index:9000;background:#2a1838 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity .45s ease;overflow:hidden}
 #intro.out{opacity:0;pointer-events:none}
-#intro .ibg{position:absolute;inset:0;background:center/cover no-repeat}
+#intro .ibg{position:fixed;top:-160px;bottom:-160px;left:-160px;right:-160px;background:center/cover no-repeat}
 #intro .ich{position:absolute;bottom:0;width:auto;pointer-events:none;-webkit-user-drag:none;object-fit:contain}
 #intro .ilogo{position:absolute;left:50%;top:var(--lt,18%);transform:translateX(-50%);width:var(--lw,40%);object-fit:contain;filter:drop-shadow(0 6px 18px #000a);animation:introfloat 4.2s ease-in-out infinite;pointer-events:none}
 #intro .itap{position:absolute;left:0;right:0;bottom:calc(11% + env(safe-area-inset-bottom));text-align:center;font-size:clamp(16px,var(--tf,4vh),30px);font-weight:900;letter-spacing:.35em;color:#fff1c9;text-shadow:0 0 10px #ff9d3a,0 2px 4px #3a1204,0 0 22px #000;animation:introblink 1.6s ease-in-out infinite;pointer-events:none}
