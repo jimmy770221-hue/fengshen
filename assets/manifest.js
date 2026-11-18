@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "123f314e",
+ "v": "8c7d17f8",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -104,7 +104,54 @@ window.ASSETS={
   "fx/fx_base_hit": "assets/fx/fx_base_hit.be6baaec.webp",
   "scene/intro_bg_clean": "assets/scene/intro_bg_clean.f9bf28d2.webp",
   "scene/intro_chars_left": "assets/scene/intro_chars_left.baa3d0e3.webp",
-  "scene/intro_chars_right": "assets/scene/intro_chars_right.76debaa9.webp"
+  "scene/intro_chars_right": "assets/scene/intro_chars_right.76debaa9.webp",
+  "weapon/w_mao": "assets/weapon/w_mao.2fc09f5d.webp",
+  "weapon/w_zhudou": "assets/weapon/w_zhudou.0a32d113.webp",
+  "weapon/w_dao": "assets/weapon/w_dao.8c03adcc.webp",
+  "weapon/x_sanjianliangrendao": "assets/weapon/x_sanjianliangrendao.ecbb52ec.webp",
+  "weapon/x_hunyuanjindou": "assets/weapon/x_hunyuanjindou.153975e0.webp",
+  "weapon/x_dinghaizhu": "assets/weapon/x_dinghaizhu.f6b01cd7.webp",
+  "weapon/w_gun": "assets/weapon/w_gun.77bd62b7.webp",
+  "weapon/w_chu": "assets/weapon/w_chu.8d2358f9.webp",
+  "weapon/w_tazhao": "assets/weapon/w_tazhao.45a59b80.webp",
+  "weapon/x_qiankunquan": "assets/weapon/x_qiankunquan.3e2ed1cc.webp",
+  "weapon/w_fu": "assets/weapon/w_fu.9644b683.webp",
+  "weapon/x_xiangmochu": "assets/weapon/x_xiangmochu.e47dc864.webp",
+  "weapon/w_chuijian": "assets/weapon/w_chuijian.51c419f4.webp",
+  "weapon/w_pinhulu": "assets/weapon/w_pinhulu.e2f9ec47.webp",
+  "weapon/w_bian": "assets/weapon/w_bian.ffe95efe.webp",
+  "weapon/w_qifan": "assets/weapon/w_qifan.d873dc9e.webp",
+  "weapon/x_huangjingun": "assets/weapon/x_huangjingun.a1ba1464.webp",
+  "weapon/x_dashenbian": "assets/weapon/x_dashenbian.a48334c5.webp",
+  "weapon/w_falun": "assets/weapon/w_falun.72627649.webp",
+  "weapon/w_lingsuo": "assets/weapon/w_lingsuo.93d85e8b.webp",
+  "weapon/w_quan": "assets/weapon/w_quan.76a6855f.webp",
+  "weapon/w_qiang": "assets/weapon/w_qiang.6d1868b8.webp",
+  "gear/a_touguan": "assets/gear/a_touguan.0ba1159f.webp",
+  "gear/x_fengleichi": "assets/gear/x_fengleichi.35c22292.webp",
+  "gear/a_peishi": "assets/gear/a_peishi.0b52a892.webp",
+  "gear/x_huntianling": "assets/gear/x_huntianling.71439b2b.webp",
+  "gear/a_xue": "assets/gear/a_xue.285f88d4.webp",
+  "gear/a_fayi": "assets/gear/a_fayi.09c9aab5.webp",
+  "skill/icon_thunder": "assets/skill/icon_thunder.e501d3a1.webp",
+  "skill/icon_heal": "assets/skill/icon_heal.e14d38ef.webp",
+  "skill/icon_shock": "assets/skill/icon_shock.172afef2.webp",
+  "skill/icon_energy": "assets/skill/icon_energy.d54ea32d.webp",
+  "skill/icon_poison": "assets/skill/icon_poison.4b9cae1f.webp",
+  "skill/icon_wind": "assets/skill/icon_wind.bbefe9f0.webp",
+  "skill/icon_rage": "assets/skill/icon_rage.aae84d24.webp",
+  "skill/icon_haste": "assets/skill/icon_haste.f727f780.webp",
+  "skill/icon_slow": "assets/skill/icon_slow.8970eb66.webp",
+  "skill/icon_ward": "assets/skill/icon_ward.2e9247e7.webp",
+  "skill/icon_ice": "assets/skill/icon_ice.1db747ee.webp",
+  "ui/pull_1": "assets/ui/pull_1.47ae3df0.webp",
+  "ui/pull_5": "assets/ui/pull_5.ed38baa5.webp",
+  "ui/pull_10": "assets/ui/pull_10.0ef13f7c.webp",
+  "ui/panel_detail": "assets/ui/panel_detail.30ff6389.webp",
+  "ui/btn_primary": "assets/ui/btn_primary.576ebe3f.webp",
+  "ui/btn_secondary": "assets/ui/btn_secondary.42bb92a7.webp",
+  "ui/btn_tab": "assets/ui/btn_tab.9e285ff9.webp",
+  "ui/btn_square": "assets/ui/btn_square.67fb3d7d.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -518,6 +565,194 @@ window.ASSETS={
   "scene/intro_chars_right": [
    1084,
    1486
+  ],
+  "weapon/w_mao": [
+   256,
+   256
+  ],
+  "weapon/w_zhudou": [
+   256,
+   256
+  ],
+  "weapon/w_dao": [
+   256,
+   256
+  ],
+  "weapon/x_sanjianliangrendao": [
+   256,
+   256
+  ],
+  "weapon/x_hunyuanjindou": [
+   256,
+   256
+  ],
+  "weapon/x_dinghaizhu": [
+   256,
+   256
+  ],
+  "weapon/w_gun": [
+   256,
+   256
+  ],
+  "weapon/w_chu": [
+   256,
+   256
+  ],
+  "weapon/w_tazhao": [
+   256,
+   256
+  ],
+  "weapon/x_qiankunquan": [
+   256,
+   256
+  ],
+  "weapon/w_fu": [
+   256,
+   256
+  ],
+  "weapon/x_xiangmochu": [
+   256,
+   256
+  ],
+  "weapon/w_chuijian": [
+   256,
+   256
+  ],
+  "weapon/w_pinhulu": [
+   256,
+   256
+  ],
+  "weapon/w_bian": [
+   256,
+   256
+  ],
+  "weapon/w_qifan": [
+   256,
+   256
+  ],
+  "weapon/x_huangjingun": [
+   256,
+   256
+  ],
+  "weapon/x_dashenbian": [
+   256,
+   256
+  ],
+  "weapon/w_falun": [
+   256,
+   256
+  ],
+  "weapon/w_lingsuo": [
+   256,
+   256
+  ],
+  "weapon/w_quan": [
+   256,
+   256
+  ],
+  "weapon/w_qiang": [
+   256,
+   256
+  ],
+  "gear/a_touguan": [
+   256,
+   256
+  ],
+  "gear/x_fengleichi": [
+   256,
+   256
+  ],
+  "gear/a_peishi": [
+   256,
+   256
+  ],
+  "gear/x_huntianling": [
+   256,
+   256
+  ],
+  "gear/a_xue": [
+   256,
+   256
+  ],
+  "gear/a_fayi": [
+   256,
+   256
+  ],
+  "skill/icon_thunder": [
+   128,
+   128
+  ],
+  "skill/icon_heal": [
+   128,
+   128
+  ],
+  "skill/icon_shock": [
+   128,
+   128
+  ],
+  "skill/icon_energy": [
+   128,
+   128
+  ],
+  "skill/icon_poison": [
+   128,
+   128
+  ],
+  "skill/icon_wind": [
+   128,
+   128
+  ],
+  "skill/icon_rage": [
+   128,
+   128
+  ],
+  "skill/icon_haste": [
+   128,
+   128
+  ],
+  "skill/icon_slow": [
+   128,
+   128
+  ],
+  "skill/icon_ward": [
+   128,
+   128
+  ],
+  "skill/icon_ice": [
+   128,
+   128
+  ],
+  "ui/pull_1": [
+   512,
+   320
+  ],
+  "ui/pull_5": [
+   512,
+   320
+  ],
+  "ui/pull_10": [
+   512,
+   320
+  ],
+  "ui/panel_detail": [
+   768,
+   512
+  ],
+  "ui/btn_primary": [
+   640,
+   200
+  ],
+  "ui/btn_secondary": [
+   640,
+   200
+  ],
+  "ui/btn_tab": [
+   640,
+   200
+  ],
+  "ui/btn_square": [
+   160,
+   160
   ]
  },
  "critical": [
@@ -543,7 +778,12 @@ window.ASSETS={
   "ui/menu_zhaomu",
   "scene/intro_bg_clean",
   "scene/intro_chars_left",
-  "scene/intro_chars_right"
+  "scene/intro_chars_right",
+  "ui/btn_primary",
+  "ui/btn_secondary",
+  "ui/btn_tab",
+  "ui/btn_square",
+  "ui/panel_detail"
  ]
 };
 window.asset=function(k){return window.ASSETS.files[k]||''};

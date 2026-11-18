@@ -122,6 +122,23 @@ body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:1
 .stonegrid{grid-template-columns:repeat(auto-fit,minmax(clamp(120px,15vw,200px),1fr));gap:clamp(8px,1.4vh,16px)}.stonecard{padding:clamp(6px,1.4vh,16px) 4px;min-height:clamp(92px,calc(47vh - 90px),300px);justify-content:center;gap:clamp(1px,.6vh,6px)}.stonecard .gemart img{width:auto;height:clamp(44px,calc(27vh - 55px),190px);max-width:100%}.stonecard b{font-size:clamp(18px,3.4vh,34px)}.stonecard small{font-size:clamp(11px,1.6vh,15px)}.stonecard .price{font-size:clamp(14px,2.2vh,22px)}
 #rot{display:none;position:fixed;inset:0;z-index:99999;background:#1a1226 radial-gradient(circle at 50% 40%,#4a2d5e,#1a1226 70%);color:#ffe49b;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;font-size:20px;font-weight:800;letter-spacing:2px;touch-action:none}#rot i{font-style:normal;font-size:72px;display:block;animation:rotp 2.2s ease-in-out infinite}@keyframes rotp{0%,25%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}@media (orientation:portrait){#rot{display:flex}}
 .stonecard.ad{border-color:#7be0a0;background:linear-gradient(#2c5a46,#173326)}.stonecard.ad .price{color:#bff6c8}
+
+/* 新介面素材：按鈕與面板框（素材載入成功才啟用） */
+.uiart .eqtabs button,.uiart .backhome,.uiart button[data-act=team],.uiart button[data-act=battle],.uiart button[data-act=claim],.uiart button[data-act=saveprof],.uiart button[data-act=back],.uiart button[data-act=logout]{background:transparent var(--btn-sec) center/100% 100% no-repeat;border:0;box-shadow:none;border-radius:0;color:#fff1c9;font-weight:800;text-shadow:0 2px 2px #34180d,1px 0 #34180d,-1px 0 #34180d;padding:2px 26px;min-height:40px}
+.uiart .eqtabs button{background-image:var(--btn-tab)}
+.uiart button[data-act=team],.uiart button[data-act=battle],.uiart button[data-act=claim],.uiart button[data-act=saveprof]{background-image:var(--btn-pri);min-height:44px}
+.uiart .eqtabs button[aria-current=true]{filter:brightness(1.25) drop-shadow(0 0 4px #ffcf5b)}
+.uiart .eqtabs button:not([aria-current=true]){filter:brightness(.85)}
+.uiart .backhome:active,.uiart button[data-act=team]:active,.uiart button[data-act=battle]:active{filter:brightness(.88);transform:translateY(2px)}
+.uiart .gshow,.uiart .gside section{border:20px solid transparent;border-image:var(--pnl) 64 fill/20px/0 stretch;background:none;border-radius:0;box-shadow:none}
+.uiart .gside section{padding:0 2px}
+.uiart .gside section button:disabled{filter:grayscale(.8) brightness(.7)}
+
+.uiart .poolhall .pcard{position:relative;border:0;background:none;box-shadow:none;border-radius:0;overflow:visible}
+.uiart .poolhall .pcard .pimg{position:absolute;inset:0;background:none}
+.uiart .poolhall .pcard .pimg img{object-fit:fill}
+.uiart .poolhall .pcard .pplate{position:absolute;left:12%;right:12%;bottom:7%;padding:0;background:none}
+.uiart .poolhall .pcard .pbadge{top:8px;right:10px}
 </style><div id="rot" role="alert"><i>📱</i><div>請將手機橫放</div><small style="font-size:14px;font-weight:normal;color:#ffdda1">《諸仙陣》只支援橫向遊玩</small></div><main id="app"></main>
 <script src="assets/manifest.js"></script>
 <script src="data/fengshen-data.js"></script>
@@ -217,7 +234,9 @@ function generalPage(){
   '<div class="collection">'+owned.map(i=>{const cu=asset('char/'+FS.characters[i].id+'/card');if(cu){const rk=FS.characters[i].rank,fm={'普通':'frame_putong','稀有':'frame_xiyou','封神級':'frame_fengshen'}[rk],fb={'普通':[6,7,394,553],'稀有':[6,43,394,517],'封神級':[6,45,394,515]}[rk]||[0,0,400,560],w=fb[2]-fb[0],h=fb[3]-fb[1],fa=fm&&asset('ui/'+fm);return '<button class="gpick cardpick" aria-label="'+roster[i][0]+'" data-act="sel" data-value="'+i+'" aria-current="'+(i===sel)+'"><img class="cface" src="'+cu+'" alt="">'+(fa?'<img class="cfrm" src="'+fa+'" alt="" style="left:'+(-fb[0]/w*100)+'%;top:'+(-fb[1]/h*100)+'%;width:'+(400/w*100)+'%;height:'+(560/h*100)+'%">':'')+'</button>'}return '<button class="gpick" data-act="sel" data-value="'+i+'" aria-current="'+(i===sel)+'"><span class="gm">'+silhouette(i,'icon')+'</span><b>'+roster[i][0]+'</b><small style="color:'+FS.reachTypes[FS.characters[i].reach]+'">'+FS.characters[i].reach+'</small>'+(data.team.includes(i)?'<small>出戰中</small>':'')+'</button>'}).join('')+'</div>';
 }
 // 武裝頁：左＝介紹畫面，右＝上方切換「武器／裝備」，下方為數據；底部橫列選擇項目
-const EQ_ART={'w_劍':'weapon/w_jian','a_衣甲':'gear/a_yijia'}; // 已有圖的武器／裝備（id → 資源代號），其餘先用示意圖
+const EQ_ART={'w_劍':'weapon/w_jian','w_刀':'weapon/w_dao','w_槍':'weapon/w_qiang','w_矛':'weapon/w_mao','w_法輪':'weapon/w_falun','w_圈':'weapon/w_quan','w_鞭':'weapon/w_bian','w_棍':'weapon/w_gun','w_杵':'weapon/w_chu','w_斧':'weapon/w_fu','w_錘鐧':'weapon/w_chuijian','w_綾索':'weapon/w_lingsuo','w_旗幡':'weapon/w_qifan','w_珠斗':'weapon/w_zhudou','w_塔罩':'weapon/w_tazhao','w_瓶葫蘆':'weapon/w_pinhulu',
+ 'x_0':'weapon/x_qiankunquan','x_1':'weapon/x_sanjianliangrendao','x_2':'weapon/x_xiangmochu','x_3':'weapon/x_dashenbian','x_4':'weapon/x_huangjingun','x_5':'weapon/x_dinghaizhu','x_6':'weapon/x_hunyuanjindou',
+ 'a_頭冠':'gear/a_touguan','a_衣甲':'gear/a_yijia','a_法衣':'gear/a_fayi','a_配飾':'gear/a_peishi','a_靴':'gear/a_xue','ax_0':'gear/x_huntianling','ax_1':'gear/x_fengleichi'}; // 已有圖的武器／裝備（id → 資源代號），其餘先用示意圖
 function equipIcon(tab,it){
  const eu=it&&EQ_ART[it.id]&&window.asset&&asset(EQ_ART[it.id]);
  if(eu)return '<img class="sil art" src="'+eu+'" alt="'+it.name+'" draggable="false" decoding="async">';
@@ -314,7 +333,8 @@ function gateArt(){const urls=new Set();app.querySelectorAll('img[src]').forEach
 const wait=[];urls.forEach(u=>{if(!u||/^data:/.test(u)||u.indexOf('undefined')>=0)return;let r=_loaded.get(u);if(!r){const im=new Image();r={im,done:false};_loaded.set(u,r);const f=()=>{r.done=true};im.onload=im.onerror=f;im.src=u;if(im.complete)r.done=true}if(!r.done)wait.push(r)});
 const tok=++_gateTok;if(!wait.length){app.style.visibility='';return}
 app.style.visibility='hidden';const t0=performance.now();(function chk(){if(tok!==_gateTok)return;if(wait.every(r=>r.done)||performance.now()-t0>4000){app.style.visibility='';return}setTimeout(chk,50)})()}
-function draw(){_draw();gateArt()}
+function uiArt(){const r=document.documentElement,m={'--btn-pri':'ui/btn_primary','--btn-sec':'ui/btn_secondary','--btn-tab':'ui/btn_tab','--btn-sq':'ui/btn_square','--pnl':'ui/panel_detail'};let ok=true;for(const k in m){const u=window.asset&&asset(m[k]);if(u)r.style.setProperty(k,'url('+u+')');else ok=false}r.classList.toggle('uiart',ok)}
+function draw(){uiArt();_draw();gateArt()}
 function _draw(){
  if(page==='首頁'){document.body.classList.remove('pg');app.className='ishome';app.innerHTML=homeScreen();centerHomeFigs();return}
  app.classList.remove('ishome');
@@ -330,7 +350,7 @@ function _draw(){
  if(page==='好友')body='<p>好友搜尋與邀請需連線服務。</p>';
  if(page==='飛鴿傳書')body=data.claimed?'<p>試玩招募券已領取。</p>':'<p>試玩招募禮 · 5 張招募券</p><button data-act="claim">領取</button>';
  if(page==='遊戲設定')body='<p>語言 · 繁體中文</p>'+audPanel()+'<details><summary>說明與隱私</summary><p>此原型將招募與陣容存於本機瀏覽器。</p></details>';
- app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>封神</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'||modal==='pooldesc'?modalBox():'');
+ app.innerHTML='<header><button class="backhome" data-act="nav" data-value="首頁">回大廳</button> <b>諸仙陣</b> <small class="muted">｜'+server+' · 本機試玩</small><span class="resources">招募券 '+data.tickets+'</span></header><div class="layout"><section class="panel"><h2>'+page+'</h2>'+body+'</section></div>'+(modal==='skills'||modal==='pooldesc'?modalBox():'');
  app.classList.toggle('inbattle',page==='闖關模式'&&battle);bgmPlay(page==='闖關模式'&&battle?'battle':'lobby');
 }
 window.addEventListener('message',e=>{if(!e.data)return;
