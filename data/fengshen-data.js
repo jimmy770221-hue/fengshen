@@ -5,7 +5,7 @@
         之後有圖集時填 {manifest:{image,grid,anchor,anims…}}（格式見 nezha-sprite.js 的 DEFAULT）。 */
 /* 八位神將的戰鬥動作圖集（待機／移動／攻擊，2×2 各 4 格）；受擊用閃紅光，倒下停在待機姿勢後淡出 */
 /* 八幀新動作（GPT 修正版）：七位角色移動 8 格、待機與攻擊各 4 格，圖集統一 4×2；申公豹維持原本 2×2 四格 */
-const NEW8={yangjian:.095,weihu:.095,yunxiao:.095,jiuweihu:.095,zhaogongming:.095,leizhenzi:.1,jiangziya:.17};
+const NEW8={yangjian:.095,weihu:.095,yunxiao:.095,jiuweihu:.095,zhaogongming:.095,leizhenzi:.1,jiangziya:.17,shengongbao:.095};
 const SPR=(id,h)=>{const n=NEW8[id],g=n?[4,2]:[2,2];
  const mv=n?[0,1,2,3,4,5,6,7].map(c=>[c,n]):[[0,.13],[1,.13],[2,.13],[3,.13]];
  return {height:h||104,noRing:true,manifest:{
@@ -17,6 +17,16 @@ const SPR=(id,h)=>{const n=NEW8[id],g=n?[4,2]:[2,2];
   cast:{steps:[[0,.14],[1,.14],[2,.34],[3,.2]],loop:false,still:0,prio:1,image:'attack'},
   fall:{steps:[[0,1]],loop:false,still:0,prio:9,image:'idle',hold:true}
  }}};};
+/* 哪吒（GPT 八幀版）：待機／移動各 8 格踩風火輪，眨眼同格換圖，攻擊與倒地原四格排在第一列；圖集統一 4×2，保留乾坤圈 */
+const NEZHA8={height:104,manifest:{
+ images:{move:'char/nezha/sheet-move',blink:'char/nezha/sheet-move-blink',attack:'char/nezha/sheet-attack',fall:'char/nezha/sheet-fall'},
+ image:'move',grid:[4,2],anchor:[0.5,0.94],shadow:[0.22,0.05],blink:{every:3.2,dur:0.09,image:'blink'},
+ anims:{
+  idle:{steps:[0,1,2,3,4,5,6,7].map(c=>[c,.12]),loop:true,still:0,image:'move'},
+  move:{steps:[0,1,2,3,4,5,6,7].map(c=>[c,.08]),loop:true,still:0,image:'move',refSpeed:50},
+  cast:{steps:[[0,.09],[1,.075],[2,.27],[3,.115]],loop:false,still:0,prio:1,image:'attack',events:{2:{name:'release',at:[0.84,0.51]}}},
+  fall:{steps:[[0,.09],[1,.1],[2,.11],[3,.22]],loop:false,still:3,prio:9,image:'fall',hold:true}
+ }}};
 window.FS={
  title:'封神',
  factions:{
@@ -30,7 +40,7 @@ window.FS={
  pools:[['一般池',[80,18,2]],['神武池',[55,38,7]],['封神池',[50,35,15]]],
  /* 劇情試戰角色。編號＝順序（0～8），隊伍參數與存檔都用這個編號；0～4 為闡教（我方可用），5～8 為截教（敵方出兵） */
  characters:[
-  {id:'nezha',reach:'中程',name:'哪吒',faction:'闡教',rank:'普通',role:'中距離・乾坤圈投擲',art:{height:104},
+  {id:'nezha',reach:'中程',name:'哪吒',faction:'闡教',rank:'普通',role:'中距離・乾坤圈投擲',art:NEZHA8,
    stats:{cost:32,hp:92,damage:28,range:142,speed:54,period:1.15,cd:4,color:'#f88667',splash:49}},
   {id:'yangjian',reach:'遠程',name:'楊戩',faction:'闡教',rank:'稀有',role:'遠程單體',art:SPR('yangjian'),
    stats:{cost:34,hp:111,damage:49,range:184,speed:48,period:1.42,cd:4.7,color:'#aabdf3'}},

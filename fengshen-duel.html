@@ -304,7 +304,10 @@ const CH=100; // 角色立繪暫代：場上顯示高度（之後換動畫圖集
 let frameDt=0;
 function charSprite(a){
  if(!a.spr){a.spr=new NezhaSprite({manifest:a.art.manifest,height:a.art.height||100,shadow:false,reduceMotion:false});a.px=a.x;}
- const p=a.spr,moving=Math.abs(a.x-a.px)>.01;
+ const p=a.spr;
+ // 走路／待機切換加一點緩衝：重疊時被擋住又放行，每一兩格畫面就來回切換，圖會抖；停下後 0.2 秒內仍視為走路，不影響實際移動與判定
+ if(Math.abs(a.x-a.px)>.01)a.mvT=.2;else a.mvT=Math.max(0,(a.mvT||0)-frameDt);
+ const moving=a.mvT>0;
  a.px=a.x;
  p.setMoving(moving,a.speed);
  p.onEvent=a.art.noRing?null:(e=>{if(e.name==='release')launchRing(a,e.offset);});
