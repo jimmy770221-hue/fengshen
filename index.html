@@ -338,7 +338,7 @@ const wait=[];urls.forEach(u=>{if(!u||/^data:/.test(u)||u.indexOf('undefined')>=
 const tok=++_gateTok;if(!wait.length){app.style.visibility='';return}
 app.style.visibility='hidden';const t0=performance.now();(function chk(){if(tok!==_gateTok)return;if(wait.every(r=>r.done)||performance.now()-t0>4000){app.style.visibility='';return}setTimeout(chk,50)})()}
 function uiArt(){const r=document.documentElement,m={'--btn-pri':'ui/btn_primary','--btn-sec':'ui/btn_secondary','--btn-tab':'ui/btn_tab','--btn-sq':'ui/btn_square','--pnl':'ui/panel_detail'};let ok=true;for(const k in m){const u=window.asset&&asset(m[k]);if(u)r.style.setProperty(k,'url('+u+')');else ok=false}r.classList.toggle('uiart',ok)}
-function fitHome(){const h=document.querySelector('.home');if(!h)return;const vv=window.visualViewport,w=vv?vv.width:innerWidth,t=vv?vv.height:innerHeight;h.style.setProperty('--s',Math.min(w/1920,t/1080))}
+function fitHome(){const h=document.querySelector('.home');if(!h)return;const w=h.clientWidth||innerWidth,t=h.clientHeight||innerHeight;h.style.setProperty('--s',Math.min(w/1920,t/1080))}
 (function(){const f=()=>{fitHome();setTimeout(fitHome,60);setTimeout(fitHome,250)};window.addEventListener('resize',f);window.addEventListener('orientationchange',f);if(window.visualViewport)visualViewport.addEventListener('resize',fitHome)})();
 function draw(){uiArt();_draw();gateArt()}
 function _draw(){
@@ -437,7 +437,7 @@ load();draw();
  d.innerHTML=(bg?'<div class="ibg" style="background-image:url('+bg+')"></div>':'')+(cl?'<img class="ich" id="icl" src="'+cl+'" alt="" draggable="false">':'')+(cr?'<img class="ich" id="icr" src="'+cr+'" alt="" draggable="false">':'')+(lg?'<img class="ilogo" src="'+lg+'" alt="諸仙陣" draggable="false">':'<h1 style="position:absolute;left:0;right:0;top:14%;text-align:center;color:#ffd98a;font-size:17vh;font-weight:900;letter-spacing:.12em;text-shadow:0 4px 0 #7a3b12,0 6px 14px #000">諸仙陣</h1>')+'<div class="itap">點擊畫面開始</div>';
  document.body.appendChild(d);
  /* 以實際可視區為準：背景滿版裁切，人物各貼左右下角、同高、完整不裁切 */
- const fit=()=>{if(!d.isConnected)return;const vv=window.visualViewport,w=Math.round(vv?vv.width:innerWidth),h=Math.round(vv?vv.height:innerHeight);d.style.top='0';d.style.left='0';d.style.right='auto';d.style.bottom='auto';d.style.width=w+'px';d.style.height=h+'px';
+ const fit=()=>{if(!d.isConnected)return;const w=d.clientWidth||innerWidth,h=d.clientHeight||innerHeight;
   const si=(typeof safeInsets==='function')?safeInsets():{l:0,r:0,b:0},ar=w/h,cap=ar>=1.9?.91:ar<=1.4?.78:.78+(ar-1.4)/.5*.13;
   const RL=1151/1271,RR=1084/1486,sideW=w*.43,ch=Math.min(h*cap,sideW/Math.max(RL,RR)),bot=h*.025+si.b,gap=Math.max(w*.015,6);
   const L=document.getElementById('icl'),R=document.getElementById('icr');
@@ -446,7 +446,7 @@ load();draw();
   const lw=Math.min(w*.40,h*.44*3);d.style.setProperty('--lw',lw+'px');d.style.setProperty('--lt',(h*.12)+'px');d.style.setProperty('--tf',(h*.042)+'px');
   window.scrollTo(0,0)};
  fit();[60,200,500,1000,2000].forEach(t=>setTimeout(fit,t));
- window.addEventListener('resize',fit);window.addEventListener('orientationchange',()=>{fit();setTimeout(fit,150);setTimeout(fit,500)});
+ window.addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(d);window.addEventListener('orientationchange',()=>{fit();setTimeout(fit,150);setTimeout(fit,500)});
  if(window.visualViewport){visualViewport.addEventListener('resize',fit);visualViewport.addEventListener('scroll',fit)}
  let gone=false;
  const go=()=>{if(gone)return;gone=true;d.classList.add('out');setTimeout(()=>d.remove(),500)};
