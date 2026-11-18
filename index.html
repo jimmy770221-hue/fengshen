@@ -444,7 +444,7 @@ load();draw();
   if(L){L.style.height=ch+'px';L.style.left=(gap+si.l)+'px';L.style.bottom=bot+'px'}
   if(R){R.style.height=ch+'px';R.style.right=(gap+si.r)+'px';R.style.bottom=bot+'px'}
   const lw=Math.min(w*.40,h*.44*3);d.style.setProperty('--lw',lw+'px');d.style.setProperty('--lt',(h*.12)+'px');d.style.setProperty('--tf',(h*.042)+'px');
-  window.scrollTo(0,0)};
+  window.scrollTo(0,0);{let t=document.getElementById('dbg');if(!t){t=document.createElement('div');t.id='dbg';t.style.cssText='position:fixed;left:6px;top:6px;z-index:99999;font:12px/1.3 monospace;color:#fff;background:#000a;padding:3px 6px;pointer-events:none';d.appendChild(t)}const vv=window.visualViewport,si2=(typeof safeInsets==='function')?safeInsets():{};t.textContent='inner '+innerWidth+'x'+innerHeight+' | vv '+(vv?Math.round(vv.width)+'x'+Math.round(vv.height)+' off '+Math.round(vv.offsetTop):'-')+' | box '+d.clientWidth+'x'+d.clientHeight+' | screen '+screen.width+'x'+screen.height+' | safe t'+si2.t+' b'+si2.b+' l'+si2.l+' r'+si2.r}};
  fit();[60,200,500,1000,2000].forEach(t=>setTimeout(fit,t));
  window.addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(d);window.addEventListener('orientationchange',()=>{fit();setTimeout(fit,150);setTimeout(fit,500)});
  if(window.visualViewport){visualViewport.addEventListener('resize',fit);visualViewport.addEventListener('scroll',fit)}
