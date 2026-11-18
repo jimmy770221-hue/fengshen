@@ -249,6 +249,7 @@ function update(dt){
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
    }else{const sd=1-a.side,n=performance.now(),old=s.bh[sd];s.hp[sd]=Math.max(0,s.hp[sd]-damage);
     if(s.hp[sd]===0)s.bh[sd]={t0:n,big:true};else if(!old||old.big!==true&&n-old.t0>90)s.bh[sd]={t0:n,big:false};}
+   if(a.id==='leizhenzi'){(s.bolts||(s.bolts=[])).push({x:near?target.x:enemyBase,t:0,k:1+(s.bolts?s.bolts.length:0)%2});}
    if(!a.art)s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash}); // 有動作圖的角色用自己的攻擊動作，不再畫舊光束
    if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';s.won=a.side===0;break;}
   }else{
@@ -337,6 +338,12 @@ function startDyingStatic(a){
 }
 const SKFX_T=.095;
 function addSkFx(id,x){(s.skfx||(s.skfx=[])).push({id,x,t:0})}
+function drawBolts(){
+ if(!s.bolts||!window.assetImg)return;
+ for(const e of s.bolts){const im=window.assetImg('gacha/bolt_gold_'+e.k);if(!im||!im.complete||!im.naturalWidth)continue;
+  const w=74,h=w*3,g=e.t<.08?e.t/.08:Math.max(0,1-(e.t-.08)/.2);
+  ctx.save();ctx.globalAlpha=Math.min(1,g);ctx.drawImage(im,e.x-w/2,floor+6-h,w,h);ctx.restore();}
+}
 function drawSkFx(){
  if(!s.skfx||!window.assetImg)return;
  for(const e of s.skfx){
@@ -347,6 +354,7 @@ function drawSkFx(){
  }
 }
 function updateFx(dt){
+ if(s.bolts){for(const e of s.bolts)e.t+=dt;s.bolts=s.bolts.filter(e=>e.t<.3)}
  if(s.skfx){for(const e of s.skfx)e.t+=dt;s.skfx=s.skfx.filter(e=>e.t<SKFX_T*8.4)}
  for(const r of s.rings){r.t+=dt;r.spin+=dt*18;}
  s.rings=s.rings.filter(r=>r.t<RING_OUT+RING_BACK);
@@ -434,7 +442,7 @@ function draw(){
   }
   ctx.restore();if(a.stun||a.burn||a.poison||a.slowTime||(a.side===0&&(s.haste||s.rage))){ctx.fillStyle=a.stun?"#b4e9ff":a.poison?"#b5ea72":a.burn||s.rage&&a.side===0?"#ff9868":"#b7abef";ctx.beginPath();ctx.arc(a.x,y-((a.id&&charImg(a.id)&&charImg(a.id).naturalWidth)?CH+8:72),4,0,7);ctx.fill();}bar(a.x-16,y-((a.id&&charImg(a.id)&&charImg(a.id).naturalWidth)?CH+1:65),32,a.hp/a.maxHP,a.side?'#ee90a8':'#9adcb0');
  }
- drawDying();drawSkFx();
+ drawDying();drawSkFx();drawBolts();
  for(const f of s.fx){
   ctx.save();ctx.globalAlpha=f.life/.28;ctx.strokeStyle=f.color;ctx.lineWidth=f.burst?7:4;if(!f.noLine){ctx.beginPath();ctx.moveTo(f.x,floor-39);ctx.lineTo(f.to,floor-29);ctx.stroke();}
   if(f.burst){ctx.beginPath();ctx.arc(f.to,floor-22,10+(.28-f.life)*70,0,7);ctx.stroke();}ctx.restore();
@@ -453,7 +461,7 @@ function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm
 let loadingArt=true;
 // 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);
-const list=[battlefield,bridgeImg,...baseSt[0],...baseSt[1],baseHitImg,ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
+const list=[battlefield,bridgeImg,...baseSt[0],...baseSt[1],baseHitImg,ringImg,soulImg,...[1,2].map(k=>window.assetImg?window.assetImg('gacha/bolt_gold_'+k):new Image()),...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
 const ok=i=>!i||(i.complete&&(i.naturalWidth||!i.src));
 let done=false;const fin=()=>{if(done)return;done=true;loadingArt=false;ov.remove()};
 const t0=performance.now();(function chk(){if(list.every(ok)||performance.now()-t0>5000)fin();else setTimeout(chk,60)})();})();
