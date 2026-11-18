@@ -426,7 +426,7 @@ try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landsc
 load();draw();
 /* ===== 開場畫面：每次開啟 APP 顯示一次，點一下進入（同時啟動背景音樂） ===== */
 (function(){
- const A=k=>window.asset&&asset(k),bg=A('scene/intro_bg_clean')||A('scene/intro_bg'),cl=A('scene/intro_chars_left'),cr=A('scene/intro_chars_right'),lg='';
+ const A=k=>window.asset&&asset(k),bg=A('scene/intro_bg_clean')||A('scene/intro_bg'),cl=A('scene/intro_chars_left'),cr=A('scene/intro_chars_right'),lg=A('ui/logo');
  const d=document.createElement('div');d.id='intro';d.setAttribute('role','button');d.setAttribute('aria-label','諸仙陣，點擊畫面開始');
  d.innerHTML=(bg?'<div class="ibg" style="background-image:url('+bg+')"></div>':'')+(cl?'<img class="ich" id="icl" src="'+cl+'" alt="" draggable="false">':'')+(cr?'<img class="ich" id="icr" src="'+cr+'" alt="" draggable="false">':'')+(lg?'<img class="ilogo" src="'+lg+'" alt="諸仙陣" draggable="false">':'<h1 style="position:absolute;left:0;right:0;top:14%;text-align:center;color:#ffd98a;font-size:17vh;font-weight:900;letter-spacing:.12em;text-shadow:0 4px 0 #7a3b12,0 6px 14px #000">諸仙陣</h1>')+'<div class="itap">點擊畫面開始</div>';
  document.body.appendChild(d);

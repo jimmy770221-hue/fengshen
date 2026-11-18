@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "8c7d17f8",
+ "v": "fc2742ea",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -12,7 +12,7 @@ window.ASSETS={
   "ui/icon_gold": "assets/ui/icon_gold.91dc2086.webp",
   "ui/icon_stone": "assets/ui/icon_stone.8cfbbc9b.webp",
   "ui/icon_ticket": "assets/ui/icon_ticket.e6ba93ba.webp",
-  "ui/logo": "assets/ui/logo.169da123.webp",
+  "ui/logo": "assets/ui/logo.696cde98.webp",
   "ui/menu_dock": "assets/ui/menu_dock.a2bfa61a.webp",
   "ui/menu_friend": "assets/ui/menu_friend.c12b7c5b.webp",
   "ui/menu_gear": "assets/ui/menu_gear.48e2893c.webp",
@@ -104,7 +104,7 @@ window.ASSETS={
   "fx/fx_base_hit": "assets/fx/fx_base_hit.be6baaec.webp",
   "scene/intro_bg_clean": "assets/scene/intro_bg_clean.f9bf28d2.webp",
   "scene/intro_chars_left": "assets/scene/intro_chars_left.baa3d0e3.webp",
-  "scene/intro_chars_right": "assets/scene/intro_chars_right.76debaa9.webp",
+  "scene/intro_chars_right": "assets/scene/intro_chars_right.d01e1e6c.webp",
   "weapon/w_mao": "assets/weapon/w_mao.2fc09f5d.webp",
   "weapon/w_zhudou": "assets/weapon/w_zhudou.0a32d113.webp",
   "weapon/w_dao": "assets/weapon/w_dao.8c03adcc.webp",
@@ -195,8 +195,8 @@ window.ASSETS={
    128
   ],
   "ui/logo": [
-   1200,
-   400
+   1600,
+   500
   ],
   "ui/menu_dock": [
    1800,
