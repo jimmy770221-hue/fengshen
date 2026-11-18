@@ -319,7 +319,7 @@ function startDying(a){
  const p=a.spr;p.onEvent=null;p.tint=0;p.play('fall');
  s.dying.push({p,x:a.x,side:a.side,t:0});
 }
-// 沒有動畫圖集的角色：整個身影往後仰、淡出，並升起靈魂（與哪吒同樣的魂飛效果）
+// 沒有動畫圖集的角色：身影原地淡出，並升起靈魂（與哪吒同樣的魂飛效果）
 function startDyingStatic(a){
  const ci=a.id?charImg(a.id):null;
  s.dying.push({st:true,img:(ci&&ci.complete&&ci.naturalWidth)?ci:null,color:a.color,x:a.x,side:a.side,t:0});
@@ -336,7 +336,7 @@ function drawDying(){
   ctx.save();ctx.translate(d.x,floor);ctx.scale(d.side?-1:1,1);
   if(d.p)d.p.draw(ctx,0,0,{alpha});
   else{
-   const k=Math.min(1,d.t/.4);ctx.globalAlpha=alpha;ctx.rotate(-.7*k);ctx.translate(0,k*4);
+   ctx.globalAlpha=alpha;
    if(d.img)ctx.drawImage(d.img,-CH*.4,-CH+4,CH*.8,CH);
    else{ctx.fillStyle=d.color||'#888';ctx.fillRect(-15,-36,30,27);ctx.fillStyle='#eec0a0';ctx.beginPath();ctx.ellipse(0,-44,12,13,0,0,7);ctx.fill();}
   }
