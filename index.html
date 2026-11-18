@@ -246,8 +246,8 @@ function load(){
  try{data=JSON.parse(localStorage.getItem(saveKey+server))||defaults()}catch{data=defaults()}
  if(!data.gear)data.gear={};
  if(!(data.lv>=1))data.lv=1;if(!(data.exp>=0))data.exp=0;
- // 截教（敵方）角色玩家不能持有：舊存檔裡若有，一併移除
- if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k]||(roster[k][2]!=='闡教'&&!FS.characters[k].unlockLater))delete data.owned[k];}
+ // 舊存檔裡不存在的角色編號，一併移除
+ if(data.owned){for(const k of Object.keys(data.owned))if(!roster[k])delete data.owned[k];}
  if(Array.isArray(data.team)){data.team=data.team.filter(i=>data.owned&&data.owned[i]);if(!data.team.length)data.team=Object.keys(data.owned||{}).map(Number).slice(0,3);}
 }
 // 量出 iPhone 安全區（動態島、Home 條）的實際像素，給滿版的對戰畫面使用
@@ -478,7 +478,7 @@ app.onclick=event=>{
     const [common,rare]=pools[pool][1],roll=Math.random()*100;
     const rank=roll<common?'普通':roll<common+rare?'稀有':'封神級';
     if(poolKind==='hero'){
-     const candidates=roster.map((r,i)=>r[3]===rank&&r[2]==='闡教'?i:-1).filter(i=>i>=0); // 只抽得到闡教（我方）角色
+     const candidates=roster.map((r,i)=>r[3]===rank&&!FS.characters[i].unlockLater?i:-1).filter(i=>i>=0); // 闡教、截教都抽得到；申公豹是後期關卡獎勵，不進抽卡
      const i=candidates[Math.floor(Math.random()*candidates.length)];
      const duplicate=!!data.owned[i];
      data.owned[i]=(data.owned[i]||0)+1;
