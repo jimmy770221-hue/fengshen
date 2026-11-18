@@ -221,6 +221,7 @@ const sfxBufs={},sfxLast={};let sfxPreDone=false;
 function sfxLoad(n){if(sfxBufs[n])return sfxBufs[n];sfxBufs[n]=fetch('audio/sfx/'+n+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>actx.decodeAudioData(b,ok,no))).catch(()=>null);return sfxBufs[n]}
 function sfxPre(){if(sfxPreDone||!actx)return;sfxPreDone=true;SFXN.forEach(sfxLoad)}
 window.sfx=function(n){try{if(!actx||!aud.sfxOn||actx.state!=='running'||hid)return;const t=performance.now();if(t-(sfxLast[n]||0)<70)return;sfxLast[n]=t;sfxLoad(n).then(b=>{if(!b)return;const s=actx.createBufferSource();s.buffer=b;const g=actx.createGain();g.gain.value=Math.min(1,aud.sfxVol*1.1);s.connect(g);g.connect(actx.destination);s.start(0)})}catch(e){}};
+try{if(bgmCtx())bgmLoad('intro',0)}catch(e){}
 ['pointerdown','touchend','click'].forEach(e=>document.addEventListener(e,bgmStart,{passive:true}));
 document.addEventListener('visibilitychange',()=>{hid=document.hidden;if(!actx)return;if(hid){actx.suspend()}else{actx.resume().then(()=>bgmPlay(want))}});
 function audPanel(){const row=(k,label,on,vol)=>'<p class="audrow"><span>'+label+'</span> <button data-act="audtoggle" data-value="'+k+'">'+(on?'開':'關')+'</button> <input type="range" class="audsl" data-aud="'+k+'" min="0" max="100" step="1" value="'+Math.round(vol*100)+'" aria-label="'+label+'音量"> <b class="audpc" data-pc="'+k+'">'+Math.round(vol*100)+'%</b></p>';return row('music','背景音樂',aud.on,aud.vol)+row('sfx','音效',aud.sfxOn,aud.sfxVol)}
