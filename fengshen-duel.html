@@ -284,7 +284,8 @@ function ui(){
  const message=s.countdown>0?'準備開戰':s.over?s.over+'。可重新開始。':s.paused?'對戰暫停':s.noticeTime>0?s.notice:s.shield>0?'金光護陣生效中':team.length>=armyCap?'場上已滿，武將倒下後可補兵。':s.started?'消耗靈力出兵，或升級以加快回復。':loadout.length!==slotCount?'請先選滿五招。':'點任一武將或升級靈力開始對戰。';
  if(el('status').textContent!==message)el('status').textContent=message;
 }
-const battlefield=window.assetImg?window.assetImg('scene/battle_1-1_wide'):new Image();
+const battlefield=window.assetImg?window.assetImg('scene/battle_1-'+((stageNo>=0&&stageNo<10)?stageNo+1:1)+'_far'):new Image();
+const bridgeImg=window.assetImg?window.assetImg('scene/battle_bridge'):new Image();
 const baseImg=[window.assetImg?window.assetImg('scene/base_chanjiao'):new Image(),window.assetImg?window.assetImg('scene/base_jiejiao'):new Image()];
 /* 基地損壞圖：依血量比例換圖（完好／受損1/4／1/2／3/4／全毀） */
 const BASE_ST=['','_quarter','_half','_three_quarter','_destroyed'];
@@ -361,7 +362,7 @@ function drawRings(){
 function draw(){
  ctx.setTransform(K,0,0,K,0,0);
  ctx.save();ctx.translate(-Math.round(cam),0);
- if(battlefield.complete&&battlefield.naturalWidth)ctx.drawImage(battlefield,0,0,WORLD,365);
+ if(battlefield.complete&&battlefield.naturalWidth){ctx.drawImage(battlefield,0,0,WORLD,365);if(bridgeImg.complete&&bridgeImg.naturalWidth)ctx.drawImage(bridgeImg,0,0,WORLD,365)}
  else{
  const g=ctx.createLinearGradient(0,0,0,365);g.addColorStop(0,'#17263f');g.addColorStop(1,'#ae7968');ctx.fillStyle=g;ctx.fillRect(0,0,WORLD,365);
  ctx.fillStyle='#f5c893';ctx.beginPath();ctx.arc(755,86,41,0,7);ctx.fill();
@@ -433,7 +434,7 @@ function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);if(s.countdown>0&&pm
 let loadingArt=true;
 // 滿版版面：卡片直接疊在戰場畫面上，不再鋪底部橫條（scene/battle_bar 暫不使用）
 (function(){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99;background:#151c2c;color:#ffe6b3;display:grid;place-items:center;font:700 18px system-ui';ov.textContent='載入中…';document.body.append(ov);
-const list=[battlefield,...baseSt[0],...baseSt[1],baseHitImg,ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
+const list=[battlefield,bridgeImg,...baseSt[0],...baseSt[1],baseHitImg,ringImg,soulImg,...(window.NezhaSprite?NezhaSprite.preload():[])];try{for(const u of units){if(u.id&&window.assetImg){list.push(charImg(u.id));const c=window.asset&&window.asset('char/'+u.id+'/card');if(c)list.push(window.assetImg('char/'+u.id+'/card'))}}}catch(e){}
 const ok=i=>!i||(i.complete&&(i.naturalWidth||!i.src));
 let done=false;const fin=()=>{if(done)return;done=true;loadingArt=false;ov.remove()};
 const t0=performance.now();(function chk(){if(list.every(ok)||performance.now()-t0>5000)fin();else setTimeout(chk,60)})();})();

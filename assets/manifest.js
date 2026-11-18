@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "fc2742ea",
+ "v": "06ef57b0",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -43,8 +43,6 @@ window.ASSETS={
   "ui/stone_tier9": "assets/ui/stone_tier9.4ee31a18.webp",
   "scene/base_chanjiao": "assets/scene/base_chanjiao.69817766.webp",
   "scene/base_jiejiao": "assets/scene/base_jiejiao.0788442a.webp",
-  "scene/battle_1-1": "assets/scene/battle_1-1.aa1687c7.webp",
-  "scene/battle_1-1_wide": "assets/scene/battle_1-1_wide.4f37efae.webp",
   "scene/battle_bar": "assets/scene/battle_bar.1f2bd62a.webp",
   "scene/home_bg": "assets/scene/home_bg.cd6f6663.webp",
   "scene/intro_bg": "assets/scene/intro_bg.0f459caa.webp",
@@ -151,7 +149,18 @@ window.ASSETS={
   "ui/btn_primary": "assets/ui/btn_primary.576ebe3f.webp",
   "ui/btn_secondary": "assets/ui/btn_secondary.42bb92a7.webp",
   "ui/btn_tab": "assets/ui/btn_tab.9e285ff9.webp",
-  "ui/btn_square": "assets/ui/btn_square.67fb3d7d.webp"
+  "ui/btn_square": "assets/ui/btn_square.67fb3d7d.webp",
+  "scene/battle_1-1_far": "assets/scene/battle_1-1_far.bff4db9f.webp",
+  "scene/battle_1-2_far": "assets/scene/battle_1-2_far.83b9f2cc.webp",
+  "scene/battle_1-3_far": "assets/scene/battle_1-3_far.0f421385.webp",
+  "scene/battle_1-4_far": "assets/scene/battle_1-4_far.ce34ce79.webp",
+  "scene/battle_1-5_far": "assets/scene/battle_1-5_far.aa0f9f4d.webp",
+  "scene/battle_1-6_far": "assets/scene/battle_1-6_far.756cfb82.webp",
+  "scene/battle_1-7_far": "assets/scene/battle_1-7_far.20496b5c.webp",
+  "scene/battle_1-8_far": "assets/scene/battle_1-8_far.526a024b.webp",
+  "scene/battle_1-9_far": "assets/scene/battle_1-9_far.b263c39e.webp",
+  "scene/battle_1-10_far": "assets/scene/battle_1-10_far.d0a2dfdb.webp",
+  "scene/battle_bridge": "assets/scene/battle_bridge.a5caddac.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -317,14 +326,6 @@ window.ASSETS={
   "scene/base_jiejiao": [
    512,
    512
-  ],
-  "scene/battle_1-1": [
-   2000,
-   730
-  ],
-  "scene/battle_1-1_wide": [
-   4000,
-   730
   ],
   "scene/battle_bar": [
    2532,
@@ -753,6 +754,50 @@ window.ASSETS={
   "ui/btn_square": [
    160,
    160
+  ],
+  "scene/battle_1-1_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-2_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-3_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-4_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-5_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-6_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-7_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-8_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-9_far": [
+   4000,
+   730
+  ],
+  "scene/battle_1-10_far": [
+   4000,
+   730
+  ],
+  "scene/battle_bridge": [
+   4000,
+   730
   ]
  },
  "critical": [
