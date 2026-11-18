@@ -238,7 +238,7 @@ function update(dt){
   if(wounded&&a.wait<=0){
    wounded.hp=Math.min(wounded.maxHP,wounded.hp+a.heal);
    a.wait=a.period;a.swing=.24;
-   s.fx.push({x:a.x,to:wounded.x,life:.28,color:'#91e5ac',burst:true});
+   s.fx.push({x:wounded.x,to:wounded.x,life:.28,color:'#91e5ac',burst:true,noLine:true});
    continue;
   }
   if(near||atBase){
@@ -249,7 +249,7 @@ function update(dt){
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
    }else{const sd=1-a.side,n=performance.now(),old=s.bh[sd];s.hp[sd]=Math.max(0,s.hp[sd]-damage);
     if(s.hp[sd]===0)s.bh[sd]={t0:n,big:true};else if(!old||old.big!==true&&n-old.t0>90)s.bh[sd]={t0:n,big:false};}
-   s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash,noLine:!!(a.art&&!a.art.noRing)});
+   if(!a.art)s.fx.push({x:a.x,to:near?target.x:enemyBase,life:.28,color:a.color,burst:!!a.splash}); // 有動作圖的角色用自己的攻擊動作，不再畫舊光束
    if(s.hp[1-a.side]===0){s.over=sideNames[a.side]+'獲勝';s.won=a.side===0;break;}
   }else{
    const blocked=s.actors.some(b=>b!==a&&b.side===a.side&&b.hp>0&&(b.x-a.x)*direction>0&&Math.abs(b.x-a.x)<21&&b.wait>0);
