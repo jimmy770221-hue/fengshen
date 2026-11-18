@@ -1,6 +1,6 @@
 /* 自動產生，請勿手改：python3 tools/build_assets.py */
 window.ASSETS={
- "v": "06ef57b0",
+ "v": "fb27cc69",
  "files": {
   "ui/banner_gear": "assets/ui/banner_gear.237178d3.webp",
   "ui/banner_hero": "assets/ui/banner_hero.dc78ab95.webp",
@@ -160,7 +160,75 @@ window.ASSETS={
   "scene/battle_1-8_far": "assets/scene/battle_1-8_far.526a024b.webp",
   "scene/battle_1-9_far": "assets/scene/battle_1-9_far.b263c39e.webp",
   "scene/battle_1-10_far": "assets/scene/battle_1-10_far.d0a2dfdb.webp",
-  "scene/battle_bridge": "assets/scene/battle_bridge.a5caddac.webp"
+  "scene/battle_bridge": "assets/scene/battle_bridge.a5caddac.webp",
+  "gacha/bg": "assets/gacha/bg.0a2dff02.webp",
+  "gacha/bolt_gold_1": "assets/gacha/bolt_gold_1.4ed9d2fc.webp",
+  "gacha/bolt_gold_2": "assets/gacha/bolt_gold_2.300b8047.webp",
+  "gacha/bolt_purple_1": "assets/gacha/bolt_purple_1.cf203d36.webp",
+  "gacha/bolt_purple_2": "assets/gacha/bolt_purple_2.322bae47.webp",
+  "gacha/bolt_white_1": "assets/gacha/bolt_white_1.368cd2ce.webp",
+  "gacha/bolt_white_2": "assets/gacha/bolt_white_2.7728f77c.webp",
+  "gacha/burst_gold": "assets/gacha/burst_gold.51b4d10a.webp",
+  "gacha/burst_purple": "assets/gacha/burst_purple.99b2841c.webp",
+  "gacha/burst_white": "assets/gacha/burst_white.d194f68b.webp",
+  "gacha/cloud_dark_1": "assets/gacha/cloud_dark_1.afdf81d3.webp",
+  "gacha/cloud_dark_2": "assets/gacha/cloud_dark_2.b5bc6222.webp",
+  "gacha/cloud_dark_3": "assets/gacha/cloud_dark_3.7d3d6bac.webp",
+  "gacha/cloud_purple_1": "assets/gacha/cloud_purple_1.ba2b9ba0.webp",
+  "gacha/cloud_purple_2": "assets/gacha/cloud_purple_2.36706316.webp",
+  "gacha/cloud_purple_3": "assets/gacha/cloud_purple_3.1a161188.webp",
+  "gacha/cloud_rainbow_1": "assets/gacha/cloud_rainbow_1.dcef3bd0.webp",
+  "gacha/cloud_rainbow_2": "assets/gacha/cloud_rainbow_2.1f763f85.webp",
+  "gacha/cloud_rainbow_3": "assets/gacha/cloud_rainbow_3.92b5a90e.webp",
+  "gacha/cloud_white_1": "assets/gacha/cloud_white_1.976857d9.webp",
+  "gacha/cloud_white_2": "assets/gacha/cloud_white_2.5af56be9.webp",
+  "gacha/cloud_white_3": "assets/gacha/cloud_white_3.fbc514be.webp",
+  "gacha/flag_black": "assets/gacha/flag_black.1e9004bc.webp",
+  "gacha/flag_green": "assets/gacha/flag_green.f9609d1b.webp",
+  "gacha/flag_red": "assets/gacha/flag_red.f6306984.webp",
+  "gacha/flag_white": "assets/gacha/flag_white.fbfdc8b4.webp",
+  "gacha/flag_yellow": "assets/gacha/flag_yellow.0d69f717.webp",
+  "gacha/ground_formation": "assets/gacha/ground_formation.813a042e.webp",
+  "gacha/ground_formation_lit": "assets/gacha/ground_formation_lit.0c79c195.webp",
+  "scene/result_defeat_badge": "assets/scene/result_defeat_badge.b4b31bee.webp",
+  "scene/result_defeat_bg": "assets/scene/result_defeat_bg.fa53e2a7.webp",
+  "scene/result_victory_badge": "assets/scene/result_victory_badge.70c47ed9.webp",
+  "scene/result_victory_bg": "assets/scene/result_victory_bg.cb682ef8.webp",
+  "skill/fx_energy": "assets/skill/fx_energy.9aed0c51.webp",
+  "skill/fx_haste": "assets/skill/fx_haste.5eb04faa.webp",
+  "skill/fx_heal": "assets/skill/fx_heal.a498e6c9.webp",
+  "skill/fx_ice": "assets/skill/fx_ice.aabbacd7.webp",
+  "skill/fx_poison": "assets/skill/fx_poison.4d73e212.webp",
+  "skill/fx_rage": "assets/skill/fx_rage.d8d4900d.webp",
+  "skill/fx_shock": "assets/skill/fx_shock.9ca76217.webp",
+  "skill/fx_slow": "assets/skill/fx_slow.5d34ec6d.webp",
+  "skill/fx_thunder": "assets/skill/fx_thunder.47ec59c6.webp",
+  "skill/fx_ward": "assets/skill/fx_ward.329b5acf.webp",
+  "skill/fx_wind": "assets/skill/fx_wind.7b8b9201.webp",
+  "char/jiangziya/sheet-attack": "assets/char/jiangziya/sheet-attack.99683636.webp",
+  "char/jiangziya/sheet-idle": "assets/char/jiangziya/sheet-idle.4ed44d12.webp",
+  "char/jiangziya/sheet-move": "assets/char/jiangziya/sheet-move.147a0421.webp",
+  "char/jiuweihu/sheet-attack": "assets/char/jiuweihu/sheet-attack.ec8e3ffd.webp",
+  "char/jiuweihu/sheet-idle": "assets/char/jiuweihu/sheet-idle.685fbf07.webp",
+  "char/jiuweihu/sheet-move": "assets/char/jiuweihu/sheet-move.d97ee758.webp",
+  "char/leizhenzi/sheet-attack": "assets/char/leizhenzi/sheet-attack.a018347b.webp",
+  "char/leizhenzi/sheet-idle": "assets/char/leizhenzi/sheet-idle.5609a339.webp",
+  "char/leizhenzi/sheet-move": "assets/char/leizhenzi/sheet-move.f0752d3f.webp",
+  "char/shengongbao/sheet-attack": "assets/char/shengongbao/sheet-attack.8c894db8.webp",
+  "char/shengongbao/sheet-idle": "assets/char/shengongbao/sheet-idle.1b285256.webp",
+  "char/shengongbao/sheet-move": "assets/char/shengongbao/sheet-move.f6c8e86a.webp",
+  "char/weihu/sheet-attack": "assets/char/weihu/sheet-attack.d62cbbaa.webp",
+  "char/weihu/sheet-idle": "assets/char/weihu/sheet-idle.86e63868.webp",
+  "char/weihu/sheet-move": "assets/char/weihu/sheet-move.91e31173.webp",
+  "char/yangjian/sheet-attack": "assets/char/yangjian/sheet-attack.168cf1fb.webp",
+  "char/yangjian/sheet-idle": "assets/char/yangjian/sheet-idle.b544212b.webp",
+  "char/yangjian/sheet-move": "assets/char/yangjian/sheet-move.a35640af.webp",
+  "char/yunxiao/sheet-attack": "assets/char/yunxiao/sheet-attack.8fca303e.webp",
+  "char/yunxiao/sheet-idle": "assets/char/yunxiao/sheet-idle.f9bf4702.webp",
+  "char/yunxiao/sheet-move": "assets/char/yunxiao/sheet-move.84a49529.webp",
+  "char/zhaogongming/sheet-attack": "assets/char/zhaogongming/sheet-attack.26f91088.webp",
+  "char/zhaogongming/sheet-idle": "assets/char/zhaogongming/sheet-idle.8351fe37.webp",
+  "char/zhaogongming/sheet-move": "assets/char/zhaogongming/sheet-move.58695370.webp"
  },
  "size": {
   "ui/banner_gear": [
@@ -798,6 +866,278 @@ window.ASSETS={
   "scene/battle_bridge": [
    4000,
    730
+  ],
+  "gacha/bg": [
+   2400,
+   1080
+  ],
+  "gacha/bolt_gold_1": [
+   600,
+   1800
+  ],
+  "gacha/bolt_gold_2": [
+   600,
+   1800
+  ],
+  "gacha/bolt_purple_1": [
+   600,
+   1800
+  ],
+  "gacha/bolt_purple_2": [
+   600,
+   1800
+  ],
+  "gacha/bolt_white_1": [
+   600,
+   1800
+  ],
+  "gacha/bolt_white_2": [
+   600,
+   1800
+  ],
+  "gacha/burst_gold": [
+   1600,
+   1600
+  ],
+  "gacha/burst_purple": [
+   1600,
+   1600
+  ],
+  "gacha/burst_white": [
+   1600,
+   1600
+  ],
+  "gacha/cloud_dark_1": [
+   1200,
+   700
+  ],
+  "gacha/cloud_dark_2": [
+   1200,
+   700
+  ],
+  "gacha/cloud_dark_3": [
+   1200,
+   700
+  ],
+  "gacha/cloud_purple_1": [
+   1200,
+   700
+  ],
+  "gacha/cloud_purple_2": [
+   1200,
+   700
+  ],
+  "gacha/cloud_purple_3": [
+   1200,
+   700
+  ],
+  "gacha/cloud_rainbow_1": [
+   1200,
+   700
+  ],
+  "gacha/cloud_rainbow_2": [
+   1200,
+   700
+  ],
+  "gacha/cloud_rainbow_3": [
+   1200,
+   700
+  ],
+  "gacha/cloud_white_1": [
+   1200,
+   700
+  ],
+  "gacha/cloud_white_2": [
+   1200,
+   700
+  ],
+  "gacha/cloud_white_3": [
+   1200,
+   700
+  ],
+  "gacha/flag_black": [
+   600,
+   1400
+  ],
+  "gacha/flag_green": [
+   600,
+   1400
+  ],
+  "gacha/flag_red": [
+   600,
+   1400
+  ],
+  "gacha/flag_white": [
+   600,
+   1400
+  ],
+  "gacha/flag_yellow": [
+   600,
+   1400
+  ],
+  "gacha/ground_formation": [
+   2000,
+   800
+  ],
+  "gacha/ground_formation_lit": [
+   2000,
+   800
+  ],
+  "scene/result_defeat_badge": [
+   1600,
+   600
+  ],
+  "scene/result_defeat_bg": [
+   2400,
+   1080
+  ],
+  "scene/result_victory_badge": [
+   1600,
+   600
+  ],
+  "scene/result_victory_bg": [
+   2400,
+   1080
+  ],
+  "skill/fx_energy": [
+   1024,
+   512
+  ],
+  "skill/fx_haste": [
+   1024,
+   512
+  ],
+  "skill/fx_heal": [
+   1024,
+   512
+  ],
+  "skill/fx_ice": [
+   1024,
+   512
+  ],
+  "skill/fx_poison": [
+   1024,
+   512
+  ],
+  "skill/fx_rage": [
+   1024,
+   512
+  ],
+  "skill/fx_shock": [
+   1024,
+   512
+  ],
+  "skill/fx_slow": [
+   1024,
+   512
+  ],
+  "skill/fx_thunder": [
+   1024,
+   512
+  ],
+  "skill/fx_ward": [
+   1024,
+   512
+  ],
+  "skill/fx_wind": [
+   1024,
+   512
+  ],
+  "char/jiangziya/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/jiangziya/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/jiangziya/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/jiuweihu/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/jiuweihu/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/jiuweihu/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/leizhenzi/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/leizhenzi/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/leizhenzi/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/shengongbao/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/shengongbao/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/shengongbao/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/weihu/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/weihu/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/weihu/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/yangjian/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/yangjian/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/yangjian/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/yunxiao/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/yunxiao/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/yunxiao/sheet-move": [
+   1024,
+   1024
+  ],
+  "char/zhaogongming/sheet-attack": [
+   1024,
+   1024
+  ],
+  "char/zhaogongming/sheet-idle": [
+   1024,
+   1024
+  ],
+  "char/zhaogongming/sheet-move": [
+   1024,
+   1024
   ]
  },
  "critical": [

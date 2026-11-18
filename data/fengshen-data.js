@@ -3,6 +3,16 @@
    新增或修改角色只改這個檔，不需要動玩法程式。
    art：美術設定。null＝尚未有美術，程式自動用陣營色剪影占位。
         之後有圖集時填 {manifest:{image,grid,anchor,anims…}}（格式見 nezha-sprite.js 的 DEFAULT）。 */
+/* 八位神將的戰鬥動作圖集（待機／移動／攻擊，2×2 各 4 格）；受擊用閃紅光，倒下停在待機姿勢後淡出 */
+const SPR=(id,h)=>({height:h||104,noRing:true,manifest:{
+ images:{idle:'char/'+id+'/sheet-idle',move:'char/'+id+'/sheet-move',attack:'char/'+id+'/sheet-attack'},
+ image:'idle',grid:[2,2],anchor:[0.5,0.94],shadow:[0.22,0.05],
+ anims:{
+  idle:{steps:[[0,.21],[1,.21],[2,.21],[3,.21]],loop:true,still:0,image:'idle'},
+  move:{steps:[[0,.13],[1,.13],[2,.13],[3,.13]],loop:true,still:0,image:'move',refSpeed:50},
+  cast:{steps:[[0,.16],[1,.16],[2,.16],[3,.16]],loop:false,still:0,prio:1,image:'attack'},
+  fall:{steps:[[0,1]],loop:false,still:0,prio:9,image:'idle',hold:true}
+ }}});
 window.FS={
  title:'封神',
  factions:{
@@ -18,21 +28,21 @@ window.FS={
  characters:[
   {id:'nezha',reach:'中程',name:'哪吒',faction:'闡教',rank:'普通',role:'中距離・乾坤圈投擲',art:{height:104},
    stats:{cost:32,hp:92,damage:28,range:142,speed:54,period:1.15,cd:4,color:'#f88667',splash:49}},
-  {id:'yangjian',reach:'遠程',name:'楊戩',faction:'闡教',rank:'稀有',role:'遠程單體',art:null,
+  {id:'yangjian',reach:'遠程',name:'楊戩',faction:'闡教',rank:'稀有',role:'遠程單體',art:SPR('yangjian'),
    stats:{cost:34,hp:111,damage:49,range:184,speed:48,period:1.42,cd:4.7,color:'#aabdf3'}},
-  {id:'weihu',reach:'近戰',name:'韋護',faction:'闡教',rank:'普通',role:'厚甲前排',art:null,
+  {id:'weihu',reach:'近戰',name:'韋護',faction:'闡教',rank:'普通',role:'厚甲前排',art:SPR('weihu'),
    stats:{cost:40,hp:340,damage:20,range:36,speed:34,period:1.1,cd:5.8,color:'#a9abbf',armor:.24}},
-  {id:'jiangziya',reach:'中程',name:'姜子牙',faction:'闡教',rank:'封神級',role:'回復友軍',art:null,
+  {id:'jiangziya',reach:'中程',name:'姜子牙',faction:'闡教',rank:'封神級',role:'回復友軍',art:SPR('jiangziya'),
    stats:{cost:36,hp:85,damage:9,range:130,speed:44,period:1.5,cd:4.4,color:'#e0d3a5',heal:42}},
-  {id:'leizhenzi',reach:'近戰',name:'雷震子',faction:'闡教',rank:'稀有',role:'疾風連擊',art:null,
+  {id:'leizhenzi',reach:'近戰',name:'雷震子',faction:'闡教',rank:'稀有',role:'疾風連擊',art:SPR('leizhenzi'),
    stats:{cost:24,hp:68,damage:20,range:35,speed:105,period:.62,cd:1.4,color:'#8dd4c6'}},
-  {id:'shengongbao',reach:'遠程',name:'申公豹',faction:'截教',rank:'稀有',role:'遠程咒擊',art:null,unlockLater:'後期關卡獎勵（關卡待設計）', /* 平時抽不到；之後通關指定關卡才可獲得 */
+  {id:'shengongbao',reach:'遠程',name:'申公豹',faction:'截教',rank:'稀有',role:'遠程咒擊',art:SPR('shengongbao'),unlockLater:'後期關卡獎勵（關卡待設計）', /* 平時抽不到；之後通關指定關卡才可獲得 */
    stats:{cost:31,hp:111,damage:49,range:184,speed:48,period:1.42,cd:4.7,color:'#b496e5'}},
-  {id:'jiuweihu',reach:'中程',name:'九尾狐',faction:'截教',rank:'封神級',role:'狐火群攻',art:null,
+  {id:'jiuweihu',reach:'中程',name:'九尾狐',faction:'截教',rank:'封神級',role:'狐火群攻',art:SPR('jiuweihu'),
    stats:{cost:36,hp:92,damage:28,range:142,speed:54,period:1.15,cd:4,color:'#ff9ab3',splash:65}},
-  {id:'zhaogongming',reach:'近戰',name:'趙公明',faction:'截教',rank:'普通',role:'重甲前排',art:null,
+  {id:'zhaogongming',reach:'近戰',name:'趙公明',faction:'截教',rank:'普通',role:'重甲前排',art:SPR('zhaogongming'),
    stats:{cost:37,hp:340,damage:20,range:36,speed:34,period:1.1,cd:5.8,color:'#9d9ace',armor:.24}},
-  {id:'yunxiao',reach:'遠程',name:'雲霄',faction:'截教',rank:'封神級',role:'遠程緩速',art:null,
+  {id:'yunxiao',reach:'遠程',name:'雲霄',faction:'截教',rank:'封神級',role:'遠程緩速',art:SPR('yunxiao'),
    stats:{cost:34,hp:96,damage:17,range:156,speed:50,period:1.15,cd:3.8,color:'#e7a0ae',slow:2}}
  ],
  /* 武裝：weapon＝武器、armor＝裝備。stats 為 [[欄位名,數值],...]，尚未設計時留空。目前各一筆占位，之後直接在這裡增修 */

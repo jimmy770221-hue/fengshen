@@ -21,21 +21,24 @@
 #gacha.end{opacity:0;transition:opacity .25s}
 #gacha.gc-n{--c:#8fb8ff;--c2:#1a2b4d;--fd:1.5s}#gacha.gc-p{--c:#c88cff;--c2:#3a1a58;--fd:1.5s}#gacha.gc-g{--c:#ffd35a;--c2:#573a10;--fd:2.1s}
 .gc-world{position:absolute;inset:0}.gc-world.shake{animation:gcShake .45s linear}
-.gc-bg{position:absolute;inset:-5%;background:radial-gradient(ellipse at 50% 70%,var(--c2) 0,#07050d 75%);animation:gcPulse 2.2s ease-in-out infinite}
-.gc-ground{position:absolute;left:50%;top:66%;width:70vh;height:20vh;margin:-10vh 0 0 -35vh;border-radius:50%;background:radial-gradient(ellipse,var(--gc,#7a8cc0) 0,transparent 68%);opacity:.18;transition:opacity .3s,transform .3s}.gc-ground.on{opacity:.85;transform:scale(1.25)}
-.gc-flags{position:absolute;inset:0}
-.gc-flag{position:absolute;width:0;height:0;transform:scale(var(--sc,1));transform-origin:0 100%;animation:gcPlant .5s cubic-bezier(.3,1.5,.5,1) var(--dl) both}
-.gc-flag .pole{position:absolute;left:-2px;bottom:0;width:4px;height:26vh;background:linear-gradient(90deg,#5a3a1a,#c79a4f,#5a3a1a);border-radius:2px}
-.gc-flag .ban{position:absolute;left:2px;bottom:9vh;width:11vh;height:16vh;background:linear-gradient(135deg,var(--fc),color-mix(in srgb,var(--fc) 55%,#000));border:2px solid #d8b25c;border-left:0;clip-path:polygon(0 0,100% 7%,86% 50%,100% 93%,0 100%);transform-origin:0 50%;animation:gcSway 1.3s ease-in-out infinite alternate;display:flex;align-items:center;justify-content:center;color:#fff8;font-size:6vh;text-shadow:0 0 6px #0008}
-.gc-flag:nth-child(odd) .ban{animation-delay:-.6s}
+.gc-bg{position:absolute;inset:-4%;background:#07050d center/cover no-repeat;animation:gcPulse 2.6s ease-in-out infinite}
+.gc-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 70%,var(--c2) 0,transparent 70%);opacity:.55}
+.gc-form{position:absolute;left:50%;top:67%;width:min(150vh,118vw);aspect-ratio:2/1.1;transform:translate(-50%,-50%)}
+.gc-form img.fm{position:absolute;left:0;top:0;width:100%;aspect-ratio:2/.8;display:block;pointer-events:none}
+.gc-form img.fm.lit{opacity:0;transition:opacity .35s}.gc-form.on img.fm.lit{opacity:1}.gc-form.on img.fm.base{opacity:.35}
+.gc-flag{position:absolute;--k:calc(var(--fh) / 1400);left:calc(var(--sx) * 100% - var(--ax) * var(--k));top:calc(var(--sy) * 72.7% - 1400 * var(--k));width:calc(600 * var(--k));height:calc(1400 * var(--k));animation:gcPlant .5s cubic-bezier(.3,1.5,.5,1) var(--dl) both;pointer-events:none}
+.gc-flag img{width:100%;height:100%;display:block;transform-origin:calc(var(--ax) / 6 * 1%) 100%;animation:gcSway 1.4s ease-in-out infinite alternate;animation-delay:var(--sw)}
 .gc-clouds{position:absolute;inset:0;pointer-events:none}
-.gc-cl{position:absolute;border-radius:50%;opacity:0;filter:blur(1.6vh);transform:translate(var(--dx),var(--dy)) scale(.6);background:radial-gradient(ellipse at 40% 45%,var(--cc) 0,transparent 68%)}
+.gc-cl{position:absolute;opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6);aspect-ratio:1200/700}
+.gc-cl img{width:100%;height:100%;display:block}
 #gacha.cl-go .gc-cl{animation:gcCloud 2.4s ease-out var(--cd) forwards,gcFloat 4s ease-in-out calc(var(--cd) + 2.4s) infinite alternate}
-#gacha.cl-w{--cc:rgba(238,244,255,.8)}#gacha.cl-d{--cc:rgba(28,20,44,.95)}#gacha.cl-r{--cc:rgba(255,190,230,.9)}
-#gacha.cl-r .gc-cl{animation-name:gcCloud,gcFloat,gcRainbow}#gacha.cl-r.cl-go .gc-cl{animation:gcCloud 2.4s ease-out var(--cd) forwards,gcRainbow 3s linear infinite}
-.gc-bolts{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.gc-bolt{animation:gcBolt .6s ease-out both}
+.gc-bolts{position:absolute;inset:0;pointer-events:none}
+.gc-bolt{position:absolute;top:0;height:68%;aspect-ratio:1/3;transform:translateX(-50%);animation:gcBolt .7s ease-out both}
+.gc-bolt img{width:100%;height:100%;display:block}
+.gc-burst{position:absolute;left:50%;top:50%;width:min(118vh,100vw);aspect-ratio:1;transform:translate(-50%,-50%) scale(.3);opacity:0;pointer-events:none}
+#gacha.rev .gc-burst{animation:gcBurst 1.4s ease-out forwards}
 .gc-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.gc-flash.go{animation:gcFlash .5s ease-out both}
-#gacha.rev .gc-flags,#gacha.rev .gc-clouds,#gacha.rev .gc-bolts,#gacha.rev .gc-flash,#gacha.rev .gc-ground{display:none}
+#gacha.rev .gc-form,#gacha.rev .gc-clouds,#gacha.rev .gc-bolts,#gacha.rev .gc-flash{display:none}
 .gc-hint{position:absolute;left:0;right:0;bottom:calc(8px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:#fff9;letter-spacing:.2em;pointer-events:none}
 .gc-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(44px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
 .gc-grid{display:grid;gap:2.2vh 1.6vw;justify-content:center;align-content:center;perspective:900px}
@@ -57,7 +60,7 @@
 .gc-card.flip.r-g{animation:gcGold 1.3s ease-in-out infinite}
 .gc-ok{margin-top:1.6vh;min-width:120px;padding:8px 26px;font-size:16px;border-radius:22px;border:2px solid #e6c273;background:linear-gradient(180deg,#7a4a1e,#4a2a10);color:#ffe6a8;cursor:pointer}
 @keyframes gcIn{from{opacity:0}to{opacity:1}}@keyframes gcSpin{to{transform:rotate(360deg)}}@keyframes gcPop{from{transform:scale(.1);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes gcPulse{50%{filter:brightness(1.3)}}@keyframes gcPlant{0%{transform:translateY(-90vh) scale(var(--sc,1));opacity:0}15%{opacity:1}100%{transform:translateY(0) scale(var(--sc,1));opacity:1}}@keyframes gcSway{from{transform:skewY(-5deg) scaleX(.94)}to{transform:skewY(6deg) scaleX(1.05)}}@keyframes gcCloud{0%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6)}100%{opacity:1;transform:translate(0,0) scale(1)}}@keyframes gcFloat{from{transform:translate(-1.5vw,.6vh) scale(1)}to{transform:translate(1.5vw,-.6vh) scale(1.06)}}@keyframes gcRainbow{from{filter:blur(1.6vh) hue-rotate(0deg)}to{filter:blur(1.6vh) hue-rotate(360deg)}}@keyframes gcBolt{0%{opacity:0}8%{opacity:1}30%{opacity:.35}45%{opacity:1}100%{opacity:0}}@keyframes gcShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-1.2vw,.8vh)}30%{transform:translate(1.2vw,-.8vh)}45%{transform:translate(-.8vw,-.5vh)}60%{transform:translate(.8vw,.5vh)}80%{transform:translate(-.3vw,.2vh)}}
+@keyframes gcPulse{50%{filter:brightness(1.3)}}@keyframes gcPlant{0%{transform:translateY(-90vh) scale(var(--sc,1));opacity:0}15%{opacity:1}100%{transform:translateY(0) scale(var(--sc,1));opacity:1}}@keyframes gcSway{from{transform:skewX(-1.6deg) scaleX(.98)}to{transform:skewX(2deg) scaleX(1.02)}}@keyframes gcBurst{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}25%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:.6}}@keyframes gcCloud{0%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6)}100%{opacity:1;transform:translate(0,0) scale(1)}}@keyframes gcFloat{from{transform:translate(-1.5vw,.6vh) scale(1)}to{transform:translate(1.5vw,-.6vh) scale(1.06)}}@keyframes gcBolt{0%{opacity:0}8%{opacity:1}30%{opacity:.35}45%{opacity:1}100%{opacity:0}}@keyframes gcShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-1.2vw,.8vh)}30%{transform:translate(1.2vw,-.8vh)}45%{transform:translate(-.8vw,-.5vh)}60%{transform:translate(.8vw,.5vh)}80%{transform:translate(-.3vw,.2vh)}}
 @keyframes gcFlash{0%{opacity:0}12%{opacity:.95}100%{opacity:0}}@keyframes gcGold{50%{filter:drop-shadow(0 0 14px #ffd35a)}}
 
 .audrow{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}.audrow span{min-width:4.5em}.audsl{flex:1 1 auto;min-width:120px;max-width:300px;height:32px;accent-color:#e8b34a;touch-action:pan-x;-webkit-user-select:none;user-select:none}.audpc{min-width:3em;text-align:right}
@@ -509,20 +512,21 @@ function gachaShow(out){
  const cloud=pickCloud();
  const A=k=>k&&window.asset&&asset(k)||'';
  const d=document.createElement('div');d.id='gacha';d.className='gc-'+top+' cl-'+cloud;
- const FL=[['#2f8f5b','青'],['#c8372d','赤'],['#d9a82b','黃'],['#e9e9ee','白'],['#2b2b36','黑']];
- const fl=FL.map((f,i)=>{const ang=(-90+72*i)*Math.PI/180,x=50+Math.cos(ang)*27,y=66+Math.sin(ang)*15,sc=.78+(Math.sin(ang)+1)*.22;return '<div class="gc-flag" style="left:'+x.toFixed(1)+'%;top:'+y.toFixed(1)+'%;--fc:'+f[0]+';--dl:'+(.25+i*.26).toFixed(2)+'s;--sc:'+sc.toFixed(2)+';z-index:'+Math.round(y)+'"><i class="pole"></i><b class="ban"><span>陣</span></b></div>'}).join('');
- let cl='';for(let i=0;i<10;i++){const row=i<5,x=row?(8+i*21):(i<7?-4:92),y=row?(-2+(i%2)*7):(18+(i%2)*20),dx=row?0:(i<7?-60:60),dy=row?-50:0,sz=26+(i*7)%14;cl+='<i class="gc-cl" style="left:'+x+'%;top:'+y+'%;width:'+sz+'vw;height:'+(sz*.5)+'vw;--dx:'+dx+'vw;--dy:'+dy+'vh;--cd:'+(1.1+i*.07).toFixed(2)+'s"></i>'}
- d.innerHTML='<div class="gc-world"><div class="gc-bg"></div><div class="gc-ground"></div><div class="gc-flags">'+fl+'</div><div class="gc-clouds">'+cl+'</div><svg class="gc-bolts" aria-hidden="true"></svg><div class="gc-flash"></div></div><div class="gc-stage"></div><div class="gc-hint">點一下跳過</div>';
+ const FLN=['green','red','yellow','white','black'];
+ const POLE={green:147,red:126,yellow:117,white:76,black:74};
+ const SOCK=[[.5,.13],[.15,.38],[.85,.38],[.31,.81],[.69,.81]];
+ const fl=FLN.map((n,i)=>{const sk=SOCK[i];return '<div class="gc-flag" style="--sx:'+sk[0]+';--sy:'+sk[1]+';--ax:'+POLE[n]+';--fh:'+(40+sk[1]*22).toFixed(1)+'vh;--dl:'+(.25+i*.26).toFixed(2)+'s;--sw:-'+(i*.35).toFixed(2)+'s;z-index:'+Math.round(sk[1]*100)+'"><img src="'+A('gacha/flag_'+n)+'" alt="" draggable="false"></div>'}).join('');
+ const CN={w:'white',d:'dark',r:'rainbow'},CP=[[-6,-2,34],[20,-6,36],[46,-3,38],[70,-6,34],[84,-1,32],[-9,22,36],[88,24,36],[-4,42,34],[90,44,34],[30,10,30]];
+ let cl='';CP.forEach((p,i)=>{const dx=i<5?0:(p[0]<50?-60:60),dy=i<5?-50:0;cl+='<div class="gc-cl" style="left:'+p[0]+'%;top:'+p[1]+'%;width:'+p[2]+'vw;--dx:'+dx+'vw;--dy:'+dy+'vh;--cd:'+(1.1+i*.07).toFixed(2)+'s"><img src="'+A('gacha/cloud_'+CN[cloud]+'_'+(1+i%3))+'" alt="" draggable="false"></div>'});
+ const BN=top==='g'?'gold':top==='p'?'purple':'white';
+ d.innerHTML='<div class="gc-world"><div class="gc-bg" style="background-image:url('+A('gacha/bg')+')"></div><div class="gc-form"><img class="fm base" src="'+A('gacha/ground_formation')+'" alt="" draggable="false"><img class="fm lit" src="'+A('gacha/ground_formation_lit')+'" alt="" draggable="false">'+fl+'</div><div class="gc-clouds">'+cl+'</div><div class="gc-bolts"></div><div class="gc-flash"></div><img class="gc-burst" src="'+A('gacha/burst_'+BN)+'" alt="" draggable="false"></div><div class="gc-stage"></div><div class="gc-hint">點一下跳過</div>';
  document.body.appendChild(d);
- const world=d.querySelector('.gc-world'),svg=d.querySelector('.gc-bolts'),flash=d.querySelector('.gc-flash'),ground=d.querySelector('.gc-ground'),stage=d.querySelector('.gc-stage'),hint=d.querySelector('.gc-hint');
+ const world=d.querySelector('.gc-world'),bolts=d.querySelector('.gc-bolts'),flash=d.querySelector('.gc-flash'),ground=d.querySelector('.gc-form'),stage=d.querySelector('.gc-stage'),hint=d.querySelector('.gc-hint');
  let phase=1;const T=[];const at=(ms,f)=>T.push(setTimeout(f,ms));
- const bolt=(color,w)=>{const W=d.clientWidth||innerWidth,H=d.clientHeight||innerHeight,tx=W*.5,ty=H*.66;let x=W*(.5+(Math.random()*.2-.1)),y=0,pts=[[x,y]];const n=9;for(let i=1;i<=n;i++){const k=i/n;x=x+(tx-x)*.35+(Math.random()-.5)*W*.07*(1-k*.6);y=ty*k;pts.push([i===n?tx:x,y])}
-  const P=pts.map(p=>p[0].toFixed(0)+','+p[1].toFixed(0)).join(' ');let br='';for(let j=0;j<2;j++){const q=pts[2+j*3],e=[q[0]+(Math.random()<.5?-1:1)*W*.12,q[1]+H*.18];br+='<polyline points="'+q[0].toFixed(0)+','+q[1].toFixed(0)+' '+((q[0]+e[0])/2+(Math.random()-.5)*20).toFixed(0)+','+((q[1]+e[1])/2).toFixed(0)+' '+e[0].toFixed(0)+','+e[1].toFixed(0)+'" fill="none" stroke="'+color+'" stroke-width="'+(w*.5)+'" stroke-linecap="round"/>'}
-  const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','gc-bolt');g.innerHTML='<polyline points="'+P+'" fill="none" stroke="'+color+'" stroke-width="'+(w*3)+'" stroke-linejoin="round" opacity=".45" style="filter:blur(6px)"/>'+br+'<polyline points="'+P+'" fill="none" stroke="#fff" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round"/>';
-  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.appendChild(g);setTimeout(()=>g.remove(),700)};
- const strike=(color,w,fa)=>{bolt(color,w);flash.style.background=color;flash.classList.remove('go');void flash.offsetWidth;flash.classList.add('go');world.classList.remove('shake');void world.offsetWidth;world.classList.add('shake');ground.style.setProperty('--gc',color);ground.classList.add('on');window.sfx('skill_thunder')};
- const seq=top==='n'?[['#dfe9ff',3]]:top==='p'?[['#dfe9ff',3],['#c88cff',5]]:[['#dfe9ff',3],['#c88cff',5],['#ffd35a',8]];
- FL.forEach((f,i)=>at(250+i*260,()=>window.sfx('hit_light')));
+ const bolt=kind=>{const W=d.clientWidth||innerWidth,g=document.createElement('div');g.className='gc-bolt';g.style.left=(W*(.5+(Math.random()*.1-.05)))+'px';g.innerHTML='<img src="'+A('gacha/bolt_'+kind+'_'+(1+(Math.random()<.5?0:1)))+'" alt="" draggable="false">';bolts.appendChild(g);setTimeout(()=>g.remove(),760)};
+ const strike=(kind,color)=>{bolt(kind);flash.style.background=color;flash.classList.remove('go');void flash.offsetWidth;flash.classList.add('go');world.classList.remove('shake');void world.offsetWidth;world.classList.add('shake');ground.classList.add('on');window.sfx('skill_thunder')};
+ const seq=top==='n'?[['white','#dfe9ff']]:top==='p'?[['white','#dfe9ff'],['purple','#c88cff']]:[['white','#dfe9ff'],['purple','#c88cff'],['gold','#ffd35a']];
+ FLN.forEach((f,i)=>at(250+i*260,()=>window.sfx('hit_light')));
  at(1250,()=>window.sfx('skill_wind'));d.classList.add('cl-go');
  const t0=2700,gap=800;seq.forEach((b,i)=>at(t0+i*gap,()=>strike(b[0],b[1])));
  const tEnd=t0+(seq.length-1)*gap+950;
