@@ -4,13 +4,15 @@
    art：美術設定。null＝尚未有美術，程式自動用陣營色剪影占位。
         之後有圖集時填 {manifest:{image,grid,anchor,anims…}}（格式見 nezha-sprite.js 的 DEFAULT）。 */
 /* 八位神將的戰鬥動作圖集（待機／移動／攻擊，2×2 各 4 格）；受擊用閃紅光，倒下停在待機姿勢後淡出 */
+/* 移動只用「安全的走路格」（MV）：GPT 的移動圖集裡有幾格是出招姿勢，走路時不能播 */
+const MV={yangjian:[0,3,0,3],weihu:[0,1,3,1],leizhenzi:[0,1,0,1],jiuweihu:[0,1,2,1],zhaogongming:[0,1,0,1]};
 const SPR=(id,h)=>({height:h||104,noRing:true,manifest:{
  images:{idle:'char/'+id+'/sheet-idle',move:'char/'+id+'/sheet-move',attack:'char/'+id+'/sheet-attack'},
  image:'idle',grid:[2,2],anchor:[0.5,0.94],shadow:[0.22,0.05],
  anims:{
   idle:{steps:[[0,.21],[1,.21],[2,.21],[3,.21]],loop:true,still:0,image:'idle'},
-  move:{steps:[[0,.13],[1,.13],[2,.13],[3,.13]],loop:true,still:0,image:'move',refSpeed:50},
-  cast:{steps:[[0,.16],[1,.16],[2,.16],[3,.16]],loop:false,still:0,prio:1,image:'attack'},
+  move:{steps:(MV[id]||[0,1,2,3]).map(c=>[c,.13]),loop:true,still:0,image:'move',refSpeed:50},
+  cast:{steps:[[0,.14],[1,.14],[2,.34],[3,.2]],loop:false,still:0,prio:1,image:'attack'},
   fall:{steps:[[0,1]],loop:false,still:0,prio:9,image:'idle',hold:true}
  }}});
 window.FS={
