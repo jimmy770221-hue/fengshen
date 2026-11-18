@@ -6,12 +6,22 @@
 #gacha{position:fixed;inset:0;z-index:9000;overflow:hidden;color:#fff;-webkit-user-select:none;user-select:none;touch-action:manipulation;animation:gcIn .3s both}
 #gacha.end{opacity:0;transition:opacity .25s}
 #gacha.gc-n{--c:#8fb8ff;--c2:#1a2b4d;--fd:1.5s}#gacha.gc-p{--c:#c88cff;--c2:#3a1a58;--fd:1.5s}#gacha.gc-g{--c:#ffd35a;--c2:#573a10;--fd:2.1s}
-.gc-bg{position:absolute;inset:-5%;background:radial-gradient(circle at 50% 52%,var(--c2) 0,#0a0612 72%);animation:gcPulse 1.6s ease-in-out infinite}
-.gc-circle{position:absolute;left:50%;top:52%;width:62vmin;height:62vmin;margin:-31vmin 0 0 -31vmin;border-radius:50%;border:3px solid var(--c);box-shadow:0 0 5vmin var(--c),inset 0 0 6vmin var(--c);background:repeating-conic-gradient(from 0deg,transparent 0 14deg,color-mix(in srgb,var(--c) 38%,transparent) 14deg 16deg);animation:gcSpin 3s linear infinite,gcPop .7s cubic-bezier(.2,1.4,.4,1) both}
-.gc-circle i{position:absolute;inset:14%;border-radius:50%;border:2px dashed var(--c);animation:gcSpin 2.2s linear infinite reverse}.gc-circle i+i{inset:30%;border-style:solid;animation-duration:4s;animation-direction:normal}
-.gc-beam{position:absolute;left:50%;top:52%;width:16vmin;height:130vh;margin-left:-8vmin;transform-origin:50% 0;background:linear-gradient(180deg,var(--c),transparent 80%);opacity:0;filter:blur(6px);transform:scaleY(0) rotate(180deg);animation:gcBeam 1s ease-out calc(var(--fd) - .9s) both}
-.gc-flash{position:absolute;inset:0;background:#fff;opacity:0;animation:gcFlash .55s ease-out var(--fd) both}
-#gacha.rev .gc-circle,#gacha.rev .gc-beam,#gacha.rev .gc-flash{display:none}
+.gc-world{position:absolute;inset:0}.gc-world.shake{animation:gcShake .45s linear}
+.gc-bg{position:absolute;inset:-5%;background:radial-gradient(ellipse at 50% 70%,var(--c2) 0,#07050d 75%);animation:gcPulse 2.2s ease-in-out infinite}
+.gc-ground{position:absolute;left:50%;top:66%;width:70vh;height:20vh;margin:-10vh 0 0 -35vh;border-radius:50%;background:radial-gradient(ellipse,var(--gc,#7a8cc0) 0,transparent 68%);opacity:.18;transition:opacity .3s,transform .3s}.gc-ground.on{opacity:.85;transform:scale(1.25)}
+.gc-flags{position:absolute;inset:0}
+.gc-flag{position:absolute;width:0;height:0;transform:scale(var(--sc,1));transform-origin:0 100%;animation:gcPlant .5s cubic-bezier(.3,1.5,.5,1) var(--dl) both}
+.gc-flag .pole{position:absolute;left:-2px;bottom:0;width:4px;height:26vh;background:linear-gradient(90deg,#5a3a1a,#c79a4f,#5a3a1a);border-radius:2px}
+.gc-flag .ban{position:absolute;left:2px;bottom:9vh;width:11vh;height:16vh;background:linear-gradient(135deg,var(--fc),color-mix(in srgb,var(--fc) 55%,#000));border:2px solid #d8b25c;border-left:0;clip-path:polygon(0 0,100% 7%,86% 50%,100% 93%,0 100%);transform-origin:0 50%;animation:gcSway 1.3s ease-in-out infinite alternate;display:flex;align-items:center;justify-content:center;color:#fff8;font-size:6vh;text-shadow:0 0 6px #0008}
+.gc-flag:nth-child(odd) .ban{animation-delay:-.6s}
+.gc-clouds{position:absolute;inset:0;pointer-events:none}
+.gc-cl{position:absolute;border-radius:50%;opacity:0;filter:blur(1.6vh);transform:translate(var(--dx),var(--dy)) scale(.6);background:radial-gradient(ellipse at 40% 45%,var(--cc) 0,transparent 68%)}
+#gacha.cl-go .gc-cl{animation:gcCloud 2.4s ease-out var(--cd) forwards,gcFloat 4s ease-in-out calc(var(--cd) + 2.4s) infinite alternate}
+#gacha.cl-w{--cc:rgba(238,244,255,.8)}#gacha.cl-d{--cc:rgba(28,20,44,.95)}#gacha.cl-r{--cc:rgba(255,190,230,.9)}
+#gacha.cl-r .gc-cl{animation-name:gcCloud,gcFloat,gcRainbow}#gacha.cl-r.cl-go .gc-cl{animation:gcCloud 2.4s ease-out var(--cd) forwards,gcRainbow 3s linear infinite}
+.gc-bolts{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.gc-bolt{animation:gcBolt .6s ease-out both}
+.gc-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.gc-flash.go{animation:gcFlash .5s ease-out both}
+#gacha.rev .gc-flags,#gacha.rev .gc-clouds,#gacha.rev .gc-bolts,#gacha.rev .gc-flash,#gacha.rev .gc-ground{display:none}
 .gc-hint{position:absolute;left:0;right:0;bottom:calc(8px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:#fff9;letter-spacing:.2em;pointer-events:none}
 .gc-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(44px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
 .gc-grid{display:grid;gap:2.2vh 1.6vw;justify-content:center;align-content:center;perspective:900px}
@@ -33,8 +43,8 @@
 .gc-card.flip.r-g{animation:gcGold 1.3s ease-in-out infinite}
 .gc-ok{margin-top:1.6vh;min-width:120px;padding:8px 26px;font-size:16px;border-radius:22px;border:2px solid #e6c273;background:linear-gradient(180deg,#7a4a1e,#4a2a10);color:#ffe6a8;cursor:pointer}
 @keyframes gcIn{from{opacity:0}to{opacity:1}}@keyframes gcSpin{to{transform:rotate(360deg)}}@keyframes gcPop{from{transform:scale(.1);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes gcPulse{50%{filter:brightness(1.35)}}@keyframes gcBeam{0%{opacity:0;transform:scaleY(0)}30%{opacity:.95}100%{opacity:.9;transform:scaleY(1)}}
-@keyframes gcFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}@keyframes gcGold{50%{filter:drop-shadow(0 0 14px #ffd35a)}}
+@keyframes gcPulse{50%{filter:brightness(1.3)}}@keyframes gcPlant{0%{transform:translateY(-90vh) scale(var(--sc,1));opacity:0}15%{opacity:1}100%{transform:translateY(0) scale(var(--sc,1));opacity:1}}@keyframes gcSway{from{transform:skewY(-5deg) scaleX(.94)}to{transform:skewY(6deg) scaleX(1.05)}}@keyframes gcCloud{0%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6)}100%{opacity:1;transform:translate(0,0) scale(1)}}@keyframes gcFloat{from{transform:translate(-1.5vw,.6vh) scale(1)}to{transform:translate(1.5vw,-.6vh) scale(1.06)}}@keyframes gcRainbow{from{filter:blur(1.6vh) hue-rotate(0deg)}to{filter:blur(1.6vh) hue-rotate(360deg)}}@keyframes gcBolt{0%{opacity:0}8%{opacity:1}30%{opacity:.35}45%{opacity:1}100%{opacity:0}}@keyframes gcShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-1.2vw,.8vh)}30%{transform:translate(1.2vw,-.8vh)}45%{transform:translate(-.8vw,-.5vh)}60%{transform:translate(.8vw,.5vh)}80%{transform:translate(-.3vw,.2vh)}}
+@keyframes gcFlash{0%{opacity:0}12%{opacity:.95}100%{opacity:0}}@keyframes gcGold{50%{filter:drop-shadow(0 0 14px #ffd35a)}}
 
 .audrow{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}.audrow span{min-width:4.5em}.audsl{flex:1 1 auto;min-width:120px;max-width:300px;height:32px;accent-color:#e8b34a;touch-action:pan-x;-webkit-user-select:none;user-select:none}.audpc{min-width:3em;text-align:right}
 @media (display-mode:standalone){@supports (height:100lvh){#intro{bottom:auto;height:100lvh}.home{bottom:auto;height:100lvh}}}
@@ -465,7 +475,7 @@ app.onclick=event=>{
      out.push({n:it.name,r:rank,a:EQ_ART[it.id]||'',gear:1,nw:!duplicate,txt:it.name+' · '+rn(rank)+'（'+(kind==='weapon'?'武器':'裝備')+(it.owner?'・'+it.owner+'專屬':'')+'）'+(duplicate?'（持有數 +1）':'（新獲得）')});
     }
    }
-   setTimeout(()=>window.sfx('pull'),120);try{gachaShow(out)}catch(e){}
+   try{gachaShow(out)}catch(e){}
    if(out.length===1)result='招募到 '+out[0].txt;
    else{const ord={'封神級':0,'稀有':1,'普通':2},g={};out.forEach(e=>{const k=e.n+'|'+e.r;(g[k]=g[k]||{n:e.n,r:e.r,c:0,nw:false});g[k].c++;if(e.nw)g[k].nw=true});
     result='招募 '+pc[2]+'：'+Object.values(g).sort((a,b)=>ord[a.r]-ord[b.r]).map(e=>e.n+'（'+rn(e.r)+'）'+(e.c>1?'×'+e.c:'')+(e.nw?' 新':'')).join('、')}
@@ -479,14 +489,31 @@ function gachaShow(out){
  const old=document.getElementById('gacha');if(old)old.remove();
  const K=r=>r==='封神級'?'g':r==='稀有'?'p':'n';
  const top=out.some(e=>e.r==='封神級')?'g':out.some(e=>e.r==='稀有')?'p':'n';
+ /* 天象預兆：雲的顏色只是暗示（有機率落差），閃電顏色才是依最高稀有度加乘 */
+ const pickCloud=()=>{const r=Math.random()*100;return top==='g'?(r<70?'r':'d'):top==='p'?(r<70?'d':r<90?'w':'r'):(r<85?'w':'d')};
+ const cloud=pickCloud();
  const A=k=>k&&window.asset&&asset(k)||'';
- const d=document.createElement('div');d.id='gacha';d.className='gc-'+top;
- d.innerHTML='<div class="gc-bg"></div><div class="gc-circle"><i></i><i></i></div><div class="gc-beam"></div><div class="gc-flash"></div><div class="gc-stage"></div><div class="gc-hint">點一下跳過</div>';
+ const d=document.createElement('div');d.id='gacha';d.className='gc-'+top+' cl-'+cloud;
+ const FL=[['#2f8f5b','青'],['#c8372d','赤'],['#d9a82b','黃'],['#e9e9ee','白'],['#2b2b36','黑']];
+ const fl=FL.map((f,i)=>{const ang=(-90+72*i)*Math.PI/180,x=50+Math.cos(ang)*27,y=66+Math.sin(ang)*15,sc=.78+(Math.sin(ang)+1)*.22;return '<div class="gc-flag" style="left:'+x.toFixed(1)+'%;top:'+y.toFixed(1)+'%;--fc:'+f[0]+';--dl:'+(.25+i*.26).toFixed(2)+'s;--sc:'+sc.toFixed(2)+';z-index:'+Math.round(y)+'"><i class="pole"></i><b class="ban"><span>陣</span></b></div>'}).join('');
+ let cl='';for(let i=0;i<10;i++){const row=i<5,x=row?(8+i*21):(i<7?-4:92),y=row?(-2+(i%2)*7):(18+(i%2)*20),dx=row?0:(i<7?-60:60),dy=row?-50:0,sz=26+(i*7)%14;cl+='<i class="gc-cl" style="left:'+x+'%;top:'+y+'%;width:'+sz+'vw;height:'+(sz*.5)+'vw;--dx:'+dx+'vw;--dy:'+dy+'vh;--cd:'+(1.1+i*.07).toFixed(2)+'s"></i>'}
+ d.innerHTML='<div class="gc-world"><div class="gc-bg"></div><div class="gc-ground"></div><div class="gc-flags">'+fl+'</div><div class="gc-clouds">'+cl+'</div><svg class="gc-bolts" aria-hidden="true"></svg><div class="gc-flash"></div></div><div class="gc-stage"></div><div class="gc-hint">點一下跳過</div>';
  document.body.appendChild(d);
- const stage=d.querySelector('.gc-stage'),hint=d.querySelector('.gc-hint');let phase=1,tmr;
+ const world=d.querySelector('.gc-world'),svg=d.querySelector('.gc-bolts'),flash=d.querySelector('.gc-flash'),ground=d.querySelector('.gc-ground'),stage=d.querySelector('.gc-stage'),hint=d.querySelector('.gc-hint');
+ let phase=1;const T=[];const at=(ms,f)=>T.push(setTimeout(f,ms));
+ const bolt=(color,w)=>{const W=d.clientWidth||innerWidth,H=d.clientHeight||innerHeight,tx=W*.5,ty=H*.66;let x=W*(.5+(Math.random()*.2-.1)),y=0,pts=[[x,y]];const n=9;for(let i=1;i<=n;i++){const k=i/n;x=x+(tx-x)*.35+(Math.random()-.5)*W*.07*(1-k*.6);y=ty*k;pts.push([i===n?tx:x,y])}
+  const P=pts.map(p=>p[0].toFixed(0)+','+p[1].toFixed(0)).join(' ');let br='';for(let j=0;j<2;j++){const q=pts[2+j*3],e=[q[0]+(Math.random()<.5?-1:1)*W*.12,q[1]+H*.18];br+='<polyline points="'+q[0].toFixed(0)+','+q[1].toFixed(0)+' '+((q[0]+e[0])/2+(Math.random()-.5)*20).toFixed(0)+','+((q[1]+e[1])/2).toFixed(0)+' '+e[0].toFixed(0)+','+e[1].toFixed(0)+'" fill="none" stroke="'+color+'" stroke-width="'+(w*.5)+'" stroke-linecap="round"/>'}
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','gc-bolt');g.innerHTML='<polyline points="'+P+'" fill="none" stroke="'+color+'" stroke-width="'+(w*3)+'" stroke-linejoin="round" opacity=".45" style="filter:blur(6px)"/>'+br+'<polyline points="'+P+'" fill="none" stroke="#fff" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round"/>';
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.appendChild(g);setTimeout(()=>g.remove(),700)};
+ const strike=(color,w,fa)=>{bolt(color,w);flash.style.background=color;flash.classList.remove('go');void flash.offsetWidth;flash.classList.add('go');world.classList.remove('shake');void world.offsetWidth;world.classList.add('shake');ground.style.setProperty('--gc',color);ground.classList.add('on');window.sfx('skill_thunder')};
+ const seq=top==='n'?[['#dfe9ff',3]]:top==='p'?[['#dfe9ff',3],['#c88cff',5]]:[['#dfe9ff',3],['#c88cff',5],['#ffd35a',8]];
+ FL.forEach((f,i)=>at(250+i*260,()=>window.sfx('hit_light')));
+ at(1250,()=>window.sfx('skill_wind'));d.classList.add('cl-go');
+ const t0=2700,gap=800;seq.forEach((b,i)=>at(t0+i*gap,()=>strike(b[0],b[1])));
+ const tEnd=t0+(seq.length-1)*gap+950;
  const card=(e,i)=>{const img=A(e.a);return '<div class="gc-card r-'+K(e.r)+(e.gear?' gear':'')+'"><div class="gc-in"><div class="gc-back"><span>仙</span></div><div class="gc-front">'+(img?'<img src="'+img+'" alt="" draggable="false">':'<span class="gc-ph">'+e.n.slice(0,1)+'</span>')+'<em>'+rn(e.r)+'</em><b>'+e.n+'</b>'+(e.nw?'<u>NEW</u>':'')+'</div></div></div>'};
  const flip=(c,e)=>{if(c.classList.contains('flip'))return;c.classList.add('flip');if(e.r==='封神級')window.sfx('pull_rare');else if(e.r==='稀有')window.sfx('ui_confirm')};
- function reveal(){if(phase!==1)return;phase=2;clearTimeout(tmr);d.classList.add('rev');
+ function reveal(){if(phase!==1)return;phase=2;T.forEach(clearTimeout);d.classList.add('rev');
   stage.innerHTML='<div class="gc-grid n'+out.length+'">'+out.map(card).join('')+'</div><button class="gc-ok" type="button">確定</button>';
   hint.textContent=out.length>1?'點一下全部翻開':'';
   const cs=[...stage.querySelectorAll('.gc-card')];
@@ -494,7 +521,7 @@ function gachaShow(out){
   stage.querySelector('.gc-ok').onclick=ev=>{ev.stopPropagation();d.classList.add('end');setTimeout(()=>d.remove(),260)};
  }
  d.onclick=()=>{if(phase===1)reveal();else{[...stage.querySelectorAll('.gc-card')].forEach((c,i)=>flip(c,out[i]));hint.textContent=''}};
- tmr=setTimeout(reveal,top==='g'?2700:2100);
+ at(tEnd,reveal);
 }
 try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){})}catch(e){}
 load();draw();
