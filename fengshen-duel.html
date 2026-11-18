@@ -124,7 +124,7 @@ function cast(i){
  if(!s.started||s.paused||s.over||!loadout.includes(i)||s.used[i])return;
  const [id,name,,color]=skills[i], foes=enemies().sort((a,b)=>a.x-b.x), team=allies();
  if(!canCast(id,foes,team))return;
- s.used[i]=true;s.notice=name+'已發動';s.noticeTime=2.2;
+ s.used[i]=true;s.notice=name+'已發動';s.noticeTime=2.2;sfx({fire:'skill_fire',poison:'skill_fire',thunder:'skill_thunder',shock:'skill_thunder',ice:'skill_ice',slow:'skill_ice',wind:'skill_wind'}[id]||'skill_heal');
  if(id==='ward')s.shield=7;
  else if(id==='haste')s.haste=7;
  else if(id==='rage')s.rage=6;
@@ -161,10 +161,11 @@ function cast(i){
 }
 const upgrade=document.createElement('button');upgrade.className='upg';el('deck').append(upgrade);
 for(let k=units.length;k<10;k++){const e=document.createElement('div');e.className='cardempty';e.setAttribute('aria-hidden','true');el('deck').append(e)}
+const sfx=n=>{try{if(window.parent!==window&&parent.sfx)parent.sfx(n)}catch(e){}};
 function deploy(i){
  const u=units[i];
  if(s.countdown>0||loadout.length!==slotCount||s.paused||s.over||s.energy<u.cost||s.cd[i]>0||allies().length>=armyCap)return;
- s.started=true;s.energy-=u.cost;s.cd[i]=u.cd;spawn(u,0);ui();
+ s.started=true;s.energy-=u.cost;s.cd[i]=u.cd;spawn(u,0);sfx('deploy');ui();
 }
 press(upgrade,()=>{
  const cost=upgradeCost();
@@ -179,7 +180,7 @@ const endBox=document.createElement('div');endBox.id='endbox';endBox.hidden=true
 function leaveBattle(){if(window.parent!==window)parent.postMessage({type:'fs-back'},'*');else{reset()}}
 function hideEnd(){endBox.hidden=true;endBox.innerHTML='';endBox.classList.remove('full')}
 function showEnd(){
- s.endShown=true;
+ s.endShown=true;sfx(s.won?'victory':'defeat');
  if(!s.won){
   endBox.innerHTML='<div class="ebox"><h2>戰敗</h2><div class="btns"><button id="eexit">退出</button><button id="eretry">重新挑戰</button></div></div>';
   endBox.hidden=false;el('eexit').onclick=leaveBattle;el('eretry').onclick=()=>{hideEnd();reset()};return;
@@ -238,7 +239,7 @@ function update(dt){
   }
   if(near||atBase){
    if(a.wait>0)continue;
-   a.wait=a.period;a.swing=.24;a.aim=near?target.x:enemyBase;
+   a.wait=a.period;a.swing=.24;a.aim=near?target.x:enemyBase;sfx(near?(a.splash?'hit_heavy':a.range>70?'hit_ranged':'hit_light'):(s.hp[1-a.side]-damage<=0?'base_destroy':'base_hit'));
    if(near){
     const victims=a.splash?opponents.filter(b=>Math.abs(b.x-target.x)<=a.splash):[target];
     for(const b of victims){b.hp-=(b===target?damage:damage*.65)*(b.side===0&&s.shield>0?.45:1)*(1-(b.armor||0))*(b.side===0&&s.rage>0?1.25:1);b.hit=.18;if(a.slow)b.slowTime=Math.max(b.slowTime,a.slow);}
@@ -316,11 +317,13 @@ function launchRing(a,off){
 }
 // 倒下：HP 歸零後立刻停掉原本動作，改播倒下一次並停在最後一格，再淡出並升起靈魂
 function startDying(a){
+ sfx('death_soul');
  const p=a.spr;p.onEvent=null;p.tint=0;p.play('fall');
  s.dying.push({p,x:a.x,side:a.side,t:0});
 }
 // 沒有動畫圖集的角色：身影原地淡出，並升起靈魂（與哪吒同樣的魂飛效果）
 function startDyingStatic(a){
+ sfx('death_soul');
  const ci=a.id?charImg(a.id):null;
  s.dying.push({st:true,img:(ci&&ci.complete&&ci.naturalWidth)?ci:null,color:a.color,x:a.x,side:a.side,t:0});
 }
