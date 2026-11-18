@@ -560,7 +560,7 @@ load();draw();
  window.addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(d);window.addEventListener('orientationchange',()=>{fit();setTimeout(fit,150);setTimeout(fit,500)});
  if(window.visualViewport){visualViewport.addEventListener('resize',fit);visualViewport.addEventListener('scroll',fit)}
  let gone=false;
- const go=()=>{if(gone)return;gone=true;d.classList.add('out');setTimeout(()=>d.remove(),500)};
+ const go=()=>{if(gone)return;gone=true;try{bgmPlay('lobby')}catch(e){}d.classList.add('out');setTimeout(()=>d.remove(),500)};
  /* 帳號與伺服器：點一下開場畫面 → 登入／註冊（或已登入過則直接選伺服器）→ 進大廳；全部存在本機 */
  const SRV=['蓬萊','崑崙','岐山','朝歌','西岐','東海'],AK='fengshen-accts-v1',SK='fengshen-session-v1';
  const rd=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}},wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
