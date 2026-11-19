@@ -621,7 +621,7 @@ load();draw();
  /* 以實際可視區為準：背景滿版裁切，人物各貼左右下角、同高、完整不裁切 */
  const fit=()=>{if(!d.isConnected)return;const w=d.clientWidth||innerWidth,h=d.clientHeight||innerHeight;
   const si=(typeof safeInsets==='function')?safeInsets():{l:0,r:0,b:0},ar=w/h,cap=ar>=1.9?.91:ar<=1.4?.78:.78+(ar-1.4)/.5*.13;
-  const RL=1151/1271,RR=930/1000,sideW=w*.43,ch=Math.min(h*cap,sideW/RL),chR=Math.min(ch,w*.47/RR),bot=h*.025+si.b,gap=Math.max(w*.015,6);
+  const RL=1151/1271,RR=1000/1000,sideW=w*.43,ch=Math.min(h*cap,sideW/RL),chR=Math.min(ch,w*.47/RR),bot=h*.025+si.b,gap=Math.max(w*.015,6);
   const L=document.getElementById('icl'),R=document.getElementById('icr');
   if(L){L.style.height=ch+'px';L.style.left=(gap+si.l*.4)+'px';L.style.bottom=bot+'px'}
   if(R){R.style.height=chR+'px';R.style.right=(gap+si.r*.4)+'px';R.style.bottom=bot+'px'}
