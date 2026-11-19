@@ -27,18 +27,19 @@ XYN=mdnames(SRC+'諸仙陣_西遊圖卡匯入表.md',1)
 FSFAC={'01':'上古','02':'闡教','03':'截教','04':'商朝','05':'西方教','06':'西岐','07':'靈獸'}
 XYFAC={'取經團隊':'取經團隊','天庭':'天庭','龍宮':'龍宮','佛門':'佛門','散仙':'散仙','妖怪':'妖怪','人間':'人間'}
 # 多人合圖、重複圖、放錯的圖：不匯入
-XY_SKIP={'beidou','ershibaxiu','jiuyao','qixiannv','sizhi','liudingliujia','shiba-luohan','qizhizhu','dapeng','maliu-bengba','qingfeng-mingyue','fuxing','randeng','guanyin'}
+XY_SKIP={'beidou','ershibaxiu','jiuyao','qixiannv','sizhi','liudingliujia','shiba-luohan','qizhizhu','maliu-bengba','qingfeng-mingyue'}  # 多人合圖（已由群像拆卡取代）
 FS_SKIP={'079'}  # 魔家四將（四人合圖）
 # ---- 暫定數值（依定位＋品質）----
 ARCH={'tank':('近戰','厚甲前排',dict(cost=38,hp=320,damage=20,range=36,speed=34,period=1.1,cd=5.8,armor=.2)),
  'fighter':('近戰','近戰突擊',dict(cost=30,hp=150,damage=30,range=38,speed=52,period=1.0,cd=4.2)),
  'mid':('中程','中距離・法術',dict(cost=32,hp=110,damage=26,range=135,speed=50,period=1.2,cd=4.0,splash=40)),
  'archer':('遠程','遠程單體',dict(cost=32,hp=90,damage=32,range=170,speed=46,period=1.35,cd=4.4))}
-TANK='牛魔王 黑熊精 白象精 青獅精 九靈元聖 獨角兕大王 鼉龍 巨靈神 增長天王 持國天王 豬八戒 沙悟淨 紂王 黃袍怪 墨麒麟 黃風怪 虎力大仙 蜈蚣精'.split()
-ARCHER='雷公 電母 風伯 雨師 嫦娥 太陰星君 太陽星君 蘇妲己 胡喜媚 王貴人 鄧嬋玉 崇侯虎 高蘭英 廣目天王 瓊霄 碧霄 金靈聖母 金光聖母 白骨精 白鼠精 玉面公主 鐵扇公主 蠍子精 紅孩兒 靈感大王 金角大王 銀角大王 王母娘娘 四不像 哮天犬 黑點虎 姬旦 伯邑考'.split()
-FIGHT='金吒 木吒 李靖 黃天化 土行孫 武吉 殷郊 殷洪 楊任 孫悟空 白龍馬 托塔李天王 多聞天王 六耳獼猴 通臂猿猴 虎力大仙'.split()
+TANK='亢宿 氐宿 牛宿 壁宿 軫宿 甲子 甲戌 甲申 甲午 甲辰 甲寅 芭將軍 看門羅漢 靜坐羅漢 降龍羅漢 牛魔王 黑熊精 白象精 青獅精 九靈元聖 獨角兕大王 鼉龍 巨靈神 增長天王 持國天王 豬八戒 沙悟淨 紂王 黃袍怪 墨麒麟 黃風怪 虎力大仙 蜈蚣精'.split()
+ARCHER='蜘蛛精大姐 蜘蛛精二姐 蜘蛛精三姐 蜘蛛精四姐 蜘蛛精五姐 蜘蛛精六妹 蜘蛛精七妹 雷公 電母 風伯 雨師 嫦娥 太陰星君 太陽星君 蘇妲己 胡喜媚 王貴人 鄧嬋玉 崇侯虎 高蘭英 廣目天王 瓊霄 碧霄 金靈聖母 金光聖母 白骨精 白鼠精 玉面公主 鐵扇公主 蠍子精 紅孩兒 靈感大王 金角大王 銀角大王 王母娘娘 四不像 哮天犬 黑點虎 姬旦 伯邑考'.split()
+FIGHT='參宿 崩將軍 馬元帥 流元帥 魔禮青 魔禮壽 火曜星君 土曜星君 金曜星君 伏虎羅漢 金吒 木吒 李靖 黃天化 土行孫 武吉 殷郊 殷洪 楊任 孫悟空 白龍馬 托塔李天王 多聞天王 六耳獼猴 通臂猿猴 虎力大仙'.split()
 MIDF={'上古','闡教','截教','西方教','天庭','龍宮','佛門','散仙','人間','取經團隊'}
 def arch(name,fac):
+    if name in('魔禮海','魔禮紅'):return 'mid'
     if name in TANK:return 'tank'
     if name in ARCHER:return 'archer'
     if name in FIGHT:return 'fighter'
@@ -63,6 +64,21 @@ for p in sorted(glob.glob(SRC+'西遊人物圖卡_*/*_card.png')):
     if key in XY_SKIP:continue
     name=XYN.get(os.path.basename(p));fac=XYFAC[os.path.basename(os.path.dirname(p)).split('_')[1]]
     items.append(('xy_'+key.replace('-','_'),name,'西遊',fac,p))
+# ---- 群像拆卡：每位獨立一張，編號 bd-01 → id bd01 ----
+GRP=SRC+'諸仙陣_群像拆卡/'
+GFAC={'bd':('西遊','天庭'),'sx':('西遊','天庭'),'jy':('西遊','天庭'),'xn':('西遊','天庭'),'gz':('西遊','天庭'),'dj':('西遊','天庭'),
+      'lh':('西遊','佛門'),'qf':('西遊','散仙'),'hg':('西遊','妖怪'),'zz':('西遊','妖怪'),'mj':('封神','商朝')}
+GNAME={}
+if os.path.exists(GRP+'群像拆卡_102位人物設定.md'):
+    for l in open(GRP+'群像拆卡_102位人物設定.md',encoding='utf-8'):
+        c=[x.strip() for x in l.strip().strip('|').split('|')]
+        if len(c)>=9 and re.match(r'[a-z]{2}-\d\d$',c[0]):GNAME[c[0]]=c[1]
+for p in sorted(glob.glob(GRP+'*/*_card.png')):
+    k=os.path.basename(p)[:-9]
+    if k not in GNAME or k[:2] not in GFAC:continue
+    w,fac=GFAC[k[:2]];nm=GNAME[k]
+    Q.setdefault((w,nm),'凡品')   # 品質表沒有的群像成員，暫定凡品
+    items.append((k.replace('-',''),nm,w,fac,p))
 # 重複圖檢查
 seen={}
 for it in items:
