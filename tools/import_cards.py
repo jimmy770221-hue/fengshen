@@ -30,27 +30,35 @@ XYFAC={'取經團隊':'取經團隊','天庭':'天庭','龍宮':'龍宮','佛門
 XY_SKIP={'beidou','ershibaxiu','jiuyao','qixiannv','sizhi','liudingliujia','shiba-luohan','qizhizhu','maliu-bengba','qingfeng-mingyue'}  # 多人合圖（已由群像拆卡取代）
 FS_SKIP={'079'}  # 魔家四將（四人合圖）
 # ---- 暫定數值（依定位＋品質）----
-ARCH={'tank':('近戰','厚甲前排',dict(cost=38,hp=320,damage=20,range=36,speed=34,period=1.1,cd=5.8,armor=.2)),
- 'fighter':('近戰','近戰突擊',dict(cost=30,hp=150,damage=30,range=38,speed=52,period=1.0,cd=4.2)),
- 'mid':('中程','中距離・法術',dict(cost=32,hp=110,damage=26,range=135,speed=50,period=1.2,cd=4.0,splash=40)),
- 'archer':('遠程','遠程單體',dict(cost=32,hp=90,damage=32,range=170,speed=46,period=1.35,cd=4.4))}
+# 近中遠 × 速攻防：三種距離各有基礎，再套「速／攻／防」傾向（遊戲內不標示，讓玩家自己摸索）
+ARCH={'near':('近戰','近身作戰',dict(cost=32,hp=190,damage=28,range=38,speed=46,period=1.05,cd=4.5)),
+ 'mid':('中程','中距離・法術',dict(cost=32,hp=120,damage=26,range=135,speed=46,period=1.2,cd=4.0,splash=40)),
+ 'far':('遠程','遠程單體',dict(cost=32,hp=90,damage=32,range=170,speed=42,period=1.35,cd=4.4))}
+LEAN={'speed':dict(hp=.8,damage=.85,speed=1.4,period=.75,cd=.75,cost=0),
+ 'atk':dict(hp=.8,damage=1.5,speed=.95,period=1.05,cd=1.0,cost=3),
+ 'def':dict(hp=1.7,damage=.7,speed=.82,period=1.0,cd=1.1,cost=3)}
 TANK='亢宿 氐宿 牛宿 壁宿 軫宿 甲子 甲戌 甲申 甲午 甲辰 甲寅 芭將軍 看門羅漢 靜坐羅漢 降龍羅漢 牛魔王 黑熊精 白象精 青獅精 九靈元聖 獨角兕大王 鼉龍 巨靈神 增長天王 持國天王 豬八戒 沙悟淨 紂王 黃袍怪 墨麒麟 黃風怪 虎力大仙 蜈蚣精'.split()
 ARCHER='蜘蛛精大姐 蜘蛛精二姐 蜘蛛精三姐 蜘蛛精四姐 蜘蛛精五姐 蜘蛛精六妹 蜘蛛精七妹 雷公 電母 風伯 雨師 嫦娥 太陰星君 太陽星君 蘇妲己 胡喜媚 王貴人 鄧嬋玉 崇侯虎 高蘭英 廣目天王 瓊霄 碧霄 金靈聖母 金光聖母 白骨精 白鼠精 玉面公主 鐵扇公主 蠍子精 紅孩兒 靈感大王 金角大王 銀角大王 王母娘娘 四不像 哮天犬 黑點虎 姬旦 伯邑考'.split()
 FIGHT='參宿 崩將軍 馬元帥 流元帥 魔禮青 魔禮壽 火曜星君 土曜星君 金曜星君 伏虎羅漢 金吒 木吒 李靖 黃天化 土行孫 武吉 殷郊 殷洪 楊任 孫悟空 白龍馬 托塔李天王 多聞天王 六耳獼猴 通臂猿猴 虎力大仙'.split()
 MIDF={'上古','闡教','截教','西方教','天庭','龍宮','佛門','散仙','人間','取經團隊'}
 def arch(name,fac):
-    if name in('魔禮海','魔禮紅'):return 'mid'
-    if name in TANK:return 'tank'
-    if name in ARCHER:return 'archer'
-    if name in FIGHT:return 'fighter'
-    if fac in('商朝','西岐','靈獸','妖怪'):return 'fighter'
-    return 'mid'
+    """回傳 (距離, 傾向)。名單內的依原本定位，其餘依陣營與編號輪流分配。"""
+    if name in TANK:return 'near','def'
+    if name in FIGHT:return 'near',('speed' if len(name)%2 else 'atk')
+    if name in ARCHER:return 'far',('speed','atk','def')[len(name)%3 if False else (sum(map(ord,name))%3)]
+    if name in('魔禮海','魔禮紅'):return 'mid','atk'
+    k=sum(map(ord,name))
+    if fac in('商朝','西岐','靈獸','妖怪'):return 'near',('speed','atk','def')[k%3]
+    return ('mid','far')[k%5==0],('speed','atk','def')[(k//3)%3]
 def stats(a,q,color):
-    reach,role,b=ARCH[a];b=dict(b);m={'凡品':.85,'仙品':1,'聖品':1.3}[q]
-    b['hp']=round(b['hp']*m);b['damage']=round(b['damage']*m);b['cost']=b['cost']+{'凡品':-2,'仙品':0,'聖品':4}[q]
+    reach,lean=a;rc,role,b=ARCH[reach];b=dict(b);L=LEAN[lean];m={'凡品':.85,'仙品':1,'聖品':1.3}[q]
+    for k in('hp','damage','speed','period','cd'):b[k]=b[k]*L[k]
+    b['hp']=round(b['hp']*m);b['damage']=round(b['damage']*m);b['speed']=round(b['speed']);b['period']=round(b['period'],2);b['cd']=round(b['cd'],1)
+    b['cost']=b['cost']+L['cost']+{'凡品':-2,'仙品':0,'聖品':4}[q]
     if 'splash' in b:b['splash']=round(b['splash']*m)
+    if lean=='def':b['armor']=.28 if reach=='near' else .18
     b['color']=color
-    return reach,role,b
+    return rc,role,b
 FCOL={'上古':'#f2d27a','闡教':'#e8c46a','截教':'#b58ae0','商朝':'#c0584c','西方教':'#f0e2a8','西岐':'#7fb890','靈獸':'#9ac7e8','取經團隊':'#ffd06a','天庭':'#8fb8f0','龍宮':'#5fc4d6','佛門':'#f3c25e','散仙':'#a6d49b','妖怪':'#c46a8a','人間':'#c9b38a'}
 QCOL={'凡品':'#6aa7e8','仙品':'#b58ae0','聖品':'#f0c14b'}
 items=[]
