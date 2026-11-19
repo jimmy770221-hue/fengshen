@@ -74,7 +74,7 @@
 .audrow{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}.audrow span{min-width:4.5em}.audsl{flex:1 1 auto;min-width:120px;max-width:300px;height:32px;accent-color:#e8b34a;touch-action:pan-x;-webkit-user-select:none;user-select:none}.audpc{min-width:3em;text-align:right}
 @media (display-mode:standalone){@supports (height:100lvh){#intro{bottom:auto;height:100lvh}.home{bottom:auto;height:100lvh}}}
 #intro .ibg{position:fixed;top:-160px;bottom:-160px;left:-160px;right:-160px;background:center/cover no-repeat}
-#intro .ich{position:absolute;bottom:0;width:auto;pointer-events:none;-webkit-user-drag:none;object-fit:contain}
+#intro .ich{position:absolute;bottom:0;width:auto;pointer-events:none;-webkit-user-drag:none;object-fit:contain;transform:translateX(-50%)}#intro .ich.flip{transform:translateX(-50%) scaleX(-1)}
 #intro .ilogo{position:absolute;left:var(--lx,50%);top:var(--lt,18%);transform:translateX(-50%);width:var(--lw,40%);object-fit:contain;filter:drop-shadow(0 6px 18px #000a);animation:introfloat 4.2s ease-in-out infinite;pointer-events:none}
 #intro .itap{position:absolute;left:var(--lx,50%);right:auto;transform:translateX(-50%);white-space:nowrap;bottom:calc(11% + env(safe-area-inset-bottom));text-align:center;font-size:clamp(16px,var(--tf,4vh),30px);font-weight:900;letter-spacing:.35em;color:#fff1c9;text-shadow:0 0 10px #ff9d3a,0 2px 4px #3a1204,0 0 22px #000;animation:introblink 1.6s ease-in-out infinite;pointer-events:none}
 @keyframes introfloat{0%,100%{margin-top:0}50%{margin-top:-1.4vh}}
@@ -222,7 +222,7 @@ body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:1
 <script src="data/fengshen-data.js"></script>
 <script src="data/fengshen-cards.js"></script>
 <script src="data/stats-override.js"></script>
-<script src="data/fengshen-order.js"></script>
+<script src="data/fengshen-order.js"></script><script src="data/cover-slots.js"></script>
 <script>
 const app=document.querySelector('#app');
 // 內容全部來自 data/fengshen-data.js；roster 每筆：[名稱,世界,陣營,稀有度]
@@ -614,18 +614,22 @@ try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landsc
 load();draw();
 /* ===== 開場畫面：每次開啟 APP 顯示一次，點一下進入（同時啟動背景音樂） ===== */
 (function(){
- const A=k=>window.asset&&asset(k),bg=A('scene/intro_bg_clean')||A('scene/intro_bg'),cl=A('scene/intro_chars_left'),cr=A('scene/intro_chars_right'),lg=A('ui/logo');
+ const A=k=>window.asset&&asset(k),bg=A('scene/intro_bg_clean')||A('scene/intro_bg'),lg=A('ui/logo');
+ /* 封面人物：依 data/cover-slots.js 的 A～F 位置擺放；圖片朝向與位置朝向不同時自動左右翻面 */
+ const CV=window.COVER||{slots:{},pick:{},pool:{}},SL=Object.keys(CV.slots);
+ let pk=Object.assign({},CV.pick);
+ if(CV.random){const ks=Object.keys(CV.pool).sort(()=>Math.random()-.5);SL.forEach((k,i)=>{if(ks[i])pk[k]=ks[i]})}
+ const slotImgs=SL.map(k=>{const p=pk[k],u=p&&A('cover/'+p);if(!u)return '';const fl=(CV.pool[p]||{}).face!==CV.slots[k].face;
+  return '<img class="ich'+(fl?' flip':'')+'" data-slot="'+k+'" src="'+u+'" alt="" draggable="false" style="z-index:'+CV.slots[k].z+'">'}).join('');
  const d=document.createElement('div');d.id='intro';d.setAttribute('role','button');d.setAttribute('aria-label','諸仙陣，點擊畫面開始');
- d.innerHTML=(bg?'<div class="ibg" style="background-image:url('+bg+')"></div>':'')+(cl?'<img class="ich" id="icl" src="'+cl+'" alt="" draggable="false">':'')+(cr?'<img class="ich" id="icr" src="'+cr+'" alt="" draggable="false">':'')+(lg?'<img class="ilogo" src="'+lg+'" alt="諸仙陣" draggable="false">':'<h1 style="position:absolute;left:0;right:0;top:14%;text-align:center;color:#ffd98a;font-size:17vh;font-weight:900;letter-spacing:.12em;text-shadow:0 4px 0 #7a3b12,0 6px 14px #000">諸仙陣</h1>')+'<div class="itap">點擊畫面開始</div>';
+ d.innerHTML=(bg?'<div class="ibg" style="background-image:url('+bg+')"></div>':'')+slotImgs+(lg?'<img class="ilogo" src="'+lg+'" alt="諸仙陣" draggable="false">':'<h1 style="position:absolute;left:0;right:0;top:14%;text-align:center;color:#ffd98a;font-size:17vh;font-weight:900;letter-spacing:.12em;text-shadow:0 4px 0 #7a3b12,0 6px 14px #000">諸仙陣</h1>')+'<div class="itap">點擊畫面開始</div>';
  document.body.appendChild(d);
  /* 以實際可視區為準：背景滿版裁切，人物各貼左右下角、同高、完整不裁切 */
  const fit=()=>{if(!d.isConnected)return;const w=d.clientWidth||innerWidth,h=d.clientHeight||innerHeight;
   const si=(typeof safeInsets==='function')?safeInsets():{l:0,r:0,b:0},ar=w/h,cap=ar>=1.9?.91:ar<=1.4?.78:.78+(ar-1.4)/.5*.13;
-  const RL=1151/1271,RR=1000/1000,sideW=w*.43,ch=Math.min(h*cap,sideW/RL),chR=Math.min(ch,w*.47/RR),bot=h*.025+si.b,gap=Math.max(w*.015,6);
-  const L=document.getElementById('icl'),R=document.getElementById('icr');
-  if(L){L.style.height=ch+'px';L.style.left=(gap+si.l*.4)+'px';L.style.bottom=bot+'px'}
-  if(R){R.style.height=chR+'px';R.style.right=(gap+si.r*.4)+'px';R.style.bottom=bot+'px'}
-  const lw=Math.min(w*.34,h*.40*3);d.style.setProperty('--lw',lw+'px');{const Lw=ch*RL,Rw=chR*RR,yx=gap+si.l*.4+Lw*.28,bx=w-(gap+si.r*.4)-Rw+Rw*.716;d.style.setProperty('--lx',((yx+bx)/2)+'px')}d.style.setProperty('--lt',(h*.27)+'px');d.style.setProperty('--tf',(h*.042)+'px');
+  const ch=Math.min(h*cap,w*.45),bot=h*.025+si.b,gap=Math.max(w*.015,6),bl=gap+si.l*.4,br=w-gap-si.r*.4-ch,SLT=CV.slots;
+  d.querySelectorAll('.ich').forEach(e=>{const s=SLT[e.dataset.slot],x0=s.side==='L'?bl:br;e.style.height=(s.h*ch)+'px';e.style.left=(x0+s.cx*ch)+'px';e.style.bottom=(bot+(1-s.b)*ch)+'px'});
+  const lw=Math.min(w*.34,h*.40*3);d.style.setProperty('--lw',lw+'px');if(SLT.A&&SLT.D)d.style.setProperty('--lx',((bl+SLT.A.cx*ch+br+SLT.D.cx*ch)/2)+'px');d.style.setProperty('--lt',(h*.27)+'px');d.style.setProperty('--tf',(h*.042)+'px');
   window.scrollTo(0,0)};
  fit();[60,200,500,1000,2000].forEach(t=>setTimeout(fit,t));
  [700,1600].forEach(t=>setTimeout(()=>{try{const sm=Math.min(screen.width,screen.height);if(innerWidth>innerHeight&&innerHeight<sm-30){const k='fs-fixtry',n=Date.now(),l=+(sessionStorage.getItem(k)||0);if(n-l>15000){sessionStorage.setItem(k,n);location.reload()}}}catch(e){}},t));
