@@ -11,7 +11,7 @@ window.COVER={
   C:{side:'L',cx:.55,b:1,h:.52,z:3,face:'r'},
   D:{side:'R',cx:.859,b:.58,h:.52,z:1,face:'l'},
   E:{side:'R',cx:.73,b:.86,h:.70,z:2,face:'l'},
-  F:{side:'R',cx:.45,b:1,h:.56,z:3,face:'l'}
+  F:{side:'R',cx:.41,b:1,h:.56,z:3,face:'l'}
  },
  pick:{A:'leizhenzi',B:'yangjian',C:'nezha',D:'shawujing',E:'zhubajie',F:'sunwukong'},
  pool:{
