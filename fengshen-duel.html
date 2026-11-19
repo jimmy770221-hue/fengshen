@@ -194,7 +194,7 @@ function showEnd(){
  }
  const st=FS.stages&&FS.stages[stageNo],rw=Object.assign({},st&&st.boss?FS.bossReward:FS.winReward,(st&&st.win)||{});
  const r=FS.gainExp(plv,pexp,rw.exp);
- const top5=(storyMode?teamIds:[]).slice(0,5).map(i=>{const c=FS.characters[i],A=window.asset||(()=>''),u=A('char/'+c.id+'/portrait'),pd=A('scene/pedestal');return '<figure><span class="pad'+(pd?' img':'')+'" style="--ped:url('+pd+')"></span>'+(u?'<img src="'+u+'" alt="">':'<i style="background:'+(c.stats.color||'#999')+'"></i>')+'<small>'+c.name+'</small></figure>'}).join('');
+ const top5=(storyMode?teamIds:[]).slice(0,5).map(i=>{const c=FS.characters[i],A=window.asset||(()=>''),u=A('char/'+c.id+'/portrait'),pd=A('scene/pedestal');return '<figure><span class="pad'+(pd?' img':'')+'" style="--ped:url('+pd+')"></span>'+(u?'<img src="'+u+'" alt=""'+(flipArt(c.id)?' style="transform:scaleX(-1)"':'')+'>':'<i style="background:'+(c.stats.color||'#999')+'"></i>')+'<small>'+c.name+'</small></figure>'}).join('');
  endBox.classList.add('full');endBox.innerHTML='<div class="ebox full" style="--wbg:url('+(window.asset&&window.asset('scene/result_victory_bg')||'')+')"><div class="ttl">'+(window.asset&&window.asset('scene/result_victory_badge')?'<img class="bdg" src="'+window.asset('scene/result_victory_badge')+'" alt="">':'')+'<h2 class="win">勝利</h2></div>'+(top5?'<div class="team">'+top5+'</div>':'')+
   '<div class="rw"><span>金幣 +'+rw.gold+'</span><span>經驗 +'+rw.exp+'</span></div>'+
   '<div class="lv">'+(r.ups?'升級！Lv.'+plv+' → Lv.'+r.lv:'Lv.'+r.lv)+'　經驗 '+r.exp+' / '+FS.expNeed(r.lv)+'</div><div class="lvbar"><b style="width:'+Math.min(100,r.exp/FS.expNeed(r.lv)*100)+'%"></b></div>'+
@@ -303,6 +303,8 @@ const BH_T=[45,110,195,290],BH_REDUCE=!!(window.matchMedia&&matchMedia('(prefers
 function baseState(hp){const r=hp/maxHP;return r<=0?4:r<=.25?3:r<=.5?2:r<=.75?1:0}
 // 戰場背景圖尚未製作：不載入圖檔，畫面用程式畫的占位場景（見 draw）。之後有圖時設定 battlefield.src 即可
 // 角色動畫：只負責「畫面表現」，不改動任何戰鬥數值或判定。有設定美術（art）的角色各有一個播放器
+/* 匯入的圖卡有一半被左右翻面；戰鬥畫面要把「朝左的圖」翻回朝右，我方才會面向右、敵方面向左（原圖朝左的少數角色列在 FS.nativeLeft） */
+const flipArt=id=>!!(id&&window.FS&&FS.flipped&&(FS.flipped.has(id)!==!!(FS.nativeLeft&&FS.nativeLeft.has(id))));
 const charImgs={};const charImg=id=>id&&window.assetImg?(charImgs[id]||(charImgs[id]=window.assetImg('char/'+id+'/portrait'))):null;
 const CH=100; // 角色立繪暫代：場上顯示高度（之後換動畫圖集再調）
 let frameDt=0;
@@ -337,7 +339,7 @@ function startDying(a){
 function startDyingStatic(a){
  sfx('death_soul');
  const ci=a.id?charImg(a.id):null;
- s.dying.push({st:true,img:(ci&&ci.complete&&ci.naturalWidth)?ci:null,color:a.color,x:a.x,side:a.side,t:0});
+ s.dying.push({st:true,id:a.id,img:(ci&&ci.complete&&ci.naturalWidth)?ci:null,color:a.color,x:a.x,side:a.side,t:0});
 }
 const SKFX_T=.095;
 function addSkFx(id,x){(s.skfx||(s.skfx=[])).push({id,x,t:0})}
@@ -367,7 +369,7 @@ function updateFx(dt){
 function drawDying(){
  for(const d of s.dying){
   const alpha=d.t<.9?1:Math.max(0,1-(d.t-.9)/.5);
-  ctx.save();ctx.translate(d.x,floor);ctx.scale(d.side?-1:1,1);
+  ctx.save();ctx.translate(d.x,floor);ctx.scale((d.side?-1:1)*(d.st&&flipArt(d.id)?-1:1),1);
   if(d.p)d.p.draw(ctx,0,0,{alpha});
   else{
    ctx.globalAlpha=alpha;
@@ -429,7 +431,7 @@ function draw(){
  for(const a of s.actors){
   const y=floor-(a.wait<=0&&!a.art?Math.abs(Math.sin(s.time*11+a.x*.02))*4:0); // 有動畫圖集的角色是滑行，不上下跳
   if(a.side===0&&s.shield>0){ctx.strokeStyle="#f7d783";ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(a.x,y-29,21,32,0,0,7);ctx.stroke();}
-  ctx.save();ctx.translate(a.x,y);ctx.scale(a.side?-1:1,1);
+  ctx.save();ctx.translate(a.x,y);ctx.scale((a.side?-1:1)*(flipArt(a.id)?-1:1),1);
   const spr=a.art?charSprite(a):null;
   const ci=charImg(a.id),hasImg=ci&&ci.complete&&ci.naturalWidth;
   if(spr&&spr.ready()){

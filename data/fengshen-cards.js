@@ -2,6 +2,9 @@
    新匯入的 GPT 圖卡角色（單張圖卡＋暫定數值）。品質：普通＝凡品、稀有＝仙品、封神級＝聖品。 */
 (function(){
 FS.baseCount=FS.characters.length;
+FS.flipped=new Set(["fs002", "fs004", "fs011", "fs013", "fs015", "fs018", "fs025", "fs027", "fs029", "fs034", "fs035", "fs037", "fs040", "fs041", "fs042", "fs044", "fs045", "fs047", "fs052", "fs054", "fs056", "fs060", "fs063", "fs067", "fs068", "fs071", "fs074", "fs076", "fs077", "fs078", "fs080", "fs065", "fs066", "fs085", "fs087", "fs088", "fs089", "fs090", "fs093", "fs094", "xy_nverguowang", "xy_tangtaizong", "xy_yinwenjiao", "xy_anan", "xy_jialan", "xy_jiaye", "xy_bailongma", "xy_shawujing", "xy_zhubajie", "xy_change", "xy_chijiao", "xy_duowen", "xy_guangmu", "xy_shouxing", "xy_taibai", "xy_taiyang", "xy_wangmu", "xy_yuhuang", "xy_yushi", "xy_zengzhang", "xy_baigu", "xy_baishu", "xy_baixiang", "xy_heixiong", "xy_honghaier", "xy_huangfeng", "xy_huli", "xy_linggan", "xy_niumowang", "xy_tuolong", "xy_yangli", "xy_jinghe_longwang", "xy_nanhai_longwang", "xy_xihai_longwang", "bd02", "bd06", "sx01", "sx03", "sx05", "sx09", "sx17", "sx19", "sx24", "sx28", "jy03", "jy04", "jy05", "jy07", "jy08", "xn01", "xn07", "gz03", "dj01", "dj02", "dj03", "dj04", "dj05", "dj06", "dj08", "dj09", "dj10", "dj11", "dj12", "lh01", "lh03", "lh05", "lh07", "lh08", "lh10", "lh11", "lh14", "lh15", "lh16", "qf01", "hg01", "hg02", "hg03", "hg04", "zz01", "zz04", "zz05", "zz06", "mj02"]); // 匯入時被左右翻面的圖（原圖朝右，翻面後朝左）
+FS.nativeLeft=new Set(['xy_sunwukong','xy_zhubajie','xy_shawujing']); // 這幾張原圖本來就朝左；其他圖原圖朝右。戰鬥畫面會把朝左的圖翻回朝右（我方面向右、敵方面向左）。若發現哪個角色出場方向不對，把代號加進這個清單或從清單移除
+
 const FC={"上古": "#f2d27a", "闡教": "#e8c46a", "截教": "#b58ae0", "商朝": "#c0584c", "西方教": "#f0e2a8", "西岐": "#7fb890", "靈獸": "#9ac7e8", "取經團隊": "#ffd06a", "天庭": "#8fb8f0", "龍宮": "#5fc4d6", "佛門": "#f3c25e", "散仙": "#a6d49b", "妖怪": "#c46a8a", "人間": "#c9b38a"};
 for(const f in FC)if(!FS.factions[f])FS.factions[f]={color:FC[f],side:0};
 const ST=(c,r)=>c;

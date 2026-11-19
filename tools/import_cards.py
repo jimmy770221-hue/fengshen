@@ -125,7 +125,7 @@ A['files']=dict(sorted(files.items()));A['lazy']=lazy
 A['v']=hashlib.md5(json.dumps(A['files'],sort_keys=True).encode()).hexdigest()[:8]
 open(ROOT+'/assets/manifest.js','w',encoding='utf-8').write(prefix+'window.ASSETS='+json.dumps(A,ensure_ascii=False,separators=(',',':'))+';'+suffix)
 # ---- 資料檔 ----
-out='/* 自動產生，請勿手改：python3 tools/import_cards.py\n   新匯入的 GPT 圖卡角色（單張圖卡＋暫定數值）。品質：普通＝凡品、稀有＝仙品、封神級＝聖品。 */\n(function(){\nFS.baseCount=FS.characters.length;\nconst FC='+json.dumps(FCOL,ensure_ascii=False)+';\nfor(const f in FC)if(!FS.factions[f])FS.factions[f]={color:FC[f],side:0};\n'
+out='/* 自動產生，請勿手改：python3 tools/import_cards.py\n   新匯入的 GPT 圖卡角色（單張圖卡＋暫定數值）。品質：普通＝凡品、稀有＝仙品、封神級＝聖品。 */\n(function(){\nFS.baseCount=FS.characters.length;\nFS.flipped=new Set('+json.dumps([r[0] for r in rows if int(hashlib.md5(r[0].encode()).hexdigest()[0],16)%2],ensure_ascii=False)+'); // 匯入時被左右翻面的圖（原圖朝右，翻面後朝左）\nFS.nativeLeft=new Set([\'xy_sunwukong\',\'xy_zhubajie\',\'xy_shawujing\']); // 這幾張原圖本來就朝左；其他圖原圖朝右。戰鬥畫面會把朝左的圖翻回朝右（我方面向右、敵方面向左）。若發現哪個角色出場方向不對，把代號加進這個清單或從清單移除\nconst FC='+json.dumps(FCOL,ensure_ascii=False)+';\nfor(const f in FC)if(!FS.factions[f])FS.factions[f]={color:FC[f],side:0};\n'
 out+='const ST=(c,r)=>c;\nFS.cards=['+',\n'.join(json.dumps(r,ensure_ascii=False,separators=(',',':')) for r in rows)+'];\n'
 out+='for(const [id,name,world,faction,rank,reach,role,stats] of FS.cards)FS.characters.push({id,name,world,faction,rank,reach,role,art:null,card:true,stats});\n})();\n'
 open(ROOT+'/data/fengshen-cards.js','w',encoding='utf-8').write(out)
