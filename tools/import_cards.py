@@ -108,7 +108,9 @@ for id,name,w,fac,p in items:
     if not q:miss.append((id,name));continue
     im=Image.open(p).convert('RGBA');bb=im.getchannel('A').point(lambda v:255 if v>16 else 0).getbbox()
     pad=int(max(bb[2]-bb[0],bb[3]-bb[1])*.03);bb=(max(0,bb[0]-pad),max(0,bb[1]-pad),min(im.width,bb[2]+pad),min(im.height,bb[3]+pad))
-    im=im.crop(bb);im.thumbnail((300,420),Image.LANCZOS)
+    im=im.crop(bb)
+    if int(hashlib.md5(id.encode()).hexdigest()[0],16)%2:im=im.transpose(Image.FLIP_LEFT_RIGHT)   # 依編號固定隨機左右翻面（GPT 出圖一律朝右）
+    im.thumbnail((300,420),Image.LANCZOS)
     d=ROOT+'/assets/char/'+id;os.makedirs(d,exist_ok=True)
     tmp=d+'/_t.webp';im.save(tmp,'WEBP',quality=82,method=4)
     h=hashlib.md5(open(tmp,'rb').read()).hexdigest()[:8]
