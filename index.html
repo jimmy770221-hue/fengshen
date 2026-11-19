@@ -165,7 +165,7 @@ main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1
 .gup p{margin:0 0 6px}
 .collection .gpick{flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:#443655}.collection .gpick[aria-current=true]{background:#965c36;outline:2px solid #ffe0a6}.collection .gpick.cardpick{position:relative;flex:0 0 min(66px,13.2vh);aspect-ratio:5/7;padding:0;background:none;border:0;overflow:visible}.cardpick .cface{position:absolute;inset:2.5% 2%;width:96%;height:95%;object-fit:cover;border-radius:6%/4%}.cardpick .cfrm{position:absolute;pointer-events:none}.collection .gpick.cardpick[aria-current=true]{background:none;outline:0;filter:drop-shadow(0 0 5px #ffe0a6) drop-shadow(0 0 2px #ffe0a6);transform:translateY(-3px)}.gpick .own{opacity:.75}.gpick .gm{height:44px;display:flex;align-items:flex-end}.gpick .gm .sil{height:100%;width:auto}
 .cardpick .nbg{position:absolute;inset:2.5% 2%;border-radius:6%/4%;background:linear-gradient(#2c5a94,#0f2038)}.cardpick .nbg[data-rank=稀有]{background:linear-gradient(#5d3b94,#1b1030)}.cardpick .nbg[data-rank=封神級]{background:linear-gradient(#b8892b,#3d2708)}
-.cardpick .nface{position:absolute;left:7%;top:9%;width:86%;height:78%;object-fit:contain;object-position:center bottom}.cardpick{container-type:inline-size}.cardpick .cname{position:absolute;left:5%;right:5%;bottom:4.5%;z-index:2;text-align:center;font-size:max(10px,calc(86cqw / var(--n,4)));line-height:1.25;font-weight:900;color:#fff3d0;text-shadow:0 0 3px #000,0 1px 3px #000,0 0 6px #000,0 0 8px #000;background:linear-gradient(0deg,#000a,#0000);padding-top:6%;white-space:nowrap;overflow:hidden}
+.cardpick .nface{position:absolute;left:7%;top:9%;width:86%;height:78%;object-fit:contain;object-position:center bottom}.cardpick{container-type:inline-size}.cardpick .cname{position:absolute;left:5%;right:5%;bottom:4.5%;z-index:2;text-align:center;font-size:max(10px,calc(86cqw / var(--n,4)));line-height:1.25;font-weight:900;color:#fff3d0;text-shadow:0 0 3px #000,0 1px 3px #000,0 0 6px #000,0 0 8px #000;padding-top:6%;white-space:nowrap;overflow:hidden}.cardpick .cshade{position:absolute;pointer-events:none;background:linear-gradient(0deg,#000a,#0000)}
 .cardpick.locked{filter:grayscale(1) brightness(.4);cursor:pointer}.gpick.locked:not(.cardpick){opacity:.35}
 .cbook .cbhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:2px 0 6px}.cbook .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px 6px}.cbook .cgrid .gpick.cardpick{position:relative;aspect-ratio:5/7;padding:0;background:none;border:0;overflow:visible;width:100%;min-height:0}.cbook .cgrid .gpick.cardpick .cface{position:absolute;inset:2.5% 2%;width:96%;height:95%;object-fit:cover;border-radius:6%/4%}.cbook .cgrid .cfrm{position:absolute;pointer-events:none}.cbsep{flex:0 0 8px}
 .backhome{min-height:44px;padding:4px 14px;margin-right:6px;border-color:#e6b66b;background:linear-gradient(#a05034,#59271e);font-weight:bold}header{display:flex;align-items:center;gap:6px}header .resources{margin-left:auto;float:none}
@@ -312,12 +312,16 @@ function stagePage(){
   '<button data-act="battle" '+(g.open&&data.team.length?'':'disabled')+'>'+(g.open?'開始戰鬥':'尚未開放')+'</button></div></div>';
 }
 // 卡面：原有圖卡＝整張卡面；新匯入的單張透明立繪＝品質底色＋立繪＋名字＋外框
-const QFRM={'普通':'frame_putong','稀有':'frame_xiyou','封神級':'frame_fengshen'},QBOX={'普通':[6,7,394,553],'稀有':[6,43,394,517],'封神級':[6,45,394,515]};
+const QFRM={'普通':'frame_putong','稀有':'frame_xiyou','封神級':'frame_fengshen'};
+/* 品質框「內緣」位置（框圖 400×560 裡，中間透明窗口的 左,上,右,下）。三種框都以「內緣」對齊同一個位置（＝凡品框內緣）；
+   仙品、聖品外側的緞帶、龍、寶石突出卡片範圍沒關係，但背景與人物不會超出內緣 */
+const QIN={'普通':[28,30,371,529],'稀有':[53,86,346,481],'封神級':[61,101,339,461]},QT=[(28-6)/388*100,(30-7)/546*100,(371-6)/388*100,(529-7)/546*100];
 function cardFace(i){
  const c=FS.characters[i],cu=asset('char/'+c.id+'/card');if(!cu)return '';const nn=Math.max(4,c.name.length);
- const rk=c.rank,fb=QBOX[rk]||[0,0,400,560],w=fb[2]-fb[0],h=fb[3]-fb[1],fa=QFRM[rk]&&asset('ui/'+QFRM[rk]);
- const frm=fa?'<img class="cfrm" src="'+fa+'" alt="" style="left:'+(-fb[0]/w*100)+'%;top:'+(-fb[1]/h*100)+'%;width:'+(400/w*100)+'%;height:'+(560/h*100)+'%">':'';
- return (c.card||i<FS.baseCount)?'<span class="nbg" data-rank="'+rk+'"></span><img class="nface" loading="lazy" decoding="async" src="'+cu+'" alt="">'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>':'<img class="cface" src="'+cu+'" alt="">'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>';
+ const rk=c.rank,iw=QIN[rk]||[0,0,400,560],tw=QT[2]-QT[0],th=QT[3]-QT[1],kx=tw/(iw[2]-iw[0]),ky=th/(iw[3]-iw[1]),fa=QFRM[rk]&&asset('ui/'+QFRM[rk]);
+ const frm=fa?'<img class="cfrm" src="'+fa+'" alt="" style="left:'+(QT[0]-iw[0]*kx)+'%;top:'+(QT[1]-iw[1]*ky)+'%;width:'+(400*kx)+'%;height:'+(560*ky)+'%">':'';
+ const bgs=' style="inset:'+(QT[1]-.6)+'% '+(100-QT[2]-.8)+'% '+(100-QT[3]-.6)+'% '+(QT[0]-.8)+'%"';
+ return (c.card||i<FS.baseCount)?'<span class="nbg" data-rank="'+rk+'"'+bgs+'></span><img class="nface" loading="lazy" decoding="async" src="'+cu+'" alt=""><i class="cshade" style="left:'+QT[0]+'%;right:'+(100-QT[2])+'%;bottom:'+(100-QT[3])+'%;height:20%"></i>'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>':'<img class="cface" src="'+cu+'" alt="">'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>';
 }
 // 神將小卡按鈕：持有＝可選；未持有（蒐集冊）＝暗灰、不能選
 function pickBtn(i,own,book){
