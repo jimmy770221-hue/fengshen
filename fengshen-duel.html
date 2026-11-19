@@ -60,17 +60,18 @@ main>header{display:none}
 <div class="bar"><div class="deck" id="deck"></div></div></main>
 <script src="assets/manifest.js"></script>
 <script src="data/fengshen-data.js"></script>
+<script src="data/fengshen-cards.js"></script>
 <script src="nezha-sprite.js"></script>
 <script>
 const classicUnits=FS.classic;
 // 劇情試戰角色從資料檔讀取；編號 0～4 闡教（我方）、5～8 截教（敵方出兵）
-const storyUnits=FS.characters.map(c=>({...c.stats,id:c.id,name:c.name,role:c.role,reach:c.reach,rank:c.rank,art:c.art}));
+const storyUnits=FS.characters.map(c=>({...c.stats,id:c.id,name:c.name,role:c.role,reach:c.reach,rank:c.rank,art:c.art,card:c.card}));
 if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');
 const teamParam=new URLSearchParams(location.search).get('team');
-const teamIds=teamParam&&/^\d(,\d){0,9}$/.test(teamParam)?[...new Set(teamParam.split(',').map(Number))]:[];
+const teamIds=teamParam&&/^\d+(,\d+){0,9}$/.test(teamParam)?[...new Set(teamParam.split(',').map(Number))]:[];
 const storyMode=teamIds.length>0&&teamIds.every(i=>i<storyUnits.length);
 const units=storyMode?teamIds.map(i=>storyUnits[i]):classicUnits;
-const opposingUnits=storyMode?storyUnits.slice(5):classicUnits.slice(0,4);
+const opposingUnits=storyMode?storyUnits.slice(5,FS.baseCount||9):classicUnits.slice(0,4);
 const sideNames=['闡教','截教'];
 const canvas=document.querySelector('canvas'), ctx=canvas.getContext('2d');
 const el=id=>document.getElementById(id);
@@ -266,7 +267,7 @@ function ui(){
  buttons.forEach((b,i)=>{
   const u=units[i], wait=s.cd[i];
   const cu=u.id&&window.asset&&asset('char/'+u.id+'/card'); // 有卡面圖：圖鋪滿整張卡，不寫名字與特性，只留射程標與靈力/CD
-  b.classList.toggle('art',!!cu);setHTML(b,cu?('<i class="face" style="position:absolute;inset:2.5% 2%;width:auto;border:0;border-radius:6%/4%;background:#2a2233 url('+cu+') center/cover no-repeat"></i>'+(u.reach?(asset('ui/reach_'+REACH_IMG[u.reach])?'<img class="rti" src="'+asset('ui/reach_'+REACH_IMG[u.reach])+'" alt="'+u.reach+'">':'<em class="rt" style="background:'+FS.reachTypes[u.reach]+'">'+u.reach+'</em>'):'')+(FRAME_IMG[u.rank]&&asset('ui/'+FRAME_IMG[u.rank])?'<img class="frm" style="'+frameStyle(u.rank)+'" src="'+asset('ui/'+FRAME_IMG[u.rank])+'" alt="">':'')+'<small style="position:absolute;left:5%;right:5%;bottom:4.5%;z-index:2;padding:8px 0 2px;background:linear-gradient(transparent,#000c);font-weight:700;text-shadow:0 1px 2px #000">'+(wait>0?wait.toFixed(1)+' 秒':u.cost+' 靈力')+'</small>')
+  b.classList.toggle('art',!!cu);setHTML(b,cu?('<i class="face" style="position:absolute;inset:2.5% 2%;width:auto;border:0;border-radius:6%/4%;background:'+(u.card?'url('+cu+') center bottom/88% 80% no-repeat,'+({'普通':'linear-gradient(#2c5a94,#0f2038)','稀有':'linear-gradient(#5d3b94,#1b1030)','封神級':'linear-gradient(#b8892b,#3d2708)'}[u.rank]||'#2a2233'):'#2a2233 url('+cu+') center/cover no-repeat')+'"></i>'+(u.card?'<b style="position:absolute;left:6%;right:6%;bottom:22%;z-index:2;text-align:center;font-size:11px;color:#fff3d0;text-shadow:0 1px 3px #000">'+u.name+'</b>':'')+(u.reach?(asset('ui/reach_'+REACH_IMG[u.reach])?'<img class="rti" src="'+asset('ui/reach_'+REACH_IMG[u.reach])+'" alt="'+u.reach+'">':'<em class="rt" style="background:'+FS.reachTypes[u.reach]+'">'+u.reach+'</em>'):'')+(FRAME_IMG[u.rank]&&asset('ui/'+FRAME_IMG[u.rank])?'<img class="frm" style="'+frameStyle(u.rank)+'" src="'+asset('ui/'+FRAME_IMG[u.rank])+'" alt="">':'')+'<small style="position:absolute;left:5%;right:5%;bottom:4.5%;z-index:2;padding:8px 0 2px;background:linear-gradient(transparent,#000c);font-weight:700;text-shadow:0 1px 2px #000">'+(wait>0?wait.toFixed(1)+' 秒':u.cost+' 靈力')+'</small>')
    :('<i class="face" style="background:'+(u.color||'#7a8aa3')+'"></i><b>'+u.name+'</b><span>'+u.role+'</span>'+(u.reach?'<em class="rt" style="background:'+FS.reachTypes[u.reach]+'">'+u.reach+'</em>':'')+'<small>'+(wait>0?wait.toFixed(1)+' 秒':u.cost+' 靈力')+'</small>'));
   b.disabled=!!(s.countdown>0||loadout.length!==slotCount||s.over||s.paused||wait>0||s.energy<u.cost||allies().length>=armyCap);
  });
