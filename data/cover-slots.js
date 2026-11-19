@@ -6,11 +6,11 @@
 window.COVER={
  random:false,
  slots:{
-  A:{side:'L',cx:.61,b:.50,h:.44,z:1,face:'r'},
-  B:{side:'L',cx:.31,b:.86,h:.66,z:2,face:'r'},
+  A:{side:'L',cx:.61,b:.46,h:.44,z:1,face:'r'},
+  B:{side:'L',cx:.27,b:.86,h:.66,z:2,face:'r'},
   C:{side:'L',cx:.55,b:1,h:.52,z:3,face:'r'},
-  D:{side:'R',cx:.39,b:.62,h:.56,z:1,face:'l'},
-  E:{side:'R',cx:.69,b:.86,h:.70,z:2,face:'l'},
+  D:{side:'R',cx:.39,b:.58,h:.52,z:1,face:'l'},
+  E:{side:'R',cx:.73,b:.86,h:.70,z:2,face:'l'},
   F:{side:'R',cx:.45,b:1,h:.56,z:3,face:'l'}
  },
  pick:{A:'leizhenzi',B:'yangjian',C:'nezha',D:'shawujing',E:'zhubajie',F:'sunwukong'},
