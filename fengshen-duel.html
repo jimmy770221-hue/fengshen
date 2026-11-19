@@ -67,7 +67,7 @@ main>header{display:none}
 <script>
 const classicUnits=FS.classic;
 // 劇情試戰角色從資料檔讀取；編號 0～4 闡教（我方）、5～8 截教（敵方出兵）
-const storyUnits=FS.characters.map(c=>({...c.stats,id:c.id,name:c.name,role:c.role,reach:c.reach,rank:c.rank,art:c.art,card:c.card}));
+const storyUnits=FS.characters.map(c=>({...c.stats,id:c.id,name:c.name,role:c.role,reach:c.reach,rank:c.rank,art:c.art,card:c.card||FS.characters.indexOf(c)<(FS.baseCount||0)}));
 if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');
 const teamParam=new URLSearchParams(location.search).get('team');
 const teamIds=teamParam&&/^\d+(,\d+){0,9}$/.test(teamParam)?[...new Set(teamParam.split(',').map(Number))]:[];
