@@ -222,6 +222,7 @@ body.pg{background:var(--pgbg) center/cover no-repeat fixed,#1a1226;min-height:1
 <script src="data/fengshen-data.js"></script>
 <script src="data/fengshen-cards.js"></script>
 <script src="data/stats-override.js"></script>
+<script src="data/fengshen-order.js"></script>
 <script>
 const app=document.querySelector('#app');
 // 內容全部來自 data/fengshen-data.js；roster 每筆：[名稱,世界,陣營,稀有度]
@@ -339,7 +340,7 @@ function zoomCard(i){
  z.querySelector('.cz-ar.l').onclick=e=>{e.stopPropagation();z._go(-1)};z.querySelector('.cz-ar.r').onclick=e=>{e.stopPropagation();z._go(1)};
 }
 function collectionBook(){
- const all=FS.characters.map((c,i)=>i),vis=all.filter(i=>(cWorld==='全部'||roster[i][1]===cWorld)&&(cQ==='全部'||rn(roster[i][3])===cQ));
+ const all=FS.characters.map((c,i)=>i),vis=all.filter(i=>(cWorld==='全部'||roster[i][1]===cWorld)&&(cQ==='全部'||rn(roster[i][3])===cQ)).sort((a,b)=>FS.orderIdx(a)-FS.orderIdx(b));
  bookVis=vis;const got=vis.filter(i=>data.owned[i]).length,gotAll=all.filter(i=>data.owned[i]).length;
  const chip=(act,cur,list)=>list.map(k=>'<button data-act="'+act+'" data-value="'+k+'" aria-current="'+(k===cur)+'">'+k+'</button>').join('');
  return '<div class="cbook"><div class="cbhead"><b>蒐集冊　已蒐集 '+gotAll+' / '+all.length+'</b><span class="muted">目前篩選 '+got+' / '+vis.length+'　（暗灰＝尚未獲得）</span></div>'+
@@ -348,7 +349,7 @@ function collectionBook(){
 }
 function gTabs(){const own=Object.keys(data.owned).length;return '<div class="eqtabs"><button data-act="gmode" data-value="own" aria-current="'+(gMode==='own')+'">出戰神將（'+own+'）</button><button data-act="gmode" data-value="book" aria-current="'+(gMode==='book')+'">蒐集冊（'+own+' / '+FS.characters.length+'）</button></div>'}
 function generalPage(){
- const owned=Object.keys(data.owned).map(Number);
+ const owned=Object.keys(data.owned).map(Number).sort((a,b)=>FS.orderIdx(a)-FS.orderIdx(b));
  if(gMode==='book')return gTabs()+collectionBook();
  if(!owned.includes(sel))sel=owned[0];
  if(sel===undefined)return gTabs()+'<p>尚未擁有神將，請先招募。</p>';
