@@ -560,7 +560,7 @@ app.onclick=event=>{
 };
 
 /* ===== 抽卡動畫：魔法陣蓄力 → 光柱 → 閃光 → 翻牌（點一下跳過；十連逐張翻開） ===== */
-function gachaShow(out){
+function gachaShow(out){try{out.forEach(function(e){if(e&&e.a&&window.assetImg)assetImg(e.a)})}catch(e){}
  const old=document.getElementById('gacha');if(old)old.remove();gachaOn=true;try{bgmPlay('gacha')}catch(e){}
  const K=r=>r==='封神級'?'g':r==='稀有'?'p':'n';
  const top=out.some(e=>e.r==='封神級')?'g':out.some(e=>e.r==='稀有')?'p':'n';
@@ -587,7 +587,7 @@ function gachaShow(out){
  at(1250,()=>window.sfx('skill_wind'));d.classList.add('cl-go');
  const t0=2700,gap=800;seq.forEach((b,i)=>at(t0+i*gap,()=>strike(b[0],b[1])));
  const tEnd=t0+(seq.length-1)*gap+950;
- const card=(e,i)=>{const img=A(e.a);return '<div class="gc-card r-'+K(e.r)+(e.gear?' gear':'')+'"><div class="gc-in"><div class="gc-back"><span>仙</span></div><div class="gc-front">'+(img?'<img src="'+img+'" alt="" draggable="false">':'<span class="gc-ph">'+e.n.slice(0,1)+'</span>')+'<em>'+rn(e.r)+'</em><b>'+e.n+'</b>'+(e.nw?'<u>NEW</u>':'')+'</div></div></div>'};
+ const card=(e,i)=>{const img=A(e.a);return '<div class="gc-card r-'+K(e.r)+(e.gear?' gear':'')+'"><div class="gc-in"><div class="gc-back"><span>仙</span></div><div class="gc-front">'+(img?'<img src="'+img+'" alt="" draggable="false" onerror="if(!this.dataset.r){this.dataset.r=1;var u=this.src;setTimeout(function(x){x.src=u+(u.indexOf(\'?\')<0?\'?\':\'&\')+\'r=\'+Date.now()},600,this)}">':'<span class="gc-ph">'+e.n.slice(0,1)+'</span>')+'<em>'+rn(e.r)+'</em><b>'+e.n+'</b>'+(e.nw?'<u>NEW</u>':'')+'</div></div></div>'};
  const flip=(c,e)=>{if(c.classList.contains('flip'))return;c.classList.add('flip');if(e.r==='封神級')window.sfx('pull_rare');else if(e.r==='稀有')window.sfx('ui_confirm')};
  function reveal(){if(phase!==1)return;phase=2;T.forEach(clearTimeout);d.classList.add('rev');
   const again=out.pc&&data.tickets>=out.pc[1];
