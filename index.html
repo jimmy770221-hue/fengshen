@@ -58,6 +58,8 @@
 .r-p .gc-front{border-color:#c58bff;box-shadow:0 0 18px #c58bffaa}.r-p em{color:#d9b3ff}
 .r-g .gc-front{border-color:#ffd35a;box-shadow:0 0 26px #ffd35a}.r-g em{color:#ffd35a}
 .gc-card.flip.r-g{animation:gcGold 1.3s ease-in-out infinite}
+.cz-ov{position:fixed;inset:0;z-index:9000;background:#000d;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:zoom-out}
+.czoom{position:relative;height:84vh;aspect-ratio:5/7;max-width:92vw}.czoom .cname{font-size:clamp(16px,4vh,30px);bottom:6%}.cz-h{margin-top:1vh;color:#ddd;font-size:13px}
 .gc-btns{display:flex;gap:14px;justify-content:center;margin-top:1.6vh}.gc-btns .gc-ok{margin-top:0}
 .gc-again{min-width:120px;padding:8px 22px;font-size:16px;border-radius:22px;border:2px solid #ffd35a;background:linear-gradient(180deg,#a8641e,#6a3a10);color:#fff3c4;cursor:pointer}.gc-again:disabled{opacity:.4;filter:grayscale(.6);cursor:default}
 .gc-card.flip{cursor:zoom-in}
@@ -316,8 +318,9 @@ function cardFace(i){
  return c.card?'<span class="nbg" data-rank="'+rk+'"></span><img class="nface" loading="lazy" decoding="async" src="'+cu+'" alt="">'+frm+'<small class="cname">'+c.name+'</small>':'<img class="cface" src="'+cu+'" alt="">'+frm;
 }
 // 神將小卡按鈕：持有＝可選；未持有（蒐集冊）＝暗灰、不能選
-function pickBtn(i,own){
+function pickBtn(i,own,book){
  const c=FS.characters[i];
+ if(book&&asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+'" data-act="zoomcard" data-value="'+i+'" aria-label="'+(own?c.name:'尚未獲得')+'，放大">'+cardFace(i)+'</button>';
  if(asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+'" aria-label="'+(own?c.name:'尚未獲得')+'"'+(own?' data-act="sel" data-value="'+i+'" aria-current="'+(i===sel&&gMode==='own')+'"':' disabled')+'>'+cardFace(i)+'</button>';
  return '<button class="gpick'+(own?'':' locked')+'"'+(own?' data-act="sel" data-value="'+i+'" aria-current="'+(i===sel&&gMode==='own')+'"':' disabled')+'><span class="gm">'+silhouette(i,'icon')+'</span><b>'+(own?c.name:'？？？')+'</b>'+(own?'<small style="color:'+FS.reachTypes[c.reach]+'">'+c.reach+'</small>'+(data.team.includes(i)?'<small>出戰中</small>':''):'')+'</button>';
 }
@@ -327,7 +330,7 @@ function collectionBook(){
  const chip=(act,cur,list)=>list.map(k=>'<button data-act="'+act+'" data-value="'+k+'" aria-current="'+(k===cur)+'">'+k+'</button>').join('');
  return '<div class="cbook"><div class="cbhead"><b>蒐集冊　已蒐集 '+gotAll+' / '+all.length+'</b><span class="muted">目前篩選 '+got+' / '+vis.length+'　（暗灰＝尚未獲得）</span></div>'+
   '<div class="eqfilter">'+chip('cworld',cWorld,['全部','封神','西遊'])+'<i class="cbsep"></i>'+chip('cq',cQ,['全部','凡品','仙品','聖品'])+'</div>'+
-  '<div class="cgrid">'+vis.map(i=>pickBtn(i,!!data.owned[i])).join('')+'</div></div>';
+  '<div class="cgrid">'+vis.map(i=>pickBtn(i,!!data.owned[i],true)).join('')+'</div></div>';
 }
 function gTabs(){const own=Object.keys(data.owned).length;return '<div class="eqtabs"><button data-act="gmode" data-value="own" aria-current="'+(gMode==='own')+'">出戰神將（'+own+'）</button><button data-act="gmode" data-value="book" aria-current="'+(gMode==='book')+'">蒐集冊（'+own+' / '+FS.characters.length+'）</button></div>'}
 function generalPage(){
@@ -474,6 +477,9 @@ app.addEventListener('change',e=>{const t=e.target;if(t.classList&&t.classList.c
 app.onclick=event=>{
  const button=event.target.closest('button[data-act]');if(!button)return;
  const {act,value}=button.dataset;
+ if(act==='zoomcard'){const i=Number(value),z=document.createElement('div');z.className='cz-ov';
+  z.innerHTML='<div class="gpick cardpick czoom'+(data.owned[i]?'':' locked')+'">'+cardFace(i)+'</div><div class="cz-h">'+(data.owned[i]?'點一下關閉':'尚未獲得・點一下關閉')+'</div>';
+  z.onclick=()=>z.remove();document.body.appendChild(z);try{window.sfx('ui_click')}catch(e){}return}
  window.sfx(act==='back'?'ui_back':(act==='buy'||act==='exch'||act==='pull')?'ui_confirm':'ui_click');
  if(act==='skpick'){const l=data.skills||(data.skills=[]),v=Number(value),x=l.indexOf(v);if(x>=0)l.splice(x,1);else if(l.length<5)l.push(v);save()}
  if(act==='stagesel')stageSel=Number(value);
