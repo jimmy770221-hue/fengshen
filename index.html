@@ -169,6 +169,7 @@ main.ishome{padding:0;max-width:none;height:100dvh;overflow:hidden;background:#1
 .cardpick.locked{filter:grayscale(1) brightness(.4);cursor:pointer}.gpick.locked:not(.cardpick){opacity:.35}
 .cbook .cbhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:2px 0 6px}.cbook .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px 6px}.cbook .cgrid .gpick.cardpick{position:relative;aspect-ratio:5/7;padding:0;background:none;border:0;overflow:visible;width:100%;min-height:0}.cbook .cgrid .gpick.cardpick .cface{position:absolute;inset:2.5% 2%;width:96%;height:95%;object-fit:cover;border-radius:6%/4%}.cbook .cgrid .cfrm{position:absolute;pointer-events:none}.cbsep{flex:0 0 8px}
 .backhome{min-height:44px;padding:4px 14px;margin-right:6px;border-color:#e6b66b;background:linear-gradient(#a05034,#59271e);font-weight:bold}header{display:flex;align-items:center;gap:6px}header .resources{margin-left:auto;float:none}
+.tbar{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:7px 10px 4px;background:#2b2140;border:1px solid #7a5a3a;border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}.tbar>b{flex:none;font-size:13px;color:#ffe0a6;white-space:nowrap}.tbar .muted{font-size:12px}.tbar .tmem{position:relative;flex:0 0 48px;width:48px;aspect-ratio:5/7;padding:0;background:none;border:0;overflow:visible;margin:0}.tbar .tx{position:absolute;top:-6px;right:-6px;z-index:5;width:19px;height:19px;border-radius:50%;background:#c0392b;border:1px solid #fff;color:#fff;font:700 11px/17px sans-serif;text-align:center;font-style:normal}.tbar .tchip{flex:none;min-height:30px;padding:2px 8px;font-size:12px}.cardpick .tbadge{position:absolute;top:-6px;left:-6px;z-index:5;min-width:19px;height:19px;padding:0 3px;border-radius:10px;background:#f5b94a;border:1px solid #fff3c9;color:#3a1f05;font:700 12px/17px sans-serif;text-align:center;font-style:normal;box-shadow:0 1px 3px #0008}.cardpick.inteam{filter:drop-shadow(0 0 5px #ffd36a)}
 .eqfilter{display:flex;gap:4px;overflow-x:auto;padding:3px 3px 4px;margin-bottom:4px;-webkit-overflow-scrolling:touch}.eqfilter button{flex:0 0 auto;min-height:30px;padding:2px 9px;font-size:13px}.eqfilter [aria-current=true]{background:#965c36;outline:2px solid #ffe0a6}.eqtabs{display:flex;gap:8px;margin-bottom:8px}.eqtabs button{flex:1;font-weight:bold}.eqtabs [aria-current=true]{background:linear-gradient(#a47442,#624224);border-color:#e6b66b}
 .stonegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}.stonecard{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 4px;min-height:96px;border-radius:10px;border:2px solid #be9152;background:linear-gradient(#3b4a63,#232c3d)}.stonecard .gemart img{width:64px;height:48px;object-fit:contain;display:block}.stonecard .gemart svg{width:64px;height:40px;display:block}.stonecard b{font-size:18px;color:#bff6ee}.stonecard small{font-size:11px;color:#c5b998}.stonecard .price{color:#ffda8c;font-weight:bold;font-size:14px}
 .shopgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}.shopgrid .card{display:flex;flex-direction:column;gap:2px}.shopgrid p{margin:2px 0}.shopgrid .price{color:#ffda8c;font-weight:bold;margin-top:auto}
@@ -323,11 +324,13 @@ function cardFace(i){
  const bgs=' style="inset:'+(QT[1]-.6)+'% '+(100-QT[2]-.8)+'% '+(100-QT[3]-.6)+'% '+(QT[0]-.8)+'%"';
  return (c.card||i<FS.baseCount)?'<span class="nbg" data-rank="'+rk+'"'+bgs+'></span><img class="nface" loading="lazy" decoding="async" src="'+cu+'" alt=""><i class="cshade" style="left:'+QT[0]+'%;right:'+(100-QT[2])+'%;bottom:'+(100-QT[3])+'%;height:20%"></i>'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>':'<img class="cface" src="'+cu+'" alt="">'+frm+'<small class="cname" style="--n:'+nn+'">'+c.name+'</small>';
 }
+// 出戰中標記：卡片左上角金色圓牌，數字＝出戰順序；整張卡外圍發金光
+const inTeamCls=(i,own)=>own&&data.team.includes(i)?' inteam':'',tBadge=(i,own)=>own&&data.team.includes(i)?'<i class="tbadge" title="出戰中">'+(data.team.indexOf(i)+1)+'</i>':'';
 // 神將小卡按鈕：持有＝可選；未持有（蒐集冊）＝暗灰、不能選
 function pickBtn(i,own,book){
  const c=FS.characters[i];
- if(book&&asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+'" data-act="zoomcard" data-value="'+i+'" aria-label="'+(own?c.name:'尚未獲得')+'，放大">'+cardFace(i)+'</button>';
- if(asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+'" aria-label="'+(own?c.name:'尚未獲得')+'"'+(own?' data-act="sel" data-value="'+i+'" aria-current="'+(i===sel&&gMode==='own')+'"':' disabled')+'>'+cardFace(i)+'</button>';
+ if(book&&asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+inTeamCls(i,own)+'" data-act="zoomcard" data-value="'+i+'" aria-label="'+(own?c.name+(data.team.includes(i)?'（出戰中）':''):'尚未獲得')+'，放大">'+cardFace(i)+tBadge(i,own)+'</button>';
+ if(asset('char/'+c.id+'/card'))return '<button class="gpick cardpick'+(own?'':' locked')+inTeamCls(i,own)+'" aria-label="'+(own?c.name+(data.team.includes(i)?'（出戰中）':''):'尚未獲得')+'"'+(own?' data-act="sel" data-value="'+i+'" aria-current="'+(i===sel&&gMode==='own')+'"':' disabled')+'>'+cardFace(i)+tBadge(i,own)+'</button>';
  return '<button class="gpick'+(own?'':' locked')+'"'+(own?' data-act="sel" data-value="'+i+'" aria-current="'+(i===sel&&gMode==='own')+'"':' disabled')+'><span class="gm">'+silhouette(i,'icon')+'</span><b>'+(own?c.name:'？？？')+'</b>'+(own?'<small style="color:'+FS.reachTypes[c.reach]+'">'+c.reach+'</small>'+(data.team.includes(i)?'<small>出戰中</small>':''):'')+'</button>';
 }
 
@@ -352,13 +355,18 @@ function collectionBook(){
   '<div class="cgrid">'+vis.map(i=>pickBtn(i,!!data.owned[i],true)).join('')+'</div></div>';
 }
 function gTabs(){const own=Object.keys(data.owned).length;return '<div class="eqtabs"><button data-act="gmode" data-value="own" aria-current="'+(gMode==='own')+'">出戰神將（'+own+'）</button><button data-act="gmode" data-value="book" aria-current="'+(gMode==='book')+'">蒐集冊（'+own+' / '+FS.characters.length+'）</button></div>'}
+/* 出戰隊伍列：放在神將頁最上面，每張小卡右上角有 ✕，點一下就退出隊伍 */
+function teamBar(){
+ const n=data.team.length;
+ return '<div class="tbar"><b>出戰隊伍 '+n+' / 10</b>'+(n?data.team.map(i=>{const c=FS.characters[i];return asset('char/'+c.id+'/card')?'<button class="gpick cardpick tmem" data-act="team" data-value="'+i+'" aria-label="移出隊伍：'+c.name+'">'+cardFace(i)+'<i class="tx">✕</i></button>':'<button class="tchip" data-act="team" data-value="'+i+'" aria-label="移出隊伍：'+c.name+'">'+c.name+' ✕</button>'}).join(''):'<span class="muted">尚未選將，點下方神將再按「加入隊伍」</span>')+'</div>';
+}
 function generalPage(){
  const owned=Object.keys(data.owned).map(Number).sort((a,b)=>FS.orderIdx(a)-FS.orderIdx(b));
  if(gMode==='book')return gTabs()+collectionBook();
  if(!owned.includes(sel))sel=owned[0];
  if(sel===undefined)return gTabs()+'<p>尚未擁有神將，請先招募。</p>';
  const c=FS.characters[sel],st=c.stats,inTeam=data.team.includes(sel);
- return gTabs()+'<div class="gdetail"><div class="gshow hero"><div class="gfig">'+silhouette(sel)+'</div></div>'+
+ return gTabs()+teamBar()+'<div class="gdetail"><div class="gshow hero"><div class="gfig">'+silhouette(sel)+'</div></div>'+
   '<div class="gside"><section class="gstat"><h3>數據</h3><dl class="gmain"><dt>傷害</dt><dd>'+st.damage+'</dd><dt>防禦</dt><dd>'+Math.round((st.armor||0)*100)+'%</dd><dt>血量</dt><dd>'+st.hp+'</dd><dt>攻速</dt><dd>'+(1/st.period).toFixed(2)+'</dd><dt>移動速度</dt><dd>'+st.speed+'</dd></dl><dl class="gsub"><dt>召喚靈力</dt><dd>'+st.cost+'</dd><dt>CD 時間</dt><dd>'+st.cd+' 秒</dd></dl></section>'+
   '<section class="gup"><h3>強化</h3><p class="muted">強化內容待設計。</p><button disabled>強化</button></section>'+
   '<button data-act="team" data-value="'+sel+'">'+(inTeam?'移出隊伍':'加入隊伍')+'（出戰 '+data.team.length+' / 10）</button></div></div>'+
@@ -470,7 +478,7 @@ function uiArt(){const r=document.documentElement,m={'--btn-pri':'ui/btn_primary
 function fitHome(){const h=document.querySelector('.home');if(!h)return;const w=h.clientWidth||innerWidth,t=h.clientHeight||innerHeight;h.style.setProperty('--s',Math.min(w/1920,t/1080))}
 (function(){const f=()=>{fitHome();setTimeout(fitHome,60);setTimeout(fitHome,250)};window.addEventListener('resize',f);window.addEventListener('orientationchange',f);if(window.visualViewport)visualViewport.addEventListener('resize',fitHome)})();
 /* 重畫時保留捲動位置（點人物後清單不會跳回第一個） */
-const KEEPS=['.collection','.cbook','.cgrid','.gside','.gdetail','.poolhall','.eqlist'];
+const KEEPS=['.tbar','.collection','.cbook','.cgrid','.gside','.gdetail','.poolhall','.eqlist'];
 function saveScroll(){const r={y:window.scrollY,a:[app.scrollTop,app.scrollLeft],k:{}};KEEPS.forEach(q=>{r.k[q]=[...app.querySelectorAll(q)].map(e=>[e.scrollTop,e.scrollLeft])});return r}
 function loadScroll(r){const go=()=>{app.scrollTop=r.a[0];app.scrollLeft=r.a[1];KEEPS.forEach(q=>[...app.querySelectorAll(q)].forEach((e,i)=>{const v=r.k[q][i];if(v){e.scrollTop=v[0];e.scrollLeft=v[1]}}));if(window.scrollY!==r.y)window.scrollTo(0,r.y)};go();requestAnimationFrame(go);setTimeout(go,120)}
 function draw(){const sv=saveScroll();uiArt();_draw();gateArt();loadScroll(sv)}
